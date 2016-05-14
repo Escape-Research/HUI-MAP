@@ -9,6 +9,8 @@ MPLAB Version:
 C Compiler Version:
 Final Checksum:
 
+
+
 FILES INCLUDED IN THE PROJECT TREE:
 
 system.h - Contains custom oscillator configuration function prototypes,
