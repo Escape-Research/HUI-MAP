@@ -42,10 +42,28 @@ uint16_t getMap(char fader, uint16_t position)
     return value;
 }
 
+uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, uint16_t value)
+{
+    // Is there anything to?
+    if (low_bound == hi_bound)
+        return low_bound;
+    
+    // Get the middle element 
+    uint16_t test_pos = low_bound + ((hi_bound - low_bound) / 2);
+    uint16_t test_value = getMap(fader, test_pos);
+    
+    if (test_value < value)
+        return map_binary_search(fader, test_pos, hi_bound, value);
+    else if (test_value > value)
+        return map_binary_search(fader, low_bound, test_pos, value);
+    else
+        return test_pos;
+}
+
 uint16_t map_approx_lookup(char fader, uint16_t lkValue)
 {
     // We will do a binary tree search through the map arrays
-    
+    return map_binary_search(fader, 0, 1023, lkValue);    
 }
 
 /******************************************************************************/
