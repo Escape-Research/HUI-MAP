@@ -14,6 +14,8 @@
 #include <stdint.h>          /* For uint32_t definition                       */
 #include <stdbool.h>         /* For true/false definition                     */
 
+#include <libpic30.h>
+
 #include "user.h"            /* variables/params used by user.c               */
 
 /******************************************************************************/
@@ -55,6 +57,41 @@ uint16_t map_approx_lookup(char fader, uint16_t lkValue)
     // We will do a binary tree search through the map arrays
     return map_binary_search(fader, 0, 1023, lkValue);    
 }
+
+void SaveTempMapToFlash(char fader)
+{
+    /*
+    for(i=0; i<32; i++)
+    {
+        data_ram[i] = i*2047;
+    }
+        
+    asm_write16b_row_flash(0x00,0x1F80,data_ram); 
+    asm_read16b_row_flash(0x00,0x1F80,result);    
+    tmp=asm_read16b_flash(0x00,0x1F86);
+    */
+
+    
+    int i;
+    _prog_addressT p_s_lo, p_lo;
+    _init_prog_address(p_s_lo, map_lo);
+    for (i = 0; i < 1024; i += 64)
+    {     
+        p_lo = p_s_lo + i;
+        _erase_flash(p_lo);
+        _write_flash16(p_lo, (int *)(temp_map_lo[fader] + i));
+    }
+
+    _prog_addressT p_s_hi, p_hi;
+    _init_prog_address(p_s_hi, map_hi);    
+    for (i = 0; i < 512; i += 64)
+    {
+        p_hi = p_s_hi + i;
+        _erase_flash(p_hi);
+        _write_flash16(p_hi, (int *)(temp_map_hi[fader] + i));
+    }
+}
+
 
 /* <Initialize variables in user.h and insert code for user algorithms.> */
 
