@@ -21,50 +21,11 @@
 /* Global Variable Declaration                                                */
 /******************************************************************************/
 
-/* i.e. uint16_t <variable_name>; */
-
-
 __psv__ char __attribute__((space(psv))) map_lo[8][1024] = { 0 }; 
 __psv__ char __attribute__((space(psv))) map_hi[8][512] = { 0 }; 
 
 char temp_map_lo[1024];
 char temp_map_hi[512];
-
-uint16_t getMap(char fader, uint16_t position)
-{
-    uint16_t lo_value = map_lo[fader][position];
-    uint16_t hi_pos = position / 2;
-    uint16_t hi_complex = map_hi[fader][hi_pos];
-    uint16_t hi_value = (position % 2) ? 0xF0 & hi_complex
-                                       : 0x0F & hi_complex;
-    
-    uint16_t value = (hi_value << 8) + lo_value;
-    return value;
-}
-
-uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, uint16_t value)
-{
-    // Is there anything to?
-    if (low_bound == hi_bound)
-        return low_bound;
-    
-    // Get the middle element 
-    uint16_t test_pos = low_bound + ((hi_bound - low_bound) / 2);
-    uint16_t test_value = getMap(fader, test_pos);
-    
-    if (test_value < value)
-        return map_binary_search(fader, test_pos, hi_bound, value);
-    else if (test_value > value)
-        return map_binary_search(fader, low_bound, test_pos, value);
-    else
-        return test_pos;
-}
-
-uint16_t map_approx_lookup(char fader, uint16_t lkValue)
-{
-    // We will do a binary tree search through the map arrays
-    return map_binary_search(fader, 0, 1023, lkValue);    
-}
 
 /******************************************************************************/
 /* Main Program                                                               */
@@ -72,7 +33,8 @@ uint16_t map_approx_lookup(char fader, uint16_t lkValue)
 
 int16_t main(void)
 {
-    char bCalMode = 0;
+    char bCalMode = 0;  // are we in calibration mode?
+    char fadernum = 0;  // the active fader (based on the HUI selection lines)
     
     /* Configure the oscillator for the device */
     ConfigureOscillator();
@@ -82,7 +44,6 @@ int16_t main(void)
 
     /* TODO <INSERT USER APPLICATION CODE HERE> */
 
-    char fadernum = 0;
 
     while(1)
     {

@@ -87,11 +87,11 @@ Program Memory  [Origin = 0x100, Length = 0x3f00]
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x100               0x11a           0x1a7  (423)
-_03e334205737805c            0x21a              0x2000          0x3000  (12288)
-_03e336605737805c           0x221a              0x1000          0x1800  (6144)
-.text                       0x321a               0x1a6           0x279  (633)
-.dinit                      0x33c0                 0x8             0xc  (12)
-.text                       0x33c8                 0xc            0x12  (18)
+_03e533c057378b35            0x21a              0x2000          0x3000  (12288)
+_03e5360057378b35           0x221a              0x1000          0x1800  (6144)
+.text                       0x321a               0x1ac           0x282  (642)
+.dinit                      0x33c6                 0x8             0xc  (12)
+.text                       0x33ce                 0x6             0x9  (9)
 .shared.dinit               0x33d4                 0x2             0x3  (3)
 
                  Total program memory used (bytes):         0x4c41  (19521) 80%
@@ -168,15 +168,15 @@ External Symbols in Program Memory (by address):
                   0x00321a                  _getMap
                   0x00329c                  _map_binary_search
                   0x0032f4                  _map_approx_lookup
-                  0x003308                  _main
-                  0x0033c8                  _ConfigureOscillator
-                  0x0033ce                  _InitApp
+                  0x003308                  _InitApp
+                  0x00330e                  _main
+                  0x0033ce                  _ConfigureOscillator
                   0xf8000a                  __FGS.sec
 
 External Symbols in Program Memory (by name):
 
-                  0x0033c8                  _ConfigureOscillator
-                  0x0033ce                  _InitApp
+                  0x0033ce                  _ConfigureOscillator
+                  0x003308                  _InitApp
                   0x0001ae                  __AddressError
                   0x0001c6                  __AltAddressError
                   0x0001d2                  __AltMathError
@@ -194,7 +194,7 @@ External Symbols in Program Memory (by name):
                   0x00012c                  __psv_init
                   0x000100                  __resetPRI
                   0x00321a                  _getMap
-                  0x003308                  _main
+                  0x00330e                  _main
                   0x0032f4                  _map_approx_lookup
                   0x00329c                  _map_binary_search
                   0x00221a                  _map_hi
@@ -338,40 +338,40 @@ userdata
 .comment
  *(.comment)
 
-.debug_info       0x000000        0xb90
+.debug_info       0x000000        0xbf6
  *(.debug_info)
  .debug_info      0x000000         0xa7 build/XC16_dsPIC30F3013/production/configuration_bits.o
  .debug_info      0x0000a7        0x101 build/XC16_dsPIC30F3013/production/interrupts.o
- .debug_info      0x0001a8        0x4b5 build/XC16_dsPIC30F3013/production/main.o
- .debug_info      0x00065d        0x120 build/XC16_dsPIC30F3013/production/system.o
- .debug_info      0x00077d        0x301 build/XC16_dsPIC30F3013/production/traps.o
- .debug_info      0x000a7e        0x112 build/XC16_dsPIC30F3013/production/user.o
+ .debug_info      0x0001a8        0x312 build/XC16_dsPIC30F3013/production/main.o
+ .debug_info      0x0004ba        0x120 build/XC16_dsPIC30F3013/production/system.o
+ .debug_info      0x0005da        0x301 build/XC16_dsPIC30F3013/production/traps.o
+ .debug_info      0x0008db        0x31b build/XC16_dsPIC30F3013/production/user.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0x211
+.debug_abbrev     0x000000        0x261
  *(.debug_abbrev)
  .debug_abbrev    0x000000         0x1f build/XC16_dsPIC30F3013/production/configuration_bits.o
  .debug_abbrev    0x00001f         0x1f build/XC16_dsPIC30F3013/production/interrupts.o
- .debug_abbrev    0x00003e         0xee build/XC16_dsPIC30F3013/production/main.o
- .debug_abbrev    0x00012c         0x34 build/XC16_dsPIC30F3013/production/system.o
- .debug_abbrev    0x000160         0x7d build/XC16_dsPIC30F3013/production/traps.o
- .debug_abbrev    0x0001dd         0x34 build/XC16_dsPIC30F3013/production/user.o
+ .debug_abbrev    0x00003e         0xce build/XC16_dsPIC30F3013/production/main.o
+ .debug_abbrev    0x00010c         0x34 build/XC16_dsPIC30F3013/production/system.o
+ .debug_abbrev    0x000140         0x7d build/XC16_dsPIC30F3013/production/traps.o
+ .debug_abbrev    0x0001bd         0xa4 build/XC16_dsPIC30F3013/production/user.o
 
-.debug_line       0x000000        0x1e1
+.debug_line       0x000000        0x232
  *(.debug_line)
  .debug_line      0x000000         0x1a build/XC16_dsPIC30F3013/production/configuration_bits.o
  .debug_line      0x00001a         0x1a build/XC16_dsPIC30F3013/production/interrupts.o
- .debug_line      0x000034         0xa9 build/XC16_dsPIC30F3013/production/main.o
- .debug_line      0x0000dd         0x38 build/XC16_dsPIC30F3013/production/system.o
- .debug_line      0x000115         0x98 build/XC16_dsPIC30F3013/production/traps.o
- .debug_line      0x0001ad         0x34 build/XC16_dsPIC30F3013/production/user.o
+ .debug_line      0x000034         0x97 build/XC16_dsPIC30F3013/production/main.o
+ .debug_line      0x0000cb         0x38 build/XC16_dsPIC30F3013/production/system.o
+ .debug_line      0x000103         0x98 build/XC16_dsPIC30F3013/production/traps.o
+ .debug_line      0x00019b         0x97 build/XC16_dsPIC30F3013/production/user.o
 
 .debug_frame      0x000000        0x1f4
  *(.debug_frame)
- .debug_frame     0x000000         0x84 build/XC16_dsPIC30F3013/production/main.o
- .debug_frame     0x000084         0x30 build/XC16_dsPIC30F3013/production/system.o
- .debug_frame     0x0000b4        0x110 build/XC16_dsPIC30F3013/production/traps.o
- .debug_frame     0x0001c4         0x30 build/XC16_dsPIC30F3013/production/user.o
+ .debug_frame     0x000000         0x30 build/XC16_dsPIC30F3013/production/main.o
+ .debug_frame     0x000030         0x30 build/XC16_dsPIC30F3013/production/system.o
+ .debug_frame     0x000060        0x110 build/XC16_dsPIC30F3013/production/traps.o
+ .debug_frame     0x000170         0x84 build/XC16_dsPIC30F3013/production/user.o
 
 .debug_str        0x000000         0x24
  *(.debug_str)
@@ -388,13 +388,13 @@ userdata
                   0x000000        0x18e
  *(.debug_pubnames)
  .debug_pubnames
-                  0x000000         0x88 build/XC16_dsPIC30F3013/production/main.o
+                  0x000000         0x51 build/XC16_dsPIC30F3013/production/main.o
  .debug_pubnames
-                  0x000088         0x2a build/XC16_dsPIC30F3013/production/system.o
+                  0x000051         0x2a build/XC16_dsPIC30F3013/production/system.o
  .debug_pubnames
-                  0x0000b2         0xbe build/XC16_dsPIC30F3013/production/traps.o
+                  0x00007b         0xbe build/XC16_dsPIC30F3013/production/traps.o
  .debug_pubnames
-                  0x000170         0x1e build/XC16_dsPIC30F3013/production/user.o
+                  0x000139         0x55 build/XC16_dsPIC30F3013/production/user.o
 
 .debug_ranges
  *(.debug_ranges)
@@ -806,7 +806,7 @@ LOAD data_init
 LOAD shared_data_init
 
 .debug_pubtypes
-                  0x000060         0xa8
+                  0x000060         0xb5
  .debug_pubtypes
                   0x000060         0x12 build/XC16_dsPIC30F3013/production/configuration_bits.o
  .debug_pubtypes
@@ -818,30 +818,30 @@ LOAD shared_data_init
  .debug_pubtypes
                   0x0000c1         0x35 build/XC16_dsPIC30F3013/production/traps.o
  .debug_pubtypes
-                  0x0000f6         0x12 build/XC16_dsPIC30F3013/production/user.o
+                  0x0000f6         0x1f build/XC16_dsPIC30F3013/production/user.o
 
 __c30_signature
-                  0x000108         0x3c
+                  0x000115         0x3c
  __c30_signature
-                  0x000108          0x6 build/XC16_dsPIC30F3013/production/configuration_bits.o
+                  0x000115          0x6 build/XC16_dsPIC30F3013/production/configuration_bits.o
  __c30_signature
-                  0x00010e          0x6 build/XC16_dsPIC30F3013/production/interrupts.o
+                  0x00011b          0x6 build/XC16_dsPIC30F3013/production/interrupts.o
  __c30_signature
-                  0x000114          0x6 build/XC16_dsPIC30F3013/production/main.o
+                  0x000121          0x6 build/XC16_dsPIC30F3013/production/main.o
  __c30_signature
-                  0x00011a          0x6 build/XC16_dsPIC30F3013/production/system.o
+                  0x000127          0x6 build/XC16_dsPIC30F3013/production/system.o
  __c30_signature
-                  0x000120          0x6 build/XC16_dsPIC30F3013/production/traps.o
+                  0x00012d          0x6 build/XC16_dsPIC30F3013/production/traps.o
  __c30_signature
-                  0x000126          0x6 build/XC16_dsPIC30F3013/production/user.o
+                  0x000133          0x6 build/XC16_dsPIC30F3013/production/user.o
  __c30_signature
-                  0x00012c          0x6 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(crt0_standard.o)
+                  0x000139          0x6 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(crt0_standard.o)
  __c30_signature
-                  0x000132          0x6 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(data_init_standard.o)
+                  0x00013f          0x6 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(data_init_standard.o)
  __c30_signature
-                  0x000138          0x6 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(divsi3.eo)
+                  0x000145          0x6 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(divsi3.eo)
  __c30_signature
-                  0x00013e          0x6 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(udivsi3.eo)
+                  0x00014b          0x6 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(udivsi3.eo)
 
 .nbss               0x0800        0x600
  .nbss              0x0800        0x600 build/XC16_dsPIC30F3013/production/main.o
@@ -902,33 +902,33 @@ __c30_signature
  .aivt._AltMathError
                   0x00008c          0x2 build/XC16_dsPIC30F3013/production/traps.o
 
-_03e334205737805c
+_03e533c057378b35
                     0x821a       0x2000 load address 0x00021a  
- _03e334205737805c
+ _03e533c057378b35
                     0x821a       0x2000 build/XC16_dsPIC30F3013/production/main.o
                     0x821a                  _map_lo
 
-_03e336605737805c
+_03e5360057378b35
                     0xa21a       0x1000 load address 0x00221a  
- _03e336605737805c
+ _03e5360057378b35
                     0xa21a       0x1000 build/XC16_dsPIC30F3013/production/main.o
                     0xa21a                  _map_hi
 
-.text             0x00321a        0x1a6
- .text            0x00321a        0x1a6 build/XC16_dsPIC30F3013/production/main.o
+.text             0x00321a        0x1ac
+ .text            0x00321a         0xf4 build/XC16_dsPIC30F3013/production/user.o
                   0x00321a                  _getMap
                   0x00329c                  _map_binary_search
                   0x0032f4                  _map_approx_lookup
-                  0x003308                  _main
+                  0x003308                  _InitApp
+ .text            0x00330e         0xb8 build/XC16_dsPIC30F3013/production/main.o
+                  0x00330e                  _main
 
-.dinit            0x0033c0          0x8
- .dinit           0x0033c0          0x8 data_init
+.dinit            0x0033c6          0x8
+ .dinit           0x0033c6          0x8 data_init
 
-.text             0x0033c8          0xc
- .text            0x0033c8          0x6 build/XC16_dsPIC30F3013/production/system.o
-                  0x0033c8                  _ConfigureOscillator
- .text            0x0033ce          0x6 build/XC16_dsPIC30F3013/production/user.o
-                  0x0033ce                  _InitApp
+.text             0x0033ce          0x6
+ .text            0x0033ce          0x6 build/XC16_dsPIC30F3013/production/system.o
+                  0x0033ce                  _ConfigureOscillator
 
 .shared.dinit     0x0033d4          0x2
  .shared.dinit    0x0033d4          0x2 shared_data_init
