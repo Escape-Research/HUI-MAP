@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <executable name="dist/XC16_dsPIC30F3013/production/hui-map.X.production.elf">
+    <memory name="data">
+      <units>bytes</units>
+      <length>2048</length>
+      <used>1536</used>
+      <free>512</free>
+    </memory>
+    <memory name="program">
+      <units>bytes</units>
+      <length>24192</length>
+      <used>19317</used>
+      <free>4875</free>
+    </memory>
+  </executable>
+</project>
