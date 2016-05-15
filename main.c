@@ -242,29 +242,33 @@ int16_t main(void)
                 uint16_t ref = i; //readADC(1);
 
                 // Capture the current fader position (Analog input 0)
-                uint16_t dut = readADC(0);
+                uint16_t dut = i; //readADC(0);
 
                 // Scale the 12bit to a 10bit value
                 //double scaled_value_d = ref * 0.8333;
                 uint16_t scaled_value = ref >> 2;
 
                 // Update the temp_map      
-                char dut10bit_lo = dut & 0xFF;
-                char dut10bit_hi = dut >> 8;
-                temp_map_lo[scaled_value] = dut10bit_lo;
-
-                uint16_t hi_pos = scaled_value >> 1;
-                char existing_hi = temp_map_hi[hi_pos];
-                temp_map_hi[hi_pos] = (scaled_value & 0x01) 
-                                      ? (dut10bit_hi << 4) + (existing_hi & 0xF)
-                                      : (existing_hi & 0xF0) + dut10bit_hi;
+                settempMap(scaled_value, dut);
             }
             
             // Should we exit cal mode?
             
             // if YES, then save the temp_map to flash
+            interpolate_tempmap();
             SaveTempMapToFlash(fadernum);
             
+            uint16_t values[10];
+            values[0] = getMap(0, 0);
+            values[1] = getMap(0, 1);
+            values[2] = getMap(0, 2);
+            values[3] = getMap(0, 3);
+            values[4] = getMap(0, 4);
+            values[5] = getMap(0, 5);
+            values[6] = getMap(0, 6);
+            values[7] = getMap(0, 7);
+            values[8] = getMap(0, 8);
+            values[9] = getMap(0, 9);
         }
     }
 }

@@ -91,12 +91,12 @@ section                    address   length (PC units)   length (bytes) (dec)
 .text                        0x100               0x176           0x231  (561)
 .text                        0x276                 0x6             0x9  (9)
 .shared.dinit                0x27c                 0x2             0x3  (3)
-_03eaf1205737ebb9            0x280              0x2000          0x3000  (12288)
-_03eaf3605737ebb9           0x2280              0x1000          0x1800  (6144)
-.text                       0x3280               0x2e0           0x450  (1104)
-.dinit                      0x3560                 0xe            0x15  (21)
+_03dff1205737fe9f            0x280              0x2000          0x3000  (12288)
+_03dff3605737fe9f           0x2280              0x1000          0x1800  (6144)
+.text                       0x3280               0x440           0x660  (1632)
+.dinit                      0x36c0                 0xe            0x15  (21)
 
-                 Total program memory used (bytes):         0x4ea2  (20130) 83%
+                 Total program memory used (bytes):         0x50b2  (20658) 85%
 
 
 Ivt Memory  [Origin = 0x4, Length = 0x7c]
@@ -172,26 +172,30 @@ External Symbols in Program Memory (by address):
                   0x000230                  __flash_helper6
                   0x000236                  _srand
                   0x000244                  _rand
-                  0x00026a                  ___mulp32peds3
                   0x00026a                  ___mulsi3
                   0x00026a                  ___mulp32eds3
+                  0x00026a                  ___mulp32peds3
                   0x000276                  _ConfigureOscillator
                   0x000280                  _map_lo
                   0x002280                  _map_hi
                   0x003280                  _getMap
-                  0x003302                  _map_binary_search
-                  0x00335a                  _map_approx_lookup
-                  0x00336e                  _SaveTempMapToFlash
-                  0x0034a6                  _readADC
-                  0x0034b8                  _InitApp
-                  0x0034be                  _main
+                  0x003302                  _gettempMap
+                  0x003348                  _settempMap
+                  0x00339e                  _map_binary_search
+                  0x0033f6                  _map_approx_lookup
+                  0x00340a                  _init_tempmap
+                  0x00343c                  _interpolate_tempmap
+                  0x0034c6                  _SaveTempMapToFlash
+                  0x0035fe                  _readADC
+                  0x003610                  _InitApp
+                  0x003616                  _main
                   0xf8000a                  __FGS.sec
 
 External Symbols in Program Memory (by name):
 
                   0x000276                  _ConfigureOscillator
-                  0x0034b8                  _InitApp
-                  0x00336e                  _SaveTempMapToFlash
+                  0x003610                  _InitApp
+                  0x0034c6                  _SaveTempMapToFlash
                   0x0001ae                  __AddressError
                   0x0001c6                  __AltAddressError
                   0x0001d2                  __AltMathError
@@ -216,13 +220,17 @@ External Symbols in Program Memory (by name):
                   0x00012c                  __psv_init
                   0x000100                  __resetPRI
                   0x003280                  _getMap
-                  0x0034be                  _main
-                  0x00335a                  _map_approx_lookup
-                  0x003302                  _map_binary_search
+                  0x003302                  _gettempMap
+                  0x00340a                  _init_tempmap
+                  0x00343c                  _interpolate_tempmap
+                  0x003616                  _main
+                  0x0033f6                  _map_approx_lookup
+                  0x00339e                  _map_binary_search
                   0x002280                  _map_hi
                   0x000280                  _map_lo
                   0x000244                  _rand
-                  0x0034a6                  _readADC
+                  0x0035fe                  _readADC
+                  0x003348                  _settempMap
                   0x000236                  _srand
 
 Memory Configuration
@@ -375,46 +383,45 @@ userdata
 .comment
  *(.comment)
 
-.debug_info       0x000000        0xdd6
+.debug_info       0x000000        0xf50
  *(.debug_info)
  .debug_info      0x000000         0xa7 build/XC16_dsPIC30F3013/production/configuration_bits.o
  .debug_info      0x0000a7        0x101 build/XC16_dsPIC30F3013/production/interrupts.o
- .debug_info      0x0001a8        0x2fc build/XC16_dsPIC30F3013/production/main.o
- .debug_info      0x0004a4        0x120 build/XC16_dsPIC30F3013/production/system.o
- .debug_info      0x0005c4        0x301 build/XC16_dsPIC30F3013/production/traps.o
- .debug_info      0x0008c5        0x511 build/XC16_dsPIC30F3013/production/user.o
+ .debug_info      0x0001a8        0x2bf build/XC16_dsPIC30F3013/production/main.o
+ .debug_info      0x000467        0x120 build/XC16_dsPIC30F3013/production/system.o
+ .debug_info      0x000587        0x301 build/XC16_dsPIC30F3013/production/traps.o
+ .debug_info      0x000888        0x6c8 build/XC16_dsPIC30F3013/production/user.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0x2b2
+.debug_abbrev     0x000000        0x2a5
  *(.debug_abbrev)
  .debug_abbrev    0x000000         0x1f build/XC16_dsPIC30F3013/production/configuration_bits.o
  .debug_abbrev    0x00001f         0x1f build/XC16_dsPIC30F3013/production/interrupts.o
- .debug_abbrev    0x00003e         0xc5 build/XC16_dsPIC30F3013/production/main.o
- .debug_abbrev    0x000103         0x34 build/XC16_dsPIC30F3013/production/system.o
- .debug_abbrev    0x000137         0x7d build/XC16_dsPIC30F3013/production/traps.o
- .debug_abbrev    0x0001b4         0xfe build/XC16_dsPIC30F3013/production/user.o
+ .debug_abbrev    0x00003e         0xa3 build/XC16_dsPIC30F3013/production/main.o
+ .debug_abbrev    0x0000e1         0x34 build/XC16_dsPIC30F3013/production/system.o
+ .debug_abbrev    0x000115         0x7d build/XC16_dsPIC30F3013/production/traps.o
+ .debug_abbrev    0x000192        0x113 build/XC16_dsPIC30F3013/production/user.o
 
-.debug_line       0x000000        0x2b0
+.debug_line       0x000000        0x2e0
  *(.debug_line)
  .debug_line      0x000000         0x1a build/XC16_dsPIC30F3013/production/configuration_bits.o
  .debug_line      0x00001a         0x1a build/XC16_dsPIC30F3013/production/interrupts.o
- .debug_line      0x000034         0x9e build/XC16_dsPIC30F3013/production/main.o
- .debug_line      0x0000d2         0x38 build/XC16_dsPIC30F3013/production/system.o
- .debug_line      0x00010a         0x98 build/XC16_dsPIC30F3013/production/traps.o
- .debug_line      0x0001a2        0x10e build/XC16_dsPIC30F3013/production/user.o
+ .debug_line      0x000034         0x97 build/XC16_dsPIC30F3013/production/main.o
+ .debug_line      0x0000cb         0x38 build/XC16_dsPIC30F3013/production/system.o
+ .debug_line      0x000103         0x98 build/XC16_dsPIC30F3013/production/traps.o
+ .debug_line      0x00019b        0x145 build/XC16_dsPIC30F3013/production/user.o
 
-.debug_frame      0x000000        0x22c
+.debug_frame      0x000000        0x29c
  *(.debug_frame)
  .debug_frame     0x000000         0x30 build/XC16_dsPIC30F3013/production/main.o
  .debug_frame     0x000030         0x30 build/XC16_dsPIC30F3013/production/system.o
  .debug_frame     0x000060        0x110 build/XC16_dsPIC30F3013/production/traps.o
- .debug_frame     0x000170         0xbc build/XC16_dsPIC30F3013/production/user.o
+ .debug_frame     0x000170        0x12c build/XC16_dsPIC30F3013/production/user.o
 
-.debug_str        0x000000         0x4c
+.debug_str        0x000000         0x74
  *(.debug_str)
- .debug_str       0x000000         0x18 build/XC16_dsPIC30F3013/production/main.o
- .debug_str       0x000018          0xc build/XC16_dsPIC30F3013/production/traps.o
- .debug_str       0x000024         0x28 build/XC16_dsPIC30F3013/production/user.o
+ .debug_str       0x000000          0xc build/XC16_dsPIC30F3013/production/traps.o
+ .debug_str       0x00000c         0x68 build/XC16_dsPIC30F3013/production/user.o
 
 .debug_loc
  *(.debug_loc)
@@ -423,7 +430,7 @@ userdata
  *(.debug_macinfo)
 
 .debug_pubnames
-                  0x000000        0x1b1
+                  0x000000        0x1f8
  *(.debug_pubnames)
  .debug_pubnames
                   0x000000         0x51 build/XC16_dsPIC30F3013/production/main.o
@@ -432,7 +439,7 @@ userdata
  .debug_pubnames
                   0x00007b         0xbe build/XC16_dsPIC30F3013/production/traps.o
  .debug_pubnames
-                  0x000139         0x78 build/XC16_dsPIC30F3013/production/user.o
+                  0x000139         0xbf build/XC16_dsPIC30F3013/production/user.o
 
 .debug_ranges
  *(.debug_ranges)
@@ -945,31 +952,35 @@ __c30_signature
  .aivt._AltMathError
                   0x00008c          0x2 build/XC16_dsPIC30F3013/production/traps.o
 
-_03eaf1205737ebb9
+_03dff1205737fe9f
                     0x8280       0x2000 load address 0x000280  
- _03eaf1205737ebb9
+ _03dff1205737fe9f
                     0x8280       0x2000 build/XC16_dsPIC30F3013/production/main.o
                     0x8280                  _map_lo
 
-_03eaf3605737ebb9
+_03dff3605737fe9f
                     0xa280       0x1000 load address 0x002280  
- _03eaf3605737ebb9
+ _03dff3605737fe9f
                     0xa280       0x1000 build/XC16_dsPIC30F3013/production/main.o
                     0xa280                  _map_hi
 
-.text             0x003280        0x2e0
- .text            0x003280        0x23e build/XC16_dsPIC30F3013/production/user.o
+.text             0x003280        0x440
+ .text            0x003280        0x396 build/XC16_dsPIC30F3013/production/user.o
                   0x003280                  _getMap
-                  0x003302                  _map_binary_search
-                  0x00335a                  _map_approx_lookup
-                  0x00336e                  _SaveTempMapToFlash
-                  0x0034a6                  _readADC
-                  0x0034b8                  _InitApp
- .text            0x0034be         0xa2 build/XC16_dsPIC30F3013/production/main.o
-                  0x0034be                  _main
+                  0x003302                  _gettempMap
+                  0x003348                  _settempMap
+                  0x00339e                  _map_binary_search
+                  0x0033f6                  _map_approx_lookup
+                  0x00340a                  _init_tempmap
+                  0x00343c                  _interpolate_tempmap
+                  0x0034c6                  _SaveTempMapToFlash
+                  0x0035fe                  _readADC
+                  0x003610                  _InitApp
+ .text            0x003616         0xaa build/XC16_dsPIC30F3013/production/main.o
+                  0x003616                  _main
 
-.dinit            0x003560          0xe
- .dinit           0x003560          0xe data_init
+.dinit            0x0036c0          0xe
+ .dinit           0x0036c0          0xe data_init
 
 .text             0x000276          0x6
  .text            0x000276          0x6 build/XC16_dsPIC30F3013/production/system.o

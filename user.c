@@ -25,14 +25,39 @@
 
 uint16_t getMap(char fader, uint16_t position)
 {
-    uint16_t lo_value = map_lo[fader][position];
-    uint16_t hi_pos = position / 2;
-    uint16_t hi_complex = map_hi[fader][hi_pos];
-    uint16_t hi_value = (position % 2) ? 0xF0 & hi_complex
-                                       : 0x0F & hi_complex;
+    char lo_value = map_lo[fader][position];
+    uint16_t hi_pos = position >> 1;
+    char hi_complex = map_hi[fader][hi_pos];
+    char hi_value = (position & 0x01) ? 0xF0 & hi_complex
+                                      : 0x0F & hi_complex;
     
     uint16_t value = (hi_value << 8) + lo_value;
     return value;
+}
+
+uint16_t gettempMap(uint16_t position)
+{
+    char lo_value = temp_map_lo[position];
+    uint16_t hi_pos = position >> 1;
+    char hi_complex = temp_map_hi[hi_pos];
+    char hi_value = (position & 0x01) ? 0xF0 & hi_complex
+                                      : 0x0F & hi_complex;
+    
+    uint16_t value = (hi_value << 8) + lo_value;
+    return value;
+}
+
+uint16_t settempMap(uint16_t position, uint16_t value)
+{
+    char dut10bit_lo = value & 0xFF;
+    char dut10bit_hi = value >> 8;
+    temp_map_lo[position] = dut10bit_lo;
+
+    uint16_t hi_pos = position >> 1;
+    char existing_hi = temp_map_hi[hi_pos];
+    temp_map_hi[hi_pos] = (position & 0x01) 
+                          ? (dut10bit_hi << 4) + (existing_hi & 0xF)
+                          : (existing_hi & 0xF0) + dut10bit_hi;
 }
 
 uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, uint16_t value)
@@ -59,20 +84,51 @@ uint16_t map_approx_lookup(char fader, uint16_t lkValue)
     return map_binary_search(fader, 0, 1023, lkValue);    
 }
 
+void init_tempmap()
+{
+    int i = 0;
+    for (i = 0; i < 1024; i++)
+    {
+        if (i < 512)
+            temp_map_hi[i] = 0;
+        
+        temp_map_lo[i] = 0;
+    }
+}
+
+void interpolate_tempmap()
+{
+    int i = 0;
+    int prev_value = gettempMap(0);
+    int curr_value = prev_value;
+    for (i = 1; i < 1023; i++)
+    {
+        curr_value = gettempMap(i);
+        
+        int next_val_pos = 1;
+        if (curr_value == 0)
+        {
+            int next_val_pos = i + 1;
+            int next_value = gettempMap(next_val_pos);
+            while (next_value == 0)
+            {
+                next_val_pos++;
+                if (next_val_pos < 1024)
+                    next_value = gettempMap(next_val_pos);
+                else
+                    next_value = 0xFFF;
+            }
+            curr_value = (next_value - prev_value) / (next_val_pos - i);
+            settempMap(i, curr_value);
+        }
+    }
+    curr_value = gettempMap(1023);
+    if (curr_value == 0)
+        settempMap(1023, 0xFFF);
+}
+
 void SaveTempMapToFlash(char fader)
 {
-    /*
-    for(i=0; i<32; i++)
-    {
-        data_ram[i] = i*2047;
-    }
-        
-    asm_write16b_row_flash(0x00,0x1F80,data_ram); 
-    asm_read16b_row_flash(0x00,0x1F80,result);    
-    tmp=asm_read16b_flash(0x00,0x1F86);
-    */
-
-    
     int i;
     int offset_lo = fader << 10;
     _prog_addressT p_s_lo, p_lo;
