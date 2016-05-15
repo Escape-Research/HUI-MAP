@@ -49,144 +49,6 @@
 /* Global Variable Declaration                                                */
 /******************************************************************************/
 
-/*
-__psv__ char __attribute__((space(psv))) map_lo_0_page0[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_0_page64[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_0_page128[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_0_page192[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_0_page256[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_0_page320[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_0_page384[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_0_page448[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_0_page512[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_0_page576[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_0_page640[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_0_page704[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_0_page768[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_0_page832[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_0_page896[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_0_page960[64]; //[8][1024] = { 0 }; 
-
-__psv__ char __attribute__((space(psv))) map_lo_1_page0[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_1_page64[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_1_page128[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_1_page192[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_1_page256[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_1_page320[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_1_page384[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_1_page448[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_1_page512[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_1_page576[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_1_page640[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_1_page704[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_1_page768[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_1_page832[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_1_page896[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_1_page960[64]; //[8][1024] = { 0 }; 
-
-__psv__ char __attribute__((space(psv))) map_lo_2_page0[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_2_page64[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_2_page128[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_2_page192[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_2_page256[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_2_page320[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_2_page384[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_2_page448[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_2_page512[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_2_page576[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_2_page640[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_2_page704[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_2_page768[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_2_page832[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_2_page896[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_2_page960[64]; //[8][1024] = { 0 }; 
-
-__psv__ char __attribute__((space(psv))) map_lo_3_page0[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_3_page64[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_3_page128[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_3_page192[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_3_page256[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_3_page320[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_3_page384[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_3_page448[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_3_page512[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_3_page576[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_3_page640[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_3_page704[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_3_page768[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_3_page832[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_3_page896[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_3_page960[64]; //[8][1024] = { 0 }; 
-
-__psv__ char __attribute__((space(psv))) map_lo_4_page0[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_4_page64[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_4_page128[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_4_page192[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_4_page256[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_4_page320[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_4_page384[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_4_page448[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_4_page512[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_4_page576[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_4_page640[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_4_page704[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_4_page768[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_4_page832[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_4_page896[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_4_page960[64]; //[8][1024] = { 0 }; 
-
-__psv__ char __attribute__((space(psv))) map_lo_5_page0[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_5_page64[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_5_page128[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_5_page192[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_5_page256[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_5_page320[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_5_page384[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_5_page448[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_5_page512[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_5_page576[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_5_page640[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_5_page704[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_5_page768[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_5_page832[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_5_page896[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_5_page960[64]; //[8][1024] = { 0 }; 
-
-__psv__ char __attribute__((space(psv))) map_lo_6_page0[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_6_page64[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_6_page128[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_6_page192[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_6_page256[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_6_page320[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_6_page384[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_6_page448[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_6_page512[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_6_page576[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_6_page640[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_6_page704[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_6_page768[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_6_page832[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_6_page896[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_6_page960[64]; //[8][1024] = { 0 }; 
-
-__psv__ char __attribute__((space(psv))) map_lo_7_page0[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_7_page64[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_7_page128[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_7_page192[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_7_page256[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_7_page320[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_7_page384[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_7_page448[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_7_page512[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_7_page576[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_7_page640[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_7_page704[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_7_page768[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_7_page832[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_7_page896[64]; //[8][1024] = { 0 }; 
-__psv__ char __attribute__((space(psv))) map_lo_7_page960[64]; //[8][1024] = { 0 }; 
-*/
-
 __psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_lo[8][1024] = { 0x12 };
 __psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_hi[8][512] = { 0x34 }; 
 
@@ -233,7 +95,7 @@ int16_t main(void)
         else
         {
             // Figure out which fader are we operating on!
-            fadernum = 0;
+            fadernum = 3;
             
             int i = 0;
             for (i = 0; i < 4096; i++)
@@ -259,16 +121,16 @@ int16_t main(void)
             SaveTempMapToFlash(fadernum);
             
             uint16_t values[10];
-            values[0] = getMap(0, 0);
-            values[1] = getMap(0, 1);
-            values[2] = getMap(0, 2);
-            values[3] = getMap(0, 3);
-            values[4] = getMap(0, 4);
-            values[5] = getMap(0, 5);
-            values[6] = getMap(0, 6);
-            values[7] = getMap(0, 7);
-            values[8] = getMap(0, 8);
-            values[9] = getMap(0, 9);
+            values[0] = getMap(3, 0);
+            values[1] = getMap(3, 1);
+            values[2] = getMap(3, 2);
+            values[3] = getMap(3, 3);
+            values[4] = getMap(3, 4);
+            values[5] = getMap(3, 5);
+            values[6] = getMap(3, 6);
+            values[7] = getMap(3, 7);
+            values[8] = getMap(3, 8);
+            values[9] = getMap(3, 9);
         }
     }
 }
