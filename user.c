@@ -13,6 +13,7 @@
 
 #include <stdint.h>          /* For uint32_t definition                       */
 #include <stdbool.h>         /* For true/false definition                     */
+#include <stdlib.h>
 
 #include <libpic30.h>
 
@@ -90,6 +91,13 @@ void SaveTempMapToFlash(char fader)
         _erase_flash(p_hi);
         _write_flash16(p_hi, (int *)(temp_map_hi[fader] + i));
     }
+}
+
+uint16_t readADC(char channel)
+{
+    int r = rand();
+    r = r & 0x3FF;
+    return r;
 }
 
 

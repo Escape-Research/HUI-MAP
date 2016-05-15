@@ -185,8 +185,8 @@ __psv__ char __attribute__((space(psv))) map_lo_7_page896[64]; //[8][1024] = { 0
 __psv__ char __attribute__((space(psv))) map_lo_7_page960[64]; //[8][1024] = { 0 }; 
 */
 
-__psv__ char __attribute__((space(psv))) map_lo[8][1024] = { 0 };
-__psv__ char __attribute__((space(psv))) map_hi[8][512] = { 0 }; 
+__psv__ char __attribute__((space(psv))) map_lo[8][1024] = { 0x12 };
+__psv__ char __attribute__((space(psv))) map_hi[8][512] = { 0x34 }; 
 
 char temp_map_lo[1024];
 char temp_map_hi[512];
@@ -197,7 +197,7 @@ char temp_map_hi[512];
 
 int16_t main(void)
 {
-    char bCalMode = 0;      // are we in calibration mode?
+    char bCalMode = 1;      // are we in calibration mode?
     char fadernum = 0;      // the active fader (based on the HUI selection lines)
     
     /* Configure the oscillator for the device */
@@ -233,26 +233,30 @@ int16_t main(void)
             // Figure out which fader are we operating on!
             fadernum = 0;
             
-            // Capture the current reference position (Analog input 1)
-            uint16_t ref = 0; //readADC(1);
-            
-            // Capture the current fader position (Analog input 0)
-            uint16_t dut = 0; //readADC(0);
-            
-            // Scale the 12bit to a 10bit value
-            long scaled_value = ref * 10;
-            scaled_value /= 12;
-            
-            // Update the temp_map      
-            uint16_t dut10bit_lo = dut & 0xFF;
-            uint16_t dut10bit_hi = dut >> 8;
-            temp_map_lo[scaled_value] = dut10bit_lo;
-            
-            uint16_t hi_pos = scaled_value / 2;
-            char existing_hi = temp_map_hi[hi_pos];
-            temp_map_hi[hi_pos] = (scaled_value % 2) 
-                                  ? (dut10bit_hi << 4) + (existing_hi & 0xF)
-                                  : (existing_hi & 0xF0) + dut10bit_hi;
+            int i = 0;
+            for (i = 0; i < 100; i++)
+            {
+                // Capture the current reference position (Analog input 1)
+                uint16_t ref = i; //readADC(1);
+
+                // Capture the current fader position (Analog input 0)
+                uint16_t dut = readADC(0);
+
+                // Scale the 12bit to a 10bit value
+                long scaled_value = ref * 10;
+                scaled_value /= 12;
+
+                // Update the temp_map      
+                uint16_t dut10bit_lo = dut & 0xFF;
+                uint16_t dut10bit_hi = dut >> 8;
+                temp_map_lo[scaled_value] = dut10bit_lo;
+
+                uint16_t hi_pos = scaled_value / 2;
+                char existing_hi = temp_map_hi[hi_pos];
+                temp_map_hi[hi_pos] = (scaled_value % 2) 
+                                      ? (dut10bit_hi << 4) + (existing_hi & 0xF)
+                                      : (existing_hi & 0xF0) + dut10bit_hi;
+            }
             
             // Should we exit cal mode?
             

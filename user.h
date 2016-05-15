@@ -17,6 +17,8 @@ uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, ui
 uint16_t map_approx_lookup(char fader, uint16_t lkValue);
 void SaveTempMapToFlash(char fader);
 
+uint16_t readADC(char channel);
+
 //extern short asm_read16b_flash(char add_flash_ch, short add_flash_wl);
 //extern void asm_read16b_row_flash(char add_flash_ch, short add_flash_wl, short &dataspace);
 //extern void asm_write16b_row_flash(char add_flash_ch, short add_flash_wl, short &dataspace);

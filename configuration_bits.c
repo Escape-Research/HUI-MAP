@@ -30,7 +30,6 @@
 
 /* TODO Fill in your configuration bits from the config bits generator here.  */
 
-
 // DSPIC30F3013 Configuration Bit Settings
 
 // 'C' source line config statements
@@ -38,7 +37,7 @@
 #include <xc.h>
 
 // FOSC
-#pragma config FOSFPR = FRC_PLL16       // Oscillator (Internal Fast RC x 16 PLL)
+#pragma config FOSFPR = FRC_PLL16       // Oscillator (FRC w/PLL 16x)
 #pragma config FCKSMEN = CSW_FSCM_OFF   // Clock Switching and Monitor (Sw Disabled, Mon Disabled)
 
 // FWDT
