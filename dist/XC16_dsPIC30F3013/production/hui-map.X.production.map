@@ -56,10 +56,6 @@ p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(data_init_standard.o)
                               p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(crt0_standard.o) (__data_init_standard)
 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(flash_helper.eo)
                               build/XC16_dsPIC30F3013/production/user.o (__flash_helper1)
-p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(divsi3.eo)
-                              build/XC16_dsPIC30F3013/production/main.o (___divsi3)
-p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(udivsi3.eo)
-                              p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(divsi3.eo) (___udivsi3)
 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libc-elf.a(rand.eo)
                               build/XC16_dsPIC30F3013/production/user.o (_rand)
 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(mulsi3.eo)
@@ -92,15 +88,15 @@ Program Memory  [Origin = 0x100, Length = 0x3f00]
 
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
-.text                        0x100               0x1b4           0x28e  (654)
-_03eb33c05737bf20            0x2b4              0x2000          0x3000  (12288)
-_03eb36005737bf20           0x22b4              0x1000          0x1800  (6144)
-.text                       0x32b4               0x26e           0x3a5  (933)
-.dinit                      0x3522                 0xe            0x15  (21)
-.text                       0x3530                 0x6             0x9  (9)
-.shared.dinit               0x3536                 0x2             0x3  (3)
+.text                        0x100               0x176           0x231  (561)
+.text                        0x276                 0x6             0x9  (9)
+.shared.dinit                0x27c                 0x2             0x3  (3)
+_03eaf1205737ebb9            0x280              0x2000          0x3000  (12288)
+_03eaf3605737ebb9           0x2280              0x1000          0x1800  (6144)
+.text                       0x3280               0x2e0           0x450  (1104)
+.dinit                      0x3560                 0xe            0x15  (21)
 
-                 Total program memory used (bytes):         0x4e54  (20052) 82%
+                 Total program memory used (bytes):         0x4ea2  (20130) 83%
 
 
 Ivt Memory  [Origin = 0x4, Length = 0x7c]
@@ -174,30 +170,28 @@ External Symbols in Program Memory (by address):
                   0x000220                  __flash_helper4
                   0x000222                  __flash_helper5
                   0x000230                  __flash_helper6
-                  0x000236                  ___divsi3
-                  0x000254                  ___udivsi3
-                  0x000274                  _srand
-                  0x000282                  _rand
-                  0x0002a8                  ___mulp32peds3
-                  0x0002a8                  ___mulp32eds3
-                  0x0002a8                  ___mulsi3
-                  0x0002b4                  _map_lo
-                  0x0022b4                  _map_hi
-                  0x0032b4                  _getMap
-                  0x003336                  _map_binary_search
-                  0x00338e                  _map_approx_lookup
-                  0x0033a2                  _SaveTempMapToFlash
-                  0x00343e                  _readADC
-                  0x003450                  _InitApp
-                  0x003456                  _main
-                  0x003530                  _ConfigureOscillator
+                  0x000236                  _srand
+                  0x000244                  _rand
+                  0x00026a                  ___mulp32peds3
+                  0x00026a                  ___mulsi3
+                  0x00026a                  ___mulp32eds3
+                  0x000276                  _ConfigureOscillator
+                  0x000280                  _map_lo
+                  0x002280                  _map_hi
+                  0x003280                  _getMap
+                  0x003302                  _map_binary_search
+                  0x00335a                  _map_approx_lookup
+                  0x00336e                  _SaveTempMapToFlash
+                  0x0034a6                  _readADC
+                  0x0034b8                  _InitApp
+                  0x0034be                  _main
                   0xf8000a                  __FGS.sec
 
 External Symbols in Program Memory (by name):
 
-                  0x003530                  _ConfigureOscillator
-                  0x003450                  _InitApp
-                  0x0033a2                  _SaveTempMapToFlash
+                  0x000276                  _ConfigureOscillator
+                  0x0034b8                  _InitApp
+                  0x00336e                  _SaveTempMapToFlash
                   0x0001ae                  __AddressError
                   0x0001c6                  __AltAddressError
                   0x0001d2                  __AltMathError
@@ -208,11 +202,9 @@ External Symbols in Program Memory (by name):
                   0x0001ba                  __MathError
                   0x0001a8                  __OscillatorFail
                   0x0001b4                  __StackError
-                  0x000236                  ___divsi3
-                  0x0002a8                  ___mulp32eds3
-                  0x0002a8                  ___mulp32peds3
-                  0x0002a8                  ___mulsi3
-                  0x000254                  ___udivsi3
+                  0x00026a                  ___mulp32eds3
+                  0x00026a                  ___mulp32peds3
+                  0x00026a                  ___mulsi3
                   0x00013c                  __data_init
                   0x00013c                  __data_init_standard
                   0x0001dc                  __flash_helper1
@@ -223,15 +215,15 @@ External Symbols in Program Memory (by name):
                   0x000230                  __flash_helper6
                   0x00012c                  __psv_init
                   0x000100                  __resetPRI
-                  0x0032b4                  _getMap
-                  0x003456                  _main
-                  0x00338e                  _map_approx_lookup
-                  0x003336                  _map_binary_search
-                  0x0022b4                  _map_hi
-                  0x0002b4                  _map_lo
-                  0x000282                  _rand
-                  0x00343e                  _readADC
-                  0x000274                  _srand
+                  0x003280                  _getMap
+                  0x0034be                  _main
+                  0x00335a                  _map_approx_lookup
+                  0x003302                  _map_binary_search
+                  0x002280                  _map_hi
+                  0x000280                  _map_lo
+                  0x000244                  _rand
+                  0x0034a6                  _readADC
+                  0x000236                  _srand
 
 Memory Configuration
 
@@ -293,7 +285,7 @@ LOAD p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libfx-elf.a
                   0x000002          0x2 SHORT 0x0 ((ABSOLUTE (__reset) >> 0x10) & 0x7f)
                   0x000003          0x2 SHORT 0x0
 
-.text             0x000100        0x1b4
+.text             0x000100        0x176
  *(.init)
  .init            0x000100         0x3c p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(crt0_standard.o)
                   0x000100                  __resetPRI
@@ -327,18 +319,14 @@ LOAD p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libfx-elf.a
                   0x000220                  __flash_helper4
                   0x000222                  __flash_helper5
                   0x000230                  __flash_helper6
- .libm.divsi3     0x000236         0x1e p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(divsi3.eo)
-                  0x000236                  ___divsi3
- .libm.udivsi3    0x000254         0x20 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(udivsi3.eo)
-                  0x000254                  ___udivsi3
- .libc.srand      0x000274          0xe p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libc-elf.a(rand.eo)
-                  0x000274                  _srand
- .libc.rand       0x000282         0x26 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libc-elf.a(rand.eo)
-                  0x000282                  _rand
- .libm.mulsi3     0x0002a8          0xc p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(mulsi3.eo)
-                  0x0002a8                  ___mulp32peds3
-                  0x0002a8                  ___mulsi3
-                  0x0002a8                  ___mulp32eds3
+ .libc.srand      0x000236          0xe p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libc-elf.a(rand.eo)
+                  0x000236                  _srand
+ .libc.rand       0x000244         0x26 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libc-elf.a(rand.eo)
+                  0x000244                  _rand
+ .libm.mulsi3     0x00026a          0xc p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(mulsi3.eo)
+                  0x00026a                  ___mulp32peds3
+                  0x00026a                  ___mulsi3
+                  0x00026a                  ___mulp32eds3
 
 usercode
  *(usercode)
@@ -387,33 +375,33 @@ userdata
 .comment
  *(.comment)
 
-.debug_info       0x000000        0xd19
+.debug_info       0x000000        0xdd6
  *(.debug_info)
  .debug_info      0x000000         0xa7 build/XC16_dsPIC30F3013/production/configuration_bits.o
  .debug_info      0x0000a7        0x101 build/XC16_dsPIC30F3013/production/interrupts.o
- .debug_info      0x0001a8        0x2fa build/XC16_dsPIC30F3013/production/main.o
- .debug_info      0x0004a2        0x120 build/XC16_dsPIC30F3013/production/system.o
- .debug_info      0x0005c2        0x301 build/XC16_dsPIC30F3013/production/traps.o
- .debug_info      0x0008c3        0x456 build/XC16_dsPIC30F3013/production/user.o
+ .debug_info      0x0001a8        0x2fc build/XC16_dsPIC30F3013/production/main.o
+ .debug_info      0x0004a4        0x120 build/XC16_dsPIC30F3013/production/system.o
+ .debug_info      0x0005c4        0x301 build/XC16_dsPIC30F3013/production/traps.o
+ .debug_info      0x0008c5        0x511 build/XC16_dsPIC30F3013/production/user.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0x280
+.debug_abbrev     0x000000        0x2b2
  *(.debug_abbrev)
  .debug_abbrev    0x000000         0x1f build/XC16_dsPIC30F3013/production/configuration_bits.o
  .debug_abbrev    0x00001f         0x1f build/XC16_dsPIC30F3013/production/interrupts.o
- .debug_abbrev    0x00003e         0xb6 build/XC16_dsPIC30F3013/production/main.o
- .debug_abbrev    0x0000f4         0x34 build/XC16_dsPIC30F3013/production/system.o
- .debug_abbrev    0x000128         0x7d build/XC16_dsPIC30F3013/production/traps.o
- .debug_abbrev    0x0001a5         0xdb build/XC16_dsPIC30F3013/production/user.o
+ .debug_abbrev    0x00003e         0xc5 build/XC16_dsPIC30F3013/production/main.o
+ .debug_abbrev    0x000103         0x34 build/XC16_dsPIC30F3013/production/system.o
+ .debug_abbrev    0x000137         0x7d build/XC16_dsPIC30F3013/production/traps.o
+ .debug_abbrev    0x0001b4         0xfe build/XC16_dsPIC30F3013/production/user.o
 
-.debug_line       0x000000        0x29a
+.debug_line       0x000000        0x2b0
  *(.debug_line)
  .debug_line      0x000000         0x1a build/XC16_dsPIC30F3013/production/configuration_bits.o
  .debug_line      0x00001a         0x1a build/XC16_dsPIC30F3013/production/interrupts.o
- .debug_line      0x000034         0xa0 build/XC16_dsPIC30F3013/production/main.o
- .debug_line      0x0000d4         0x38 build/XC16_dsPIC30F3013/production/system.o
- .debug_line      0x00010c         0x98 build/XC16_dsPIC30F3013/production/traps.o
- .debug_line      0x0001a4         0xf6 build/XC16_dsPIC30F3013/production/user.o
+ .debug_line      0x000034         0x9e build/XC16_dsPIC30F3013/production/main.o
+ .debug_line      0x0000d2         0x38 build/XC16_dsPIC30F3013/production/system.o
+ .debug_line      0x00010a         0x98 build/XC16_dsPIC30F3013/production/traps.o
+ .debug_line      0x0001a2        0x10e build/XC16_dsPIC30F3013/production/user.o
 
 .debug_frame      0x000000        0x22c
  *(.debug_frame)
@@ -422,11 +410,11 @@ userdata
  .debug_frame     0x000060        0x110 build/XC16_dsPIC30F3013/production/traps.o
  .debug_frame     0x000170         0xbc build/XC16_dsPIC30F3013/production/user.o
 
-.debug_str        0x000000         0x42
+.debug_str        0x000000         0x4c
  *(.debug_str)
  .debug_str       0x000000         0x18 build/XC16_dsPIC30F3013/production/main.o
  .debug_str       0x000018          0xc build/XC16_dsPIC30F3013/production/traps.o
- .debug_str       0x000024         0x1e build/XC16_dsPIC30F3013/production/user.o
+ .debug_str       0x000024         0x28 build/XC16_dsPIC30F3013/production/user.o
 
 .debug_loc
  *(.debug_loc)
@@ -871,7 +859,7 @@ LOAD shared_data_init
                   0x0000f6         0x32 build/XC16_dsPIC30F3013/production/user.o
 
 __c30_signature
-                  0x000128         0x4e
+                  0x000128         0x42
  __c30_signature
                   0x000128          0x6 build/XC16_dsPIC30F3013/production/configuration_bits.o
  __c30_signature
@@ -891,13 +879,9 @@ __c30_signature
  __c30_signature
                   0x000158          0x6 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(flash_helper.eo)
  __c30_signature
-                  0x00015e          0x6 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(divsi3.eo)
+                  0x00015e          0x6 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libc-elf.a(rand.eo)
  __c30_signature
-                  0x000164          0x6 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(udivsi3.eo)
- __c30_signature
-                  0x00016a          0x6 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libc-elf.a(rand.eo)
- __c30_signature
-                  0x000170          0x6 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(mulsi3.eo)
+                  0x000164          0x6 p:/i/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(mulsi3.eo)
 
 .nbss               0x0800        0x600
  .nbss              0x0800        0x600 build/XC16_dsPIC30F3013/production/main.o
@@ -961,35 +945,35 @@ __c30_signature
  .aivt._AltMathError
                   0x00008c          0x2 build/XC16_dsPIC30F3013/production/traps.o
 
-_03eb33c05737bf20
-                    0x82b4       0x2000 load address 0x0002b4  
- _03eb33c05737bf20
-                    0x82b4       0x2000 build/XC16_dsPIC30F3013/production/main.o
-                    0x82b4                  _map_lo
+_03eaf1205737ebb9
+                    0x8280       0x2000 load address 0x000280  
+ _03eaf1205737ebb9
+                    0x8280       0x2000 build/XC16_dsPIC30F3013/production/main.o
+                    0x8280                  _map_lo
 
-_03eb36005737bf20
-                    0xa2b4       0x1000 load address 0x0022b4  
- _03eb36005737bf20
-                    0xa2b4       0x1000 build/XC16_dsPIC30F3013/production/main.o
-                    0xa2b4                  _map_hi
+_03eaf3605737ebb9
+                    0xa280       0x1000 load address 0x002280  
+ _03eaf3605737ebb9
+                    0xa280       0x1000 build/XC16_dsPIC30F3013/production/main.o
+                    0xa280                  _map_hi
 
-.text             0x0032b4        0x26e
- .text            0x0032b4        0x1a2 build/XC16_dsPIC30F3013/production/user.o
-                  0x0032b4                  _getMap
-                  0x003336                  _map_binary_search
-                  0x00338e                  _map_approx_lookup
-                  0x0033a2                  _SaveTempMapToFlash
-                  0x00343e                  _readADC
-                  0x003450                  _InitApp
- .text            0x003456         0xcc build/XC16_dsPIC30F3013/production/main.o
-                  0x003456                  _main
+.text             0x003280        0x2e0
+ .text            0x003280        0x23e build/XC16_dsPIC30F3013/production/user.o
+                  0x003280                  _getMap
+                  0x003302                  _map_binary_search
+                  0x00335a                  _map_approx_lookup
+                  0x00336e                  _SaveTempMapToFlash
+                  0x0034a6                  _readADC
+                  0x0034b8                  _InitApp
+ .text            0x0034be         0xa2 build/XC16_dsPIC30F3013/production/main.o
+                  0x0034be                  _main
 
-.dinit            0x003522          0xe
- .dinit           0x003522          0xe data_init
+.dinit            0x003560          0xe
+ .dinit           0x003560          0xe data_init
 
-.text             0x003530          0x6
- .text            0x003530          0x6 build/XC16_dsPIC30F3013/production/system.o
-                  0x003530                  _ConfigureOscillator
+.text             0x000276          0x6
+ .text            0x000276          0x6 build/XC16_dsPIC30F3013/production/system.o
+                  0x000276                  _ConfigureOscillator
 
-.shared.dinit     0x003536          0x2
- .shared.dinit    0x003536          0x2 shared_data_init
+.shared.dinit     0x00027c          0x2
+ .shared.dinit    0x00027c          0x2 shared_data_init

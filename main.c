@@ -40,6 +40,8 @@
 #include <stdint.h>        /* Includes uint16_t definition                    */
 #include <stdbool.h>       /* Includes true/false definition                  */
 
+#include <libpic30.h>
+
 #include "system.h"        /* System funct/params, like osc/peripheral config */
 #include "user.h"          /* User funct/params, such as InitApp              */
 
@@ -185,8 +187,8 @@ __psv__ char __attribute__((space(psv))) map_lo_7_page896[64]; //[8][1024] = { 0
 __psv__ char __attribute__((space(psv))) map_lo_7_page960[64]; //[8][1024] = { 0 }; 
 */
 
-__psv__ char __attribute__((space(psv))) map_lo[8][1024] = { 0x12 };
-__psv__ char __attribute__((space(psv))) map_hi[8][512] = { 0x34 }; 
+__psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_lo[8][1024] = { 0x12 };
+__psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_hi[8][512] = { 0x34 }; 
 
 char temp_map_lo[1024];
 char temp_map_hi[512];
@@ -234,7 +236,7 @@ int16_t main(void)
             fadernum = 0;
             
             int i = 0;
-            for (i = 0; i < 100; i++)
+            for (i = 0; i < 4096; i++)
             {
                 // Capture the current reference position (Analog input 1)
                 uint16_t ref = i; //readADC(1);
@@ -243,17 +245,17 @@ int16_t main(void)
                 uint16_t dut = readADC(0);
 
                 // Scale the 12bit to a 10bit value
-                long scaled_value = ref * 10;
-                scaled_value /= 12;
+                //double scaled_value_d = ref * 0.8333;
+                uint16_t scaled_value = ref >> 2;
 
                 // Update the temp_map      
-                uint16_t dut10bit_lo = dut & 0xFF;
-                uint16_t dut10bit_hi = dut >> 8;
+                char dut10bit_lo = dut & 0xFF;
+                char dut10bit_hi = dut >> 8;
                 temp_map_lo[scaled_value] = dut10bit_lo;
 
-                uint16_t hi_pos = scaled_value / 2;
+                uint16_t hi_pos = scaled_value >> 1;
                 char existing_hi = temp_map_hi[hi_pos];
-                temp_map_hi[hi_pos] = (scaled_value % 2) 
+                temp_map_hi[hi_pos] = (scaled_value & 0x01) 
                                       ? (dut10bit_hi << 4) + (existing_hi & 0xF)
                                       : (existing_hi & 0xF0) + dut10bit_hi;
             }

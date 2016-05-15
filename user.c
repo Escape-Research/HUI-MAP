@@ -74,22 +74,44 @@ void SaveTempMapToFlash(char fader)
 
     
     int i;
+    int offset_lo = fader << 10;
     _prog_addressT p_s_lo, p_lo;
     _init_prog_address(p_s_lo, map_lo);
+    p_s_lo += offset_lo;
     for (i = 0; i < 1024; i += 64)
     {     
         p_lo = p_s_lo + i;
         _erase_flash(p_lo);
-        _write_flash16(p_lo, (int *)(temp_map_lo[fader] + i));
+        
+        int buffer[32];
+        int j = 0;
+        for (j = 0; j < 32; j++)
+        {
+            int value_pos = i + (j << 1);
+            buffer[j] = temp_map_lo[value_pos] + (temp_map_lo[value_pos + 1] << 8);
+        }
+        
+        _write_flash16(p_lo, buffer);
     }
 
+    int offset_hi = fader << 9;
     _prog_addressT p_s_hi, p_hi;
     _init_prog_address(p_s_hi, map_hi);    
+    p_s_hi += offset_hi;
     for (i = 0; i < 512; i += 64)
     {
         p_hi = p_s_hi + i;
         _erase_flash(p_hi);
-        _write_flash16(p_hi, (int *)(temp_map_hi[fader] + i));
+
+        int buffer[32];
+        int j = 0;
+        for (j = 0; j < 32; j++)
+        {
+            int value_pos = i + (j << 1);
+            buffer[j] = temp_map_hi[value_pos] + (temp_map_hi[value_pos + 1] << 8);
+        }
+
+        _write_flash16(p_hi, buffer);
     }
 }
 
