@@ -3,18 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/P:/i/Microchip/xc16/v1.26/support/dsPIC30F/h/p30F3013.h</file>
-            <file>file:/P:/i/prj/hui/hui-map.X/configuration_bits.c</file>
-            <file>file:/P:/i/prj/hui/hui-map.X/user.c</file>
-            <file>file:/P:/i/prj/hui/hui-map.X/project_information.txt</file>
-            <file>file:/P:/i/prj/hui/hui-map.X/main.c</file>
-            <file>file:/P:/i/prj/hui/hui-map.X/interrupts.c</file>
-            <file>file:/P:/i/prj/hui/hui-map.X/getting_started.txt</file>
-            <file>file:/P:/i/Microchip/xc16/v1.26/support/generic/h/libpic30.h</file>
-            <file>file:/P:/i/prj/hui/hui-map.X/system.h</file>
-            <file>file:/P:/i/prj/hui/hui-map.X/traps.c</file>
-            <file>file:/P:/i/prj/hui/hui-map.X/user.h</file>
-            <file>file:/P:/i/prj/hui/hui-map.X/system.c</file>
+            <file>file:/C:/dev/prj/hui/hui-map/user.c</file>
+            <file>file:/C:/dev/prj/hui/hui-map/system.c</file>
+            <file>file:/C:/dev/prj/hui/hui-map/main.c</file>
+            <file>file:/C:/dev/prj/hui/hui-map/system.h</file>
+            <file>file:/C:/dev/prj/hui/hui-map/user.h</file>
+            <file>file:/C:/dev/prj/hui/hui-map/traps.c</file>
+            <file>file:/C:/dev/prj/hui/hui-map/configuration_bits.c</file>
+            <file>file:/C:/dev/prj/hui/hui-map/interrupts.c</file>
         </group>
     </open-files>
 </project-private>

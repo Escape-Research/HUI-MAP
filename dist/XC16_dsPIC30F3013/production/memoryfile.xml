@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project>
-  <executable name="dist/XC16_dsPIC30F3013/production/hui-map.X.production.elf">
+  <executable name="dist/XC16_dsPIC30F3013/production/hui-map.production.elf">
     <memory name="data">
       <units>bytes</units>
       <length>2048</length>

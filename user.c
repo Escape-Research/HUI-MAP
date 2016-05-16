@@ -23,6 +23,8 @@
 /* User Functions                                                             */
 /******************************************************************************/
 
+// Retrieve the 12 bit calibration value from the map in flash associated 
+// with the specific fader (0..7) for the specific 10 bit location (0..1023)
 uint16_t getMap(char fader, uint16_t position)
 {
     char lo_value = map_lo[fader][position];
@@ -35,6 +37,8 @@ uint16_t getMap(char fader, uint16_t position)
     return value;
 }
 
+// Retrieve the 12 bit calibration value from the current temporary map 
+// in RAM associated with the specific 10 bit location (0..1023)
 uint16_t gettempMap(uint16_t position)
 {
     char lo_value = temp_map_lo[position];
