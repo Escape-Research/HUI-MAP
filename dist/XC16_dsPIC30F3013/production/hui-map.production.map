@@ -91,8 +91,8 @@ section                    address   length (PC units)   length (bytes) (dec)
 .text                        0x100               0x176           0x231  (561)
 .text                        0x276                 0x6             0x9  (9)
 .shared.dinit                0x27c                 0x2             0x3  (3)
-_03dbf120573a36ff            0x280              0x2000          0x3000  (12288)
-_03dbf360573a36ff           0x2280              0x1000          0x1800  (6144)
+_03ddf120573a37bd            0x280              0x2000          0x3000  (12288)
+_03ddf360573a37bd           0x2280              0x1000          0x1800  (6144)
 .text                       0x3280               0x440           0x660  (1632)
 .dinit                      0x36c0                 0xe            0x15  (21)
 
@@ -952,15 +952,15 @@ __c30_signature
  .aivt._AltMathError
                   0x00008c          0x2 build/XC16_dsPIC30F3013/production/traps.o
 
-_03dbf120573a36ff
+_03ddf120573a37bd
                     0x8280       0x2000 load address 0x000280  
- _03dbf120573a36ff
+ _03ddf120573a37bd
                     0x8280       0x2000 build/XC16_dsPIC30F3013/production/main.o
                     0x8280                  _map_lo
 
-_03dbf360573a36ff
+_03ddf360573a37bd
                     0xa280       0x1000 load address 0x002280  
- _03dbf360573a36ff
+ _03ddf360573a37bd
                     0xa280       0x1000 build/XC16_dsPIC30F3013/production/main.o
                     0xa280                  _map_hi
 
