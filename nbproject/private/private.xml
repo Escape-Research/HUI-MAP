@@ -3,6 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/P:/i/prj/hui/hui-map.X/configuration_bits.c</file>
             <file>file:/P:/i/prj/hui/hui-map.X/user.c</file>
             <file>file:/P:/i/prj/hui/hui-map.X/project_information.txt</file>
@@ -13,6 +14,9 @@
             <file>file:/P:/i/prj/hui/hui-map.X/traps.c</file>
             <file>file:/P:/i/prj/hui/hui-map.X/user.h</file>
             <file>file:/P:/i/prj/hui/hui-map.X/system.c</file>
+=======
+            <file>file:/C:/dev/prj/hui/hui-map/main.c</file>
+>>>>>>> d034c41a4a8936de82f1f9ab9664aa03e4a2bc3b
         </group>
     </open-files>
 </project-private>

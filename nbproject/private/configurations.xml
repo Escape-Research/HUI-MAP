@@ -5,7 +5,7 @@
   <confs>
     <conf name="XC16_dsPIC30F6014A" type="2">
       <platformToolSN></platformToolSN>
-      <languageToolchainDir>P:\i\Microchip\xc16\v1.26\bin</languageToolchainDir>
+      <languageToolchainDir>C:\dev\Microchip\xc16\v1.26\bin</languageToolchainDir>
       <mdbdebugger version="1">
         <placeholder1>place holder 1</placeholder1>
         <placeholder2>place holder 2</placeholder2>
@@ -23,7 +23,7 @@
     </conf>
     <conf name="XC16_dsPIC30F6015" type="2">
       <platformToolSN></platformToolSN>
-      <languageToolchainDir>P:\i\Microchip\xc16\v1.26\bin</languageToolchainDir>
+      <languageToolchainDir>C:\dev\Microchip\xc16\v1.26\bin</languageToolchainDir>
       <mdbdebugger version="1">
         <placeholder1>place holder 1</placeholder1>
         <placeholder2>place holder 2</placeholder2>
@@ -41,7 +41,7 @@
     </conf>
     <conf name="XC16_dsPIC30F3013" type="2">
       <platformToolSN></platformToolSN>
-      <languageToolchainDir>P:\i\Microchip\xc16\v1.26\bin</languageToolchainDir>
+      <languageToolchainDir>C:\dev\Microchip\xc16\v1.26\bin</languageToolchainDir>
       <mdbdebugger version="1">
         <placeholder1>place holder 1</placeholder1>
         <placeholder2>place holder 2</placeholder2>
