@@ -21,6 +21,6 @@ void init_tempmap();
 void interpolate_tempmap();
 void SaveTempMapToFlash(char fader);
 
-uint16_t readADC(char channel);
+uint16_t readADC(int channel);
 
 void InitApp(void); /* I/O and Peripheral Initialization */
