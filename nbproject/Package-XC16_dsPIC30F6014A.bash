@@ -10,9 +10,9 @@ CND_CONF=XC16_dsPIC30F6014A
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/hui-map.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=hui-map.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=hui-map.x/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/hui-map.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=hui-map.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=hui-map/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/hui-map.x/bin
+makeDirectory ${TMPDIR}/hui-map/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/hui-map.x.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/hui-map.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/hui-map.x.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/hui-map.tar *
 checkReturnCode
 
 # Cleanup
