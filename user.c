@@ -191,14 +191,14 @@ uint16_t readADC(int channel)
         ch = ADC_CH0_POS_SAMPLEA_AN0 &  
              ADC_CH0_NEG_SAMPLEA_NVREF;
     else if (channel == 1)
-        ch = ADC_CH0_POS_SAMPLEA_AN1 &  
+        ch = ADC_CH0_POS_SAMPLEA_AN2 &  
              ADC_CH0_NEG_SAMPLEA_NVREF;
         
     SetChanADC12(ch);
     
     ConfigIntADC12(ADC_INT_DISABLE);
     
-    PinConfig  = ENABLE_AN0_ANA & ENABLE_AN1_ANA;
+    PinConfig  = ENABLE_AN0_ANA & ENABLE_AN2_ANA;
     Scanselect = SCAN_NONE;
  
     Adcon3_reg = ADC_SAMPLE_TIME_10 &
@@ -218,7 +218,7 @@ uint16_t readADC(int channel)
                  ADC_AUTO_SAMPLING_OFF;
     
     OpenADC12(Adcon1_reg, Adcon2_reg,
-              Adcon3_reg,PinConfig, Scanselect);
+              Adcon3_reg, PinConfig, Scanselect);
 
     ADCON1bits.SAMP = 1;
     while(!ADCON1bits.SAMP);
@@ -239,7 +239,8 @@ uint16_t readADC(int channel)
 void InitApp(void)
 {
     /* Setup analog functionality and port direction */
-
+    
+    
     /* Initialize peripherals */
     
     
