@@ -50,16 +50,22 @@ Command:
 
 Archive member included because of file (symbol)
 
+c:/dev/microchip/xc16/v1.26/bin/bin/../../lib/dsPIC30F\libp30F3013-elf.a(ConfigIntADC12.o)
+                              build/XC16_dsPIC30F3013/production/user.o (_ConfigIntADC12)
+c:/dev/microchip/xc16/v1.26/bin/bin/../../lib/dsPIC30F\libp30F3013-elf.a(ConvertADC12.o)
+                              build/XC16_dsPIC30F3013/production/user.o (_ConvertADC12)
+c:/dev/microchip/xc16/v1.26/bin/bin/../../lib/dsPIC30F\libp30F3013-elf.a(OpenADC12.o)
+                              build/XC16_dsPIC30F3013/production/user.o (_OpenADC12)
+c:/dev/microchip/xc16/v1.26/bin/bin/../../lib/dsPIC30F\libp30F3013-elf.a(ReadADC12.o)
+                              build/XC16_dsPIC30F3013/production/user.o (_ReadADC12)
+c:/dev/microchip/xc16/v1.26/bin/bin/../../lib/dsPIC30F\libp30F3013-elf.a(SetChanADC12.o)
+                              build/XC16_dsPIC30F3013/production/user.o (_SetChanADC12)
 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(crt0_standard.o)
                               (__resetPRI)
 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(data_init_standard.o)
                               c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(crt0_standard.o) (__data_init_standard)
 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(flash_helper.eo)
                               build/XC16_dsPIC30F3013/production/user.o (__flash_helper1)
-c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libc-elf.a(rand.eo)
-                              build/XC16_dsPIC30F3013/production/user.o (_rand)
-c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(mulsi3.eo)
-                              c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libc-elf.a(rand.eo) (___mulsi3)
 
 
 Selected CodeGuard Options:
@@ -88,15 +94,15 @@ Program Memory  [Origin = 0x100, Length = 0x3f00]
 
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
-.text                        0x100               0x176           0x231  (561)
-.text                        0x276                 0x6             0x9  (9)
-.shared.dinit                0x27c                 0x2             0x3  (3)
-_03ddf120573a37bd            0x280              0x2000          0x3000  (12288)
-_03ddf360573a37bd           0x2280              0x1000          0x1800  (6144)
-.text                       0x3280               0x440           0x660  (1632)
-.dinit                      0x36c0                 0xe            0x15  (21)
+.text                        0x100               0x182           0x243  (579)
+.dinit                       0x282                 0x8             0xc  (12)
+.text                        0x28a                 0x6             0x9  (9)
+.shared.dinit                0x290                 0x2             0x3  (3)
+_03d8f120573e3728            0x2c0              0x2000          0x3000  (12288)
+_03d8f360573e3728           0x22c0              0x1000          0x1800  (6144)
+.text                       0x32c0               0x49a           0x6e7  (1767)
 
-                 Total program memory used (bytes):         0x50b2  (20658) 85%
+                 Total program memory used (bytes):         0x5142  (20802) 85%
 
 
 Ivt Memory  [Origin = 0x4, Length = 0x7c]
@@ -124,9 +130,8 @@ Data Memory  [Origin = 0x800, Length = 0x800]
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
 .nbss                        0x800                   0           0x600  (1536)
-.bss                         0xe00                   0             0x6  (6)
 
-                 Total data memory used (bytes):          0x606  (1542) 75%
+                 Total data memory used (bytes):          0x600  (1536) 75%
 
 
 Dynamic Memory Usage
@@ -134,9 +139,9 @@ Dynamic Memory Usage
 region                     address                      maximum length  (dec)
 ------                     -------                      ---------------------
 heap                             0                                   0  (0)
-stack                        0xe06                               0x1fa  (506)
+stack                        0xe00                               0x200  (512)
 
-                 Maximum dynamic memory (bytes):          0x1fa  (506)
+                 Maximum dynamic memory (bytes):          0x200  (512)
 
 
 External Symbols in Data Memory (by address):
@@ -164,38 +169,43 @@ External Symbols in Program Memory (by address):
                   0x0001cc                  __AltStackError
                   0x0001d2                  __AltMathError
                   0x0001d8                  __DefaultInterrupt
-                  0x0001dc                  __flash_helper1
-                  0x0001f8                  __flash_helper2
-                  0x0001fc                  __flash_helper3
-                  0x000220                  __flash_helper4
-                  0x000222                  __flash_helper5
-                  0x000230                  __flash_helper6
-                  0x000236                  _srand
-                  0x000244                  _rand
-                  0x00026a                  ___mulsi3
-                  0x00026a                  ___mulp32eds3
-                  0x00026a                  ___mulp32peds3
-                  0x000276                  _ConfigureOscillator
-                  0x000280                  _map_lo
-                  0x002280                  _map_hi
-                  0x003280                  _getMap
-                  0x003302                  _gettempMap
-                  0x003348                  _settempMap
-                  0x00339e                  _map_binary_search
-                  0x0033f6                  _map_approx_lookup
-                  0x00340a                  _init_tempmap
-                  0x00343c                  _interpolate_tempmap
-                  0x0034c6                  _SaveTempMapToFlash
-                  0x0035fe                  _readADC
-                  0x003610                  _InitApp
-                  0x003616                  _main
+                  0x0001dc                  _ConfigIntADC12
+                  0x000200                  _ConvertADC12
+                  0x000204                  _OpenADC12
+                  0x00021a                  _ReadADC12
+                  0x000224                  _SetChanADC12
+                  0x000228                  __flash_helper1
+                  0x000244                  __flash_helper2
+                  0x000248                  __flash_helper3
+                  0x00026c                  __flash_helper4
+                  0x00026e                  __flash_helper5
+                  0x00027c                  __flash_helper6
+                  0x00028a                  _ConfigureOscillator
+                  0x0002c0                  _map_lo
+                  0x0022c0                  _map_hi
+                  0x0032c0                  _getMap
+                  0x003342                  _gettempMap
+                  0x003388                  _settempMap
+                  0x0033de                  _map_binary_search
+                  0x003436                  _map_approx_lookup
+                  0x00344a                  _init_tempmap
+                  0x00347c                  _interpolate_tempmap
+                  0x003506                  _SaveTempMapToFlash
+                  0x00363e                  _readADC
+                  0x0036a6                  _InitApp
+                  0x0036ac                  _main
                   0xf8000a                  __FGS.sec
 
 External Symbols in Program Memory (by name):
 
-                  0x000276                  _ConfigureOscillator
-                  0x003610                  _InitApp
-                  0x0034c6                  _SaveTempMapToFlash
+                  0x0001dc                  _ConfigIntADC12
+                  0x00028a                  _ConfigureOscillator
+                  0x000200                  _ConvertADC12
+                  0x0036a6                  _InitApp
+                  0x000204                  _OpenADC12
+                  0x00021a                  _ReadADC12
+                  0x003506                  _SaveTempMapToFlash
+                  0x000224                  _SetChanADC12
                   0x0001ae                  __AddressError
                   0x0001c6                  __AltAddressError
                   0x0001d2                  __AltMathError
@@ -206,32 +216,27 @@ External Symbols in Program Memory (by name):
                   0x0001ba                  __MathError
                   0x0001a8                  __OscillatorFail
                   0x0001b4                  __StackError
-                  0x00026a                  ___mulp32eds3
-                  0x00026a                  ___mulp32peds3
-                  0x00026a                  ___mulsi3
                   0x00013c                  __data_init
                   0x00013c                  __data_init_standard
-                  0x0001dc                  __flash_helper1
-                  0x0001f8                  __flash_helper2
-                  0x0001fc                  __flash_helper3
-                  0x000220                  __flash_helper4
-                  0x000222                  __flash_helper5
-                  0x000230                  __flash_helper6
+                  0x000228                  __flash_helper1
+                  0x000244                  __flash_helper2
+                  0x000248                  __flash_helper3
+                  0x00026c                  __flash_helper4
+                  0x00026e                  __flash_helper5
+                  0x00027c                  __flash_helper6
                   0x00012c                  __psv_init
                   0x000100                  __resetPRI
-                  0x003280                  _getMap
-                  0x003302                  _gettempMap
-                  0x00340a                  _init_tempmap
-                  0x00343c                  _interpolate_tempmap
-                  0x003616                  _main
-                  0x0033f6                  _map_approx_lookup
-                  0x00339e                  _map_binary_search
-                  0x002280                  _map_hi
-                  0x000280                  _map_lo
-                  0x000244                  _rand
-                  0x0035fe                  _readADC
-                  0x003348                  _settempMap
-                  0x000236                  _srand
+                  0x0032c0                  _getMap
+                  0x003342                  _gettempMap
+                  0x00344a                  _init_tempmap
+                  0x00347c                  _interpolate_tempmap
+                  0x0036ac                  _main
+                  0x003436                  _map_approx_lookup
+                  0x0033de                  _map_binary_search
+                  0x0022c0                  _map_hi
+                  0x0002c0                  _map_lo
+                  0x00363e                  _readADC
+                  0x003388                  _settempMap
 
 Memory Configuration
 
@@ -293,7 +298,7 @@ LOAD c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libfx-elf.a
                   0x000002          0x2 SHORT 0x0 ((ABSOLUTE (__reset) >> 0x10) & 0x7f)
                   0x000003          0x2 SHORT 0x0
 
-.text             0x000100        0x176
+.text             0x000100        0x182
  *(.init)
  .init            0x000100         0x3c c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(crt0_standard.o)
                   0x000100                  __resetPRI
@@ -319,22 +324,24 @@ LOAD c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libfx-elf.a
  *(.libm)
  *(.libdsp)
  *(.lib*)
+ .libperi         0x0001dc         0x24 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib/dsPIC30F\libp30F3013-elf.a(ConfigIntADC12.o)
+                  0x0001dc                  _ConfigIntADC12
+ .libperi         0x000200          0x4 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib/dsPIC30F\libp30F3013-elf.a(ConvertADC12.o)
+                  0x000200                  _ConvertADC12
+ .libperi         0x000204         0x16 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib/dsPIC30F\libp30F3013-elf.a(OpenADC12.o)
+                  0x000204                  _OpenADC12
+ .libperi         0x00021a          0xa c:/dev/microchip/xc16/v1.26/bin/bin/../../lib/dsPIC30F\libp30F3013-elf.a(ReadADC12.o)
+                  0x00021a                  _ReadADC12
+ .libperi         0x000224          0x4 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib/dsPIC30F\libp30F3013-elf.a(SetChanADC12.o)
+                  0x000224                  _SetChanADC12
  .libc.flash_helper123456
-                  0x0001dc         0x5a c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(flash_helper.eo)
-                  0x0001dc                  __flash_helper1
-                  0x0001f8                  __flash_helper2
-                  0x0001fc                  __flash_helper3
-                  0x000220                  __flash_helper4
-                  0x000222                  __flash_helper5
-                  0x000230                  __flash_helper6
- .libc.srand      0x000236          0xe c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libc-elf.a(rand.eo)
-                  0x000236                  _srand
- .libc.rand       0x000244         0x26 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libc-elf.a(rand.eo)
-                  0x000244                  _rand
- .libm.mulsi3     0x00026a          0xc c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(mulsi3.eo)
-                  0x00026a                  ___mulp32peds3
-                  0x00026a                  ___mulsi3
-                  0x00026a                  ___mulp32eds3
+                  0x000228         0x5a c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(flash_helper.eo)
+                  0x000228                  __flash_helper1
+                  0x000244                  __flash_helper2
+                  0x000248                  __flash_helper3
+                  0x00026c                  __flash_helper4
+                  0x00026e                  __flash_helper5
+                  0x00027c                  __flash_helper6
 
 usercode
  *(usercode)
@@ -383,33 +390,33 @@ userdata
 .comment
  *(.comment)
 
-.debug_info       0x000000        0xf4f
+.debug_info       0x000000       0x1139
  *(.debug_info)
  .debug_info      0x000000         0xa7 build/XC16_dsPIC30F3013/production/configuration_bits.o
  .debug_info      0x0000a7        0x101 build/XC16_dsPIC30F3013/production/interrupts.o
  .debug_info      0x0001a8        0x2be build/XC16_dsPIC30F3013/production/main.o
  .debug_info      0x000466        0x120 build/XC16_dsPIC30F3013/production/system.o
  .debug_info      0x000586        0x301 build/XC16_dsPIC30F3013/production/traps.o
- .debug_info      0x000887        0x6c8 build/XC16_dsPIC30F3013/production/user.o
+ .debug_info      0x000887        0x8b2 build/XC16_dsPIC30F3013/production/user.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0x296
+.debug_abbrev     0x000000        0x316
  *(.debug_abbrev)
  .debug_abbrev    0x000000         0x1f build/XC16_dsPIC30F3013/production/configuration_bits.o
  .debug_abbrev    0x00001f         0x1f build/XC16_dsPIC30F3013/production/interrupts.o
  .debug_abbrev    0x00003e         0x94 build/XC16_dsPIC30F3013/production/main.o
  .debug_abbrev    0x0000d2         0x34 build/XC16_dsPIC30F3013/production/system.o
  .debug_abbrev    0x000106         0x7d build/XC16_dsPIC30F3013/production/traps.o
- .debug_abbrev    0x000183        0x113 build/XC16_dsPIC30F3013/production/user.o
+ .debug_abbrev    0x000183        0x193 build/XC16_dsPIC30F3013/production/user.o
 
-.debug_line       0x000000        0x2e7
+.debug_line       0x000000        0x346
  *(.debug_line)
  .debug_line      0x000000         0x1a build/XC16_dsPIC30F3013/production/configuration_bits.o
  .debug_line      0x00001a         0x1a build/XC16_dsPIC30F3013/production/interrupts.o
- .debug_line      0x000034         0x98 build/XC16_dsPIC30F3013/production/main.o
- .debug_line      0x0000cc         0x38 build/XC16_dsPIC30F3013/production/system.o
- .debug_line      0x000104         0x9a build/XC16_dsPIC30F3013/production/traps.o
- .debug_line      0x00019e        0x149 build/XC16_dsPIC30F3013/production/user.o
+ .debug_line      0x000034         0x9a build/XC16_dsPIC30F3013/production/main.o
+ .debug_line      0x0000ce         0x38 build/XC16_dsPIC30F3013/production/system.o
+ .debug_line      0x000106         0x9a build/XC16_dsPIC30F3013/production/traps.o
+ .debug_line      0x0001a0        0x1a6 build/XC16_dsPIC30F3013/production/user.o
 
 .debug_frame      0x000000        0x29c
  *(.debug_frame)
@@ -418,10 +425,10 @@ userdata
  .debug_frame     0x000060        0x110 build/XC16_dsPIC30F3013/production/traps.o
  .debug_frame     0x000170        0x12c build/XC16_dsPIC30F3013/production/user.o
 
-.debug_str        0x000000         0x74
+.debug_str        0x000000         0x7f
  *(.debug_str)
  .debug_str       0x000000          0xc build/XC16_dsPIC30F3013/production/traps.o
- .debug_str       0x00000c         0x68 build/XC16_dsPIC30F3013/production/user.o
+ .debug_str       0x00000c         0x73 build/XC16_dsPIC30F3013/production/user.o
 
 .debug_loc
  *(.debug_loc)
@@ -851,7 +858,7 @@ LOAD data_init
 LOAD shared_data_init
 
 .debug_pubtypes
-                  0x000060         0xc8
+                  0x000060         0xe9
  .debug_pubtypes
                   0x000060         0x12 build/XC16_dsPIC30F3013/production/configuration_bits.o
  .debug_pubtypes
@@ -863,40 +870,43 @@ LOAD shared_data_init
  .debug_pubtypes
                   0x0000c1         0x35 build/XC16_dsPIC30F3013/production/traps.o
  .debug_pubtypes
-                  0x0000f6         0x32 build/XC16_dsPIC30F3013/production/user.o
+                  0x0000f6         0x53 build/XC16_dsPIC30F3013/production/user.o
 
 __c30_signature
-                  0x000128         0x42
+                  0x000149         0x54
  __c30_signature
-                  0x000128          0x6 build/XC16_dsPIC30F3013/production/configuration_bits.o
+                  0x000149          0x6 build/XC16_dsPIC30F3013/production/configuration_bits.o
  __c30_signature
-                  0x00012e          0x6 build/XC16_dsPIC30F3013/production/interrupts.o
+                  0x00014f          0x6 build/XC16_dsPIC30F3013/production/interrupts.o
  __c30_signature
-                  0x000134          0x6 build/XC16_dsPIC30F3013/production/main.o
+                  0x000155          0x6 build/XC16_dsPIC30F3013/production/main.o
  __c30_signature
-                  0x00013a          0x6 build/XC16_dsPIC30F3013/production/system.o
+                  0x00015b          0x6 build/XC16_dsPIC30F3013/production/system.o
  __c30_signature
-                  0x000140          0x6 build/XC16_dsPIC30F3013/production/traps.o
+                  0x000161          0x6 build/XC16_dsPIC30F3013/production/traps.o
  __c30_signature
-                  0x000146          0x6 build/XC16_dsPIC30F3013/production/user.o
+                  0x000167          0x6 build/XC16_dsPIC30F3013/production/user.o
  __c30_signature
-                  0x00014c          0x6 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(crt0_standard.o)
+                  0x00016d          0x6 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib/dsPIC30F\libp30F3013-elf.a(ConfigIntADC12.o)
  __c30_signature
-                  0x000152          0x6 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(data_init_standard.o)
+                  0x000173          0x6 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib/dsPIC30F\libp30F3013-elf.a(ConvertADC12.o)
  __c30_signature
-                  0x000158          0x6 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(flash_helper.eo)
+                  0x000179          0x6 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib/dsPIC30F\libp30F3013-elf.a(OpenADC12.o)
  __c30_signature
-                  0x00015e          0x6 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libc-elf.a(rand.eo)
+                  0x00017f          0x6 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib/dsPIC30F\libp30F3013-elf.a(ReadADC12.o)
  __c30_signature
-                  0x000164          0x6 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libm-elf.a(mulsi3.eo)
+                  0x000185          0x6 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib/dsPIC30F\libp30F3013-elf.a(SetChanADC12.o)
+ __c30_signature
+                  0x00018b          0x6 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(crt0_standard.o)
+ __c30_signature
+                  0x000191          0x6 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(data_init_standard.o)
+ __c30_signature
+                  0x000197          0x6 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libpic30-elf.a(flash_helper.eo)
 
 .nbss               0x0800        0x600
  .nbss              0x0800        0x600 build/XC16_dsPIC30F3013/production/main.o
                     0x0800                  _temp_map_lo
                     0x0c00                  _temp_map_hi
-
-.bss                0x0e00          0x6
- .bss               0x0e00          0x6 c:/dev/microchip/xc16/v1.26/bin/bin/../../lib\libc-elf.a(rand.eo)
 
 .config_ICS       0xf8000c          0x2
  .config_ICS      0xf8000c          0x2 build/XC16_dsPIC30F3013/production/configuration_bits.o
@@ -952,39 +962,39 @@ __c30_signature
  .aivt._AltMathError
                   0x00008c          0x2 build/XC16_dsPIC30F3013/production/traps.o
 
-_03ddf120573a37bd
-                    0x8280       0x2000 load address 0x000280  
- _03ddf120573a37bd
-                    0x8280       0x2000 build/XC16_dsPIC30F3013/production/main.o
-                    0x8280                  _map_lo
+_03d8f120573e3728
+                    0x82c0       0x2000 load address 0x0002c0  
+ _03d8f120573e3728
+                    0x82c0       0x2000 build/XC16_dsPIC30F3013/production/main.o
+                    0x82c0                  _map_lo
 
-_03ddf360573a37bd
-                    0xa280       0x1000 load address 0x002280  
- _03ddf360573a37bd
-                    0xa280       0x1000 build/XC16_dsPIC30F3013/production/main.o
-                    0xa280                  _map_hi
+_03d8f360573e3728
+                    0xa2c0       0x1000 load address 0x0022c0  
+ _03d8f360573e3728
+                    0xa2c0       0x1000 build/XC16_dsPIC30F3013/production/main.o
+                    0xa2c0                  _map_hi
 
-.text             0x003280        0x440
- .text            0x003280        0x396 build/XC16_dsPIC30F3013/production/user.o
-                  0x003280                  _getMap
-                  0x003302                  _gettempMap
-                  0x003348                  _settempMap
-                  0x00339e                  _map_binary_search
-                  0x0033f6                  _map_approx_lookup
-                  0x00340a                  _init_tempmap
-                  0x00343c                  _interpolate_tempmap
-                  0x0034c6                  _SaveTempMapToFlash
-                  0x0035fe                  _readADC
-                  0x003610                  _InitApp
- .text            0x003616         0xaa build/XC16_dsPIC30F3013/production/main.o
-                  0x003616                  _main
+.text             0x0032c0        0x49a
+ .text            0x0032c0        0x3ec build/XC16_dsPIC30F3013/production/user.o
+                  0x0032c0                  _getMap
+                  0x003342                  _gettempMap
+                  0x003388                  _settempMap
+                  0x0033de                  _map_binary_search
+                  0x003436                  _map_approx_lookup
+                  0x00344a                  _init_tempmap
+                  0x00347c                  _interpolate_tempmap
+                  0x003506                  _SaveTempMapToFlash
+                  0x00363e                  _readADC
+                  0x0036a6                  _InitApp
+ .text            0x0036ac         0xae build/XC16_dsPIC30F3013/production/main.o
+                  0x0036ac                  _main
 
-.dinit            0x0036c0          0xe
- .dinit           0x0036c0          0xe data_init
+.dinit            0x000282          0x8
+ .dinit           0x000282          0x8 data_init
 
-.text             0x000276          0x6
- .text            0x000276          0x6 build/XC16_dsPIC30F3013/production/system.o
-                  0x000276                  _ConfigureOscillator
+.text             0x00028a          0x6
+ .text            0x00028a          0x6 build/XC16_dsPIC30F3013/production/system.o
+                  0x00028a                  _ConfigureOscillator
 
-.shared.dinit     0x00027c          0x2
- .shared.dinit    0x00027c          0x2 shared_data_init
+.shared.dinit     0x000290          0x2
+ .shared.dinit    0x000290          0x2 shared_data_init

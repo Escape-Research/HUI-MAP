@@ -5,22 +5,30 @@
 // dsPIC30F3013
 /*
                                ----_----
-                   ~MCLR     1 |       | 28  AVDD
-    [Analog In]      AN0     2 |       | 27  AVSS
-    [Cal Fader]      AN1     3 |       | 26  RB6
-                 CN4/RB2     4 |       | 25  RB7
-                 CN5/RB3     5 |       | 24  RB8
-                 CN6/RB4     6 |       | 23  RB9
-                 CN7/RB5     7 |       | 22  CN17/RF4
-                     VSS     8 |       | 21  CN18/RF5
+                     ~MCLR   1 |       | 28  AVDD
+   [Analog In] AN0/RB0/CN2   2 |       | 27  AVSS
+   [Cal Fader]         AN1   3 |       | 26  RB6
+                   CN4/RB2   4 |       | 25  RB7
+                   CN5/RB3   5 |       | 24  RB8
+                   CN6/RB4   6 |       | 23  RB9
+                   CN7/RB5   7 |       | 22  CN17/RF4
+                       VSS   8 |       | 21  CN18/RF5
                              9 |       | 20  VDD
-                    RC15    10 |       | 19  VSS
-                CN1/RC13    11 |       | 18  PGC/SDA/RF2
-                CN0/RC14    12 |       | 17  PGD/SCL/RF3
-                     VDD    13 |       | 16  RF6
-                     RD9    14 |       | 15  RD8
+                      RC15  10 |       | 19  VSS
+                  CN1/RC13  11 |       | 18  PGC/SDA/RF2  [Used for Debugging]
+                  CN0/RC14  12 |       | 17  PGD/SCL/RF3  [Used for Debugging]
+                       VDD  13 |       | 16  RF6
+                       RD9  14 |       | 15  RD8
                                ---------
  
+ NOTES FOR ADC1001:
+ =================
+ * When BOTH CS (pin 1) and WR (pin 3) go LOW the device starts a new conversion
+ * When BOTH CS (pin 1) and RD (pin 2) go LOW the output latches are enabled.
+ * Each successive read (8 bits + 2 bits) is a complete cycle of CS / RD going
+ * LOW.
+ * When CS is high the output latches should be TRI-STATE
+ * 
  */
 
 
@@ -49,9 +57,11 @@
 /* Global Variable Declaration                                                */
 /******************************************************************************/
 
+// Permanent calibration maps located in FLASH
 __psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_lo[8][1024] = { 0x12 };
 __psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_hi[8][512] = { 0x34 }; 
 
+// Temporary calibration map located in RAM
 char temp_map_lo[1024];
 char temp_map_hi[512];
 
@@ -61,7 +71,7 @@ char temp_map_hi[512];
 
 int16_t main(void)
 {
-    char bCalMode = 1;      // are we in calibration mode?
+    char bCalMode = 0;      // are we in calibration mode?
     char fadernum = 0;      // the active fader (based on the HUI selection lines)
     
     /* Configure the oscillator for the device */
@@ -72,6 +82,8 @@ int16_t main(void)
 
     /* TODO <INSERT USER APPLICATION CODE HERE> */
 
+    // clear-up the temp map
+    init_tempmap();
 
     while(1)
     {
@@ -83,7 +95,7 @@ int16_t main(void)
             fadernum = 0;
             
             // Capture the current fader position (Analog input 0)
-            uint16_t fpos = 0; //readADC(0);
+            uint16_t fpos = readADC(0);
                         
             // Locate where this value is on the map!
             uint16_t corrected_value = map_approx_lookup(fadernum, fpos);

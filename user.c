@@ -178,9 +178,9 @@ void SaveTempMapToFlash(char fader)
 
 uint16_t readADC(int channel)
 {
-    int r = rand();
-    r = r & 0x3FF;
-    return r;
+//    int r = rand();
+//    r = r & 0x3FF;
+//    return r;
     
     unsigned int result, i;
     unsigned int ch, PinConfig, Scanselect;
@@ -188,24 +188,18 @@ uint16_t readADC(int channel)
     
     ADCON1bits.ADON = 0;         /* turn off ADC */
     if (channel == 0)
-        ch = ADC_CH0_POS_SAMPLEA_AN4 &  
-             ADC_CH0_NEG_SAMPLEA_NVREF &
-             ADC_CH0_POS_SAMPLEB_AN2& 
-             ADC_CH0_NEG_SAMPLEB_AN1;
+        ch = ADC_CH0_POS_SAMPLEA_AN0 &  
+             ADC_CH0_NEG_SAMPLEA_NVREF;
     else if (channel == 1)
-        ch = ADC_CH0_POS_SAMPLEA_AN4 &  
-             ADC_CH0_NEG_SAMPLEA_NVREF &
-             ADC_CH0_POS_SAMPLEB_AN2& 
-             ADC_CH0_NEG_SAMPLEB_AN1;
+        ch = ADC_CH0_POS_SAMPLEA_AN1 &  
+             ADC_CH0_NEG_SAMPLEA_NVREF;
         
     SetChanADC12(ch);
     
     ConfigIntADC12(ADC_INT_DISABLE);
     
-    PinConfig  = ENABLE_AN4_ANA;
-    Scanselect = SKIP_SCAN_AN2 & SKIP_SCAN_AN5 &
-                 SKIP_SCAN_AN9 & SKIP_SCAN_AN10 &
-                 SKIP_SCAN_AN14 & SKIP_SCAN_AN15 ;
+    PinConfig  = ENABLE_AN0_ANA & ENABLE_AN1_ANA;
+    Scanselect = SCAN_NONE;
  
     Adcon3_reg = ADC_SAMPLE_TIME_10 &
                  ADC_CONV_CLK_SYSTEM &
@@ -215,26 +209,26 @@ uint16_t readADC(int channel)
                  ADC_SCAN_OFF &
                  ADC_ALT_BUF_OFF &
                  ADC_ALT_INPUT_OFF & 
-                 ADC_SAMPLES_PER_INT_16;
+                 ADC_SAMPLES_PER_INT_1;
+    
     Adcon1_reg = ADC_MODULE_ON &
                  ADC_IDLE_CONTINUE &
                  ADC_FORMAT_INTG &
                  ADC_CLK_MANUAL &
                  ADC_AUTO_SAMPLING_OFF;
+    
     OpenADC12(Adcon1_reg, Adcon2_reg,
               Adcon3_reg,PinConfig, Scanselect);
-    i = 0;
-    while( i <16 )
-    {
-        ADCON1bits.SAMP = 1;
-        while(!ADCON1bits.SAMP);
-        ConvertADC12();
-        while(ADCON1bits.SAMP);
-        while(!BusyADC12());
-        while(BusyADC12());
-        result[i] = ReadADC12(i);
-        i++;  
-    }
+
+    ADCON1bits.SAMP = 1;
+    while(!ADCON1bits.SAMP);
+    ConvertADC12();
+    while(ADCON1bits.SAMP);
+    //while(!BusyADC12());
+    //while(BusyADC12());
+    result = ReadADC12(0);
+    
+    return result;
 }
 
 
@@ -247,5 +241,7 @@ void InitApp(void)
     /* Setup analog functionality and port direction */
 
     /* Initialize peripherals */
+    
+    
 }
 
