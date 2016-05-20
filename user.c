@@ -239,7 +239,7 @@ uint16_t readADC(int channel)
 void InitApp(void)
 {
     /* Setup analog functionality and port direction */
-    
+    //TRIS
     
     /* Initialize peripherals */
     

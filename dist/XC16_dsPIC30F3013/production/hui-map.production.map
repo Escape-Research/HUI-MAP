@@ -98,8 +98,8 @@ section                    address   length (PC units)   length (bytes) (dec)
 .dinit                       0x282                 0x8             0xc  (12)
 .text                        0x28a                 0x6             0x9  (9)
 .shared.dinit                0x290                 0x2             0x3  (3)
-_03eaf120573e438b            0x2c0              0x2000          0x3000  (12288)
-_03eaf360573e438b           0x22c0              0x1000          0x1800  (6144)
+_03d6f120573e5d2c            0x2c0              0x2000          0x3000  (12288)
+_03d6f360573e5d2c           0x22c0              0x1000          0x1800  (6144)
 .text                       0x32c0               0x484           0x6c6  (1734)
 
                  Total program memory used (bytes):         0x5121  (20769) 85%
@@ -962,15 +962,15 @@ __c30_signature
  .aivt._AltMathError
                   0x00008c          0x2 build/XC16_dsPIC30F3013/production/traps.o
 
-_03eaf120573e438b
+_03d6f120573e5d2c
                     0x82c0       0x2000 load address 0x0002c0  
- _03eaf120573e438b
+ _03d6f120573e5d2c
                     0x82c0       0x2000 build/XC16_dsPIC30F3013/production/main.o
                     0x82c0                  _map_lo
 
-_03eaf360573e438b
+_03d6f360573e5d2c
                     0xa2c0       0x1000 load address 0x0022c0  
- _03eaf360573e438b
+ _03d6f360573e5d2c
                     0xa2c0       0x1000 build/XC16_dsPIC30F3013/production/main.o
                     0xa2c0                  _map_hi
 

@@ -4,22 +4,22 @@
 
 // dsPIC30F3013
 /*
-                               ----_----
-                     ~MCLR   1 |       | 28  AVDD
-   [Analog In] AN0/RB0/CN2   2 |       | 27  AVSS
-   [AD Vref-]    AN1/VREF-   3 |       | 26  RB6
-   [Cal Fader] AN2/CN4/RB2   4 |       | 25  RB7
-                   CN5/RB3   5 |       | 24  RB8
-                   CN6/RB4   6 |       | 23  RB9
-                   CN7/RB5   7 |       | 22  CN17/RF4
-                       VSS   8 |       | 21  CN18/RF5
-                             9 |       | 20  VDD
-                      RC15  10 |       | 19  VSS
-                  CN1/RC13  11 |       | 18  PGC/SDA/RF2  [Used for Debugging]
-                  CN0/RC14  12 |       | 17  PGD/SCL/RF3  [Used for Debugging]
-                       VDD  13 |       | 16  RF6
-                       RD9  14 |       | 15  RD8
-                               ---------
+                                 ----_----
+   [Res to VDD, Debug] ~MCLR   1 |       | 28  AVDD
+   [Analog In]   AN0/CN2/RB0   2 |       | 27  AVSS
+   [Cal Fader] AN1/VREF-/RB1   3 |       | 26  RB6          [D4 out]
+   [D0 out]      AN2/CN4/RB2   4 |       | 25  RB7          [D5 out]
+   [D1 out]          CN5/RB3   5 |       | 24  RB8          [D6 out]
+   [D2 out]          CN6/RB4   6 |       | 23  RB9          [D7 out]
+   [D3 out]          CN7/RB5   7 |       | 22  CN17/RF4     [SEL B]
+                         VSS   8 |       | 21  CN18/RF5     [SEL C]
+   [Not used]        OSC/CLK   9 |       | 20  VDD
+   [LED]                RC15  10 |       | 19  VSS
+   [Button]         CN1/RC13  11 |       | 18  PGC/SDA/RF2  [Used for Debugging]
+   [SEL A]          CN0/RC14  12 |       | 17  PGD/SCL/RF3  [Used for Debugging]
+                         VDD  13 |       | 16  RF6/INT0     [CS]
+   [WR]             RD9/INT2  14 |       | 15  RD8/INT1     [RD]
+                                 ---------
 
  Connections:
  ===========
