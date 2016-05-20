@@ -188,17 +188,17 @@ uint16_t readADC(int channel)
     
     ADCON1bits.ADON = 0;         /* turn off ADC */
     if (channel == 0)
-        ch = ADC_CH0_POS_SAMPLEA_AN0 &  
-             ADC_CH0_NEG_SAMPLEA_NVREF;
+        ch = ADC_CH0_POS_SAMPLEA_AN0;  
+             //& ADC_CH0_NEG_SAMPLEA_NVREF;
     else if (channel == 1)
-        ch = ADC_CH0_POS_SAMPLEA_AN2 &  
-             ADC_CH0_NEG_SAMPLEA_NVREF;
+        ch = ADC_CH0_POS_SAMPLEA_AN1; 
+             //& ADC_CH0_NEG_SAMPLEA_NVREF;
         
     SetChanADC12(ch);
     
     ConfigIntADC12(ADC_INT_DISABLE);
     
-    PinConfig  = ENABLE_AN0_ANA & ENABLE_AN2_ANA;
+    PinConfig  = ENABLE_AN0_ANA & ENABLE_AN1_ANA;
     Scanselect = SCAN_NONE;
  
     Adcon3_reg = ADC_SAMPLE_TIME_10 &
