@@ -115,18 +115,24 @@ void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
 
 void __attribute__((interrupt(auto_psv))) _INT0Interrupt(void)
 {
+    // Handle CS
+    
     // Clear the INT0 interrupt flag
     _INT0IF = 0;
 }
 
 void __attribute__((interrupt(auto_psv))) _INT1Interrupt(void)
 {
+    // Handle RD
+    
     // Clear the INT1 interrupt flag
     _INT1IF = 0;
 }
 
 void __attribute__((interrupt(auto_psv))) _INT2Interrupt(void)
 {
+    // Handle WR
+    
     // Clear the INT2 interrupt flag
     _INT2IF = 0;
 }
