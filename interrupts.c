@@ -16,6 +16,8 @@
 
 #include <libpic30.h>
 
+#include "user.h"
+
 /******************************************************************************/
 /* Interrupt Vector Options                                                   */
 /******************************************************************************/
@@ -81,7 +83,34 @@ void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
 {
     // Clear the CN interrupt flag
     _CNIF = 0;
-
+    
+    // Figure out what has changed!
+    
+    PORTCBITS portc = PORTCbits;
+    PORTFBITS portf = PORTFbits;
+    
+    // SEL A - CN0 (PORTC:14)
+    g_SELbits.SELA = portc.RC14;
+ 
+    // SEL B - CN17 (PORTF:4)
+    g_SELbits.SELB = portf.RF4;
+ 
+    // SEL C - CN18 (PORTF:5)
+    g_SELbits.SELC = portf.RF5;
+    
+    // push button - CN1 (PORTC:13)
+    if (portc.RC13 != g_bButtonState)
+    {
+        if (portc.RC13)
+        {
+            // The user just pressed the button
+        }
+        else
+        {
+            // The user just released the button
+        }
+        g_bButtonState = portc.RC13;
+    }
 }
 
 void __attribute__((interrupt(auto_psv))) _INT0Interrupt(void)

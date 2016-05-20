@@ -80,15 +80,24 @@ __psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_hi[8][512
 char temp_map_lo[1024] = { '\0' };
 char temp_map_hi[512] = { '\0' };
 
+// Last known state of the push button
+unsigned g_bButtonState = 0;
+
+// Current Fader selected
+SELBITS g_SELbits; // = { 0, 0, 0 };
+
+// Are we in cal mode?
+char g_bCalMode = 0;
+
+// Are we ready to start? (CS and WR signals low)
+char g_breadyToStart = 0;
+
 /******************************************************************************/
 /* Main Program                                                               */
 /******************************************************************************/
 
 int16_t main(void)
-{
-    char bCalMode = 0;      // are we in calibration mode?
-    char fadernum = 0;      // the active fader (based on the HUI selection lines)
-    
+{    
     /* Configure the oscillator for the device */
     ConfigureOscillator();
 
@@ -102,21 +111,22 @@ int16_t main(void)
 
     while(1)
     {
-        if (!bCalMode)
+        if (!g_bCalMode)
         {
-            // Do translation
+            // Wait for request to start
+            while (!g_breadyToStart)
+                ;
             
-            // Figure out which fader are we operating on!
-            fadernum = 0;
+            // Do translation
+ 
+            // Cache the fader number
+            char currFader = getFaderNum();
             
             // Capture the current fader position (Analog input 0)
             uint16_t fpos = readADC(0);
             
-            if (fpos != 0)
-                return -1;
-                        
             // Locate where this value is on the map!
-            uint16_t corrected_value = map_approx_lookup(fadernum, fpos);
+            uint16_t corrected_value = map_approx_lookup(currFader, fpos);
             
             // Output that (queue) (behave like an ADC1001  !!!!!)
             
@@ -125,13 +135,13 @@ int16_t main(void)
             {
                 // Clear up the temp map
                 init_tempmap();   
-                bCalMode = 1;
+                g_bCalMode = 1;
             }
         }
         else
         {
             // Figure out which fader are we operating on!
-            fadernum = 3;
+            char currFader = getFaderNum();
             
             // Capture the current reference position (Analog input 1)
             uint16_t ref = readADC(1);
@@ -151,9 +161,9 @@ int16_t main(void)
             {
                 // if YES, then save the temp_map to flash
                 interpolate_tempmap();
-                SaveTempMapToFlash(fadernum);
+                SaveTempMapToFlash(currFader);
                 
-                bCalMode = 0;
+                g_bCalMode = 0;
             }
             
             uint16_t values[10];

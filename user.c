@@ -176,6 +176,14 @@ void SaveTempMapToFlash(char fader)
     }
 }
 
+char getFaderNum()
+{
+    char fader = (g_SELbits.SELC << 2) +
+                 (g_SELbits.SELB << 1) +
+                 (g_SELbits.SELA);
+    return fader;
+}
+
 uint16_t readADC(int channel)
 {
 //    int r = rand();
@@ -287,8 +295,8 @@ void InitApp(void)
     CNPU2bits.CN18PUE = 0;
         
     // Change notification interrupts
-    CNEN1bits.CN0IE = 1;  // CN interrupt for SEL A
-    CNEN1bits.CN1IE = 1;  // CN interrupt for Push Button
+    CNEN1bits.CN0IE = 1;  // CN interrupt for SEL A (PORTC:14)
+    CNEN1bits.CN1IE = 1;  // CN interrupt for Push Button (PORTC:13)
     CNEN1bits.CN2IE = 0;  // Not used. (AN0 input instead)
     CNEN1bits.CN3IE = 0;  // Not used. (AN1 input instead)
     CNEN1bits.CN4IE = 0;  // Not used. (RB2 / D0 output instead)
@@ -296,8 +304,8 @@ void InitApp(void)
     CNEN1bits.CN6IE = 0;  // Not used. (RB4 / D2 output instead)
     CNEN1bits.CN7IE = 0;  // Not used. (RB5 / D3 output instead)
 
-    CNEN2bits.CN17IE = 1; // CN interrupt for SEL B
-    CNEN2bits.CN18IE = 1; // CN interrupt for SEL C
+    CNEN2bits.CN17IE = 1; // CN interrupt for SEL B (PORTF:4)
+    CNEN2bits.CN18IE = 1; // CN interrupt for SEL C (PORTF:5)
     
             
     /* Initialize peripherals */
