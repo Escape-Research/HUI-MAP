@@ -14,6 +14,8 @@
 #include <stdint.h>        /* Includes uint16_t definition                    */
 #include <stdbool.h>       /* Includes true/false definition                  */
 
+#include <libpic30.h>
+
 /******************************************************************************/
 /* Interrupt Vector Options                                                   */
 /******************************************************************************/
@@ -75,3 +77,27 @@
 /******************************************************************************/
 
 /* TODO Add interrupt routine code here.                                      */
+void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
+{
+    // Clear the CN interrupt flag
+    _CNIF = 0;
+
+}
+
+void __attribute__((interrupt(auto_psv))) _INT0Interrupt(void)
+{
+    // Clear the INT0 interrupt flag
+    _INT0IF = 0;
+}
+
+void __attribute__((interrupt(auto_psv))) _INT1Interrupt(void)
+{
+    // Clear the INT1 interrupt flag
+    _INT1IF = 0;
+}
+
+void __attribute__((interrupt(auto_psv))) _INT2Interrupt(void)
+{
+    // Clear the INT2 interrupt flag
+    _INT2IF = 0;
+}

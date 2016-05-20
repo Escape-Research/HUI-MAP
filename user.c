@@ -271,15 +271,50 @@ void InitApp(void)
     ADPCFGbits.PCFG2 = 1;  // AN2 enabled as Digital I/O
     ADPCFGbits.PCFG3 = 1;  // AN3 enabled as Digital I/O
     ADPCFGbits.PCFG4 = 1;  // AN4 enabled as Digital I/O
-    ADPCFGbits.PCFG5 = 1;  // AN5 enabled as Digital I/O
-    ADPCFGbits.PCFG6 = 1;  // AN6 enabled as Digital I/O
-    ADPCFGbits.PCFG7 = 1;  // AN7 enabled as Digital I/O
     ADPCFGbits.PCFG8 = 1;  // AN8 enabled as Digital I/O
     ADPCFGbits.PCFG9 = 1;  // AN9 enabled as Digital I/O
 
+    // Weak pull-up resistors for CN pins
+    CNPU1bits.CN0PUE = 0;
+    CNPU1bits.CN1PUE = 1;  // Push button
+    CNPU1bits.CN2PUE = 0;
+    CNPU1bits.CN3PUE = 0;
+    CNPU1bits.CN4PUE = 0;
+    CNPU1bits.CN5PUE = 0;
+    CNPU1bits.CN6PUE = 0;
+    CNPU1bits.CN7PUE = 0;
+    CNPU2bits.CN17PUE = 0;
+    CNPU2bits.CN18PUE = 0;
+        
+    // Change notification interrupts
+    CNEN1bits.CN0IE = 1;  // CN interrupt for SEL A
+    CNEN1bits.CN1IE = 1;  // CN interrupt for Push Button
+    CNEN1bits.CN2IE = 0;  // Not used. (AN0 input instead)
+    CNEN1bits.CN3IE = 0;  // Not used. (AN1 input instead)
+    CNEN1bits.CN4IE = 0;  // Not used. (RB2 / D0 output instead)
+    CNEN1bits.CN5IE = 0;  // Not used. (RB3 / D1 output instead)
+    CNEN1bits.CN6IE = 0;  // Not used. (RB4 / D2 output instead)
+    CNEN1bits.CN7IE = 0;  // Not used. (RB5 / D3 output instead)
+
+    CNEN2bits.CN17IE = 1; // CN interrupt for SEL B
+    CNEN2bits.CN18IE = 1; // CN interrupt for SEL C
     
-    
+            
     /* Initialize peripherals */
+    
+    // Clear the CN interrupt flag
+    _CNIF = 0;
+    // Enable CN interrupts
+    _CNIE = 1;
+ 
+    // Clear the INT0 - INT2 interrupt flags
+    _INT0IF = 0;
+    _INT1IF = 0;
+    _INT2IF = 0;
+    // Enable INT0 - INT2 interrupts
+    _INT0IE = 1;
+    _INT1IE = 1;
+    _INT2IE = 1;
     
     
 }

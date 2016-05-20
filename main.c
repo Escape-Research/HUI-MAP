@@ -7,7 +7,7 @@
                                  ----_----
    [Res to VDD, Debug] ~MCLR   1 |       | 28  AVDD
    [Analog In]   AN0/CN2/RB0   2 |       | 27  AVSS
-   [Cal Fader] AN1/VREF-/RB1   3 |       | 26  RB6          [D4 out]
+   [Cal Fader]   AN1/CN3/RB1   3 |       | 26  RB6          [D4 out]
    [D0 out]      AN2/CN4/RB2   4 |       | 25  RB7          [D5 out]
    [D1 out]          CN5/RB3   5 |       | 24  RB8          [D6 out]
    [D2 out]          CN6/RB4   6 |       | 23  RB9          [D7 out]
