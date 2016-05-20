@@ -214,18 +214,19 @@ uint16_t readADC(int channel)
     Adcon1_reg = ADC_MODULE_ON &
                  ADC_IDLE_CONTINUE &
                  ADC_FORMAT_INTG &
-                 ADC_CLK_MANUAL &
-                 ADC_AUTO_SAMPLING_OFF;
+                 ADC_CLK_AUTO &
+                 ADC_AUTO_SAMPLING_ON &
+                 ADC_SAMP_OFF;
     
     OpenADC12(Adcon1_reg, Adcon2_reg,
               Adcon3_reg, PinConfig, Scanselect);
 
     ADCON1bits.SAMP = 1;
-    while(!ADCON1bits.SAMP);
+    while(ADCON1bits.SAMP);
     ConvertADC12();
     while(ADCON1bits.SAMP);
-    //while(!BusyADC12());
-    //while(BusyADC12());
+    while(!BusyADC12());
+    while(BusyADC12());
     result = ReadADC12(0);
     
     return result;
@@ -239,7 +240,44 @@ uint16_t readADC(int channel)
 void InitApp(void)
 {
     /* Setup analog functionality and port direction */
-    //TRIS
+    
+    TRISBbits.TRISB0 = 1;  // RB0 as input (we actually use it as AN0)
+    TRISBbits.TRISB1 = 1;  // RB1 as input (we actually use it as AN1)
+    
+    TRISBbits.TRISB2 = 0;  // Output D0
+    TRISBbits.TRISB3 = 0;  // Output D1
+    TRISBbits.TRISB4 = 0;  // Output D2
+    TRISBbits.TRISB5 = 0;  // Output D3
+    TRISBbits.TRISB6 = 0;  // Output D4
+    TRISBbits.TRISB7 = 0;  // Output D5
+    TRISBbits.TRISB8 = 0;  // Output D6
+    TRISBbits.TRISB9 = 0;  // Output D7
+    
+    TRISCbits.TRISC15 = 0; // Output LED
+    TRISCbits.TRISC13 = 1; // Input (CN1) Push button
+    TRISCbits.TRISC14 = 1; // Input (CN0) SEL A
+    
+    TRISFbits.TRISF2 = 1;  // Input PGC (used for debugging)
+    TRISFbits.TRISF3 = 1;  // Input PGD (used for debugging)
+    TRISFbits.TRISF4 = 1;  // Input (CN17) SEL B
+    TRISFbits.TRISF5 = 1;  // Input (CN18) SEL C
+    TRISFbits.TRISF6 = 1;  // Input (INT0) CS
+    
+    TRISDbits.TRISD8 = 1;  // Input (INT1) RD
+    TRISDbits.TRISD9 = 1;  // Input (INT2) WR
+    
+    ADPCFGbits.PCFG0 = 0;  // AN0 enabled as Analog input
+    ADPCFGbits.PCFG1 = 0;  // AN1 enabled as Analog input
+    ADPCFGbits.PCFG2 = 1;  // AN2 enabled as Digital I/O
+    ADPCFGbits.PCFG3 = 1;  // AN3 enabled as Digital I/O
+    ADPCFGbits.PCFG4 = 1;  // AN4 enabled as Digital I/O
+    ADPCFGbits.PCFG5 = 1;  // AN5 enabled as Digital I/O
+    ADPCFGbits.PCFG6 = 1;  // AN6 enabled as Digital I/O
+    ADPCFGbits.PCFG7 = 1;  // AN7 enabled as Digital I/O
+    ADPCFGbits.PCFG8 = 1;  // AN8 enabled as Digital I/O
+    ADPCFGbits.PCFG9 = 1;  // AN9 enabled as Digital I/O
+
+    
     
     /* Initialize peripherals */
     

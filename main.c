@@ -111,6 +111,9 @@ int16_t main(void)
             
             // Capture the current fader position (Analog input 0)
             uint16_t fpos = readADC(0);
+            
+            if (fpos != 0)
+                return -1;
                         
             // Locate where this value is on the map!
             uint16_t corrected_value = map_approx_lookup(fadernum, fpos);
