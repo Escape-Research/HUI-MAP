@@ -4,9 +4,11 @@
 
 extern __psv__ char __attribute__((space(psv))) map_lo[8][1024]; 
 extern __psv__ char __attribute__((space(psv))) map_hi[8][512]; 
+extern __psv__ int  __attribute__((space(psv))) map_saved[32];
 
 extern char temp_map_lo[1024];
 extern char temp_map_hi[512];
+extern int map_saved_buffer[32];
 
 extern uint16_t g_nextOutput; // The next 10bit value to output
 extern char g_bOutput2ndByte; // Have we already send out the 1st byte?

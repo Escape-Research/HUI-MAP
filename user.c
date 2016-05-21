@@ -174,6 +174,12 @@ void SaveTempMapToFlash(char fader)
 
         _write_flash16(p_hi, buffer);
     }
+    
+    _prog_addressT p_s_flag;
+    _init_prog_address(p_s_flag, map_saved);
+    _erase_flash(p_s_flag);
+    _write_flash16(p_s_flag, map_saved_buffer);
+    
 }
 
 char getFaderNum()
@@ -247,6 +253,9 @@ void HandleButton(char bLongDuration)
     
     if (g_bCalMode)
     {
+        // Turn off the LED
+        LATCbits.LATC15 = 0;
+                
         g_bShouldExitCal = 1;
         return;
     }

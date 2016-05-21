@@ -77,12 +77,14 @@ __psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_lo[8][102
 __psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_hi[8][512]; 
 
 // Calibration indicator flags
-__psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_saved[8] = 
-                    { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' };
+__psv__ int __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_saved[32] = 
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 // Temporary calibration map located in RAM
 char temp_map_lo[1024] = { '\0' };
 char temp_map_hi[512] = { '\0' };
+int map_saved_buffer[32] = { 0 };
 
 // Last known state of the push button
 unsigned g_bButtonState = 0;
@@ -132,6 +134,11 @@ int16_t main(void)
     /* Initialize IO ports and peripherals */
     InitApp();
 
+    // Load flags from flash
+    int i = 0;
+    for (i = 0; i < 32; i++)
+        map_saved_buffer[i] = map_saved[i];
+    
     // clear-up the temp map
     init_tempmap();
 
@@ -212,6 +219,11 @@ int16_t main(void)
                 
                 // if YES, then save the temp_map to flash
                 interpolate_tempmap();
+                
+                // mark the flag
+                map_saved_buffer[currFader] = 1;
+                
+                // Save to flash
                 SaveTempMapToFlash(currFader);
                 
                 g_bCalMode = 0;
