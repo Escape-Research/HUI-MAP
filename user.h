@@ -32,7 +32,20 @@ extern char g_CalFader;
 // Are we ready to start? (CS and WR signals low)
 extern char g_bReadyToStart;
 
+// Flag that the button was pressed for a long duration
+extern char g_bLongDuration;
 
+// Flag to signal that we should enter calibration mode
+extern char g_bShouldEnterCal;
+
+// Flag to signal that we should exit calibration mode
+extern char g_bShouldExitCal;
+
+// Blink counter
+extern unsigned g_Blinks;
+
+// Flag to keep track of the LED ON state
+extern char g_bLEDON;
 
 /******************************************************************************/
 /* User Function Prototypes                                                   */
@@ -50,6 +63,8 @@ void SaveTempMapToFlash(char fader);
 void DisableDataOutput();
 void EnableDataOutput();
 void OutputByte(char byteToSend);
+
+void HandleButton(char bLongDuration);
 
 char getFaderNum();
 

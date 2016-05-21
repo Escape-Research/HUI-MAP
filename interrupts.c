@@ -101,13 +101,27 @@ void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
     // push button - CN1 (PORTC:13)
     if (portc.RC13 != g_bButtonState)
     {
-        if (portc.RC13)
+        if (!portc.RC13)
         {
             // The user just pressed the button
+            
+            // Reset the "long" duration flag
+            g_bLongDuration = 0;
+
+            // Reset and Start the Timer2
+            TMR2 = 0;
+            T2CONbits.TON = 1;            
         }
         else
         {
             // The user just released the button
+            
+            // Stop and Reset Timer2
+            T2CONbits.TON = 0;
+            TMR2 = 0;
+            
+            // Was it a long duration?
+            HandleButton(g_bLongDuration);            
         }
         g_bButtonState = portc.RC13;
     }
@@ -132,10 +146,7 @@ void __attribute__((interrupt(auto_psv))) _INT1Interrupt(void)
     if (PORTFbits.RF6 == 0)
     {
         // We need to output the next BYTE on port B2:9
-        
-        // Make sure that enable the Output
-        EnableDataOutput();
-        
+                
         // Is this the first or the second byte?
         if (!g_bOutput2ndByte)
         {
@@ -148,6 +159,9 @@ void __attribute__((interrupt(auto_psv))) _INT1Interrupt(void)
             g_bOutput2ndByte = 0;
             g_nextOutput = 0;
         }
+
+        // Make sure that enable the Output
+        EnableDataOutput();
     }
     
     // Clear the INT1 interrupt flag
@@ -167,4 +181,59 @@ void __attribute__((interrupt(auto_psv))) _INT2Interrupt(void)
     
     // Clear the INT2 interrupt flag
     _INT2IF = 0;
+}
+
+void __attribute__((interrupt(auto_psv))) _T1Interrupt(void)
+{
+    // Stop Timer1
+    T1CONbits.TON = 0;
+    TMR1 = 0;
+
+    // Are we to turn on or off?
+    if (!g_bLEDON)
+    {
+        // Turn on the LED
+        LATCbits.LATC15 = 1;
+        
+        // Change the ON flag
+        g_bLEDON = 1;
+    }
+    else
+    {
+        // Turn off the LED
+        LATCbits.LATC15 = 0;
+        
+        // Update the ON flag
+        g_bLEDON = 0;
+        
+        // Decrement the blink counter
+        if (g_Blinks)
+            g_Blinks--;
+    }
+
+    if (g_Blinks)
+    {
+        // Restart the Timer
+        TMR1 = 0;
+        T1CONbits.TON = 1;
+    }
+        
+    // Clear the T1 interrupt flag
+    _T1IF = 0;   
+}
+
+void __attribute__((interrupt(auto_psv))) _T2Interrupt(void)
+{
+    // Stop Timer2
+    T2CONbits.TON = 0;
+    TMR2 = 0;
+    
+    // Note the fact that we have reached the "long" push duration
+    g_bLongDuration = 1;
+    
+    // Turn on the LED as an indication that we will enter Calibration mode
+    LATCbits.LATC15 = 1;
+    
+    // Clear the T2 interrupt flag
+    _T2IF = 0;   
 }

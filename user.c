@@ -236,8 +236,33 @@ uint16_t readADC(int channel)
     return result;
 }
 
+void HandleButton(char bLongDuration)
+{
+    if (bLongDuration)
+        if (!g_bCalMode)
+        {
+            g_bShouldEnterCal = 1;
+            return;
+        }
+    
+    if (g_bCalMode)
+    {
+        g_bShouldExitCal = 1;
+        return;
+    }
+    
+    // Select next fader
+    if (g_CalFader < 7)
+        g_CalFader++;
+    else
+        g_CalFader = 0;
+    
+    // Blink the LED
+    g_Blinks = g_CalFader + 1;
+    TMR1 = 0;
+    T1CONbits.TON = 1;
+}
 
-/* <Initialize variables in user.h and insert code for user algorithms.> */
 void DisableDataOutput()
 {
     TRISBbits.TRISB2 = 1;  // Output D0
@@ -269,8 +294,7 @@ void OutputByte(char byteToSend)
     LATB = shiftedValue;
 }
 
-/* TODO Initialize User Ports/Peripherals/Project here */
-
+/* Initialize User Ports/Peripherals */
 void InitApp(void)
 {
     /* Setup analog functionality and port direction */
@@ -281,7 +305,7 @@ void InitApp(void)
     DisableDataOutput();
     
     TRISCbits.TRISC15 = 0; // Output LED
-    TRISCbits.TRISC13 = 1; // Input (CN1) Push button
+    TRISCbits.TRISC13 = 1; // Input (T2CK gate) Push button
     TRISCbits.TRISC14 = 1; // Input (CN0) SEL A
     
     TRISFbits.TRISF2 = 1;  // Input PGC (used for debugging)
@@ -326,14 +350,41 @@ void InitApp(void)
     CNEN2bits.CN17IE = 1; // CN interrupt for SEL B (PORTF:4)
     CNEN2bits.CN18IE = 1; // CN interrupt for SEL C (PORTF:5)
     
-            
     /* Initialize peripherals */
     
+    // Configure Timer1 and Timer2 for normal operation
+    T1CON = 0;
+    T2CON = 0;
+    T1CONbits.TGATE = 0;
+    T1CONbits.TCS = 0;
+    T1CONbits.TCKPS = 2;  // 1:64 prescale
+    T1CONbits.TON = 0;
+    T2CONbits.TGATE = 0;
+    T2CONbits.T32 = 0;
+    T2CONbits.TCKPS = 3;  // 1:256 prescale
+    T2CONbits.TCS = 0;
+    T2CONbits.TON = 0;
+
+    // Clear the timers
+    TMR1 = 0;
+    TMR2 = 0;
+    // Load the period register
+    PR1 = 0xFFFF;
+    PR2 = 0x3FFF;
+    
+    // Setup Timer1 and Timer2 interrupts    
+    _T1IF = 0;
+    _T1IE = 1;
+    _T2IF = 0;
+    _T2IE = 1;
+    
+    //Setup CN and INT0 - INT2 interrupts   
+    
     // Clear the CN interrupt flag
-    _CNIF = 0;
+    _CNIF = 0;      
     // Enable CN interrupts
-    _CNIE = 1;
- 
+    _CNIE = 1;      
+
     // Clear the INT0 - INT2 interrupt flags
     _INT0IF = 0;
     _INT1IF = 0;
@@ -348,5 +399,7 @@ void InitApp(void)
     _INT0IE = 1;        // CS
     _INT1IE = 1;        // RD
     _INT2IE = 1;        // WR
+    
+    g_bButtonState = PORTCbits.RC13;
 }
 

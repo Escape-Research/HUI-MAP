@@ -15,7 +15,7 @@
                          VSS   8 |       | 21  CN18/RF5     [SEL C]
    [Not used]        OSC/CLK   9 |       | 20  VDD
    [LED]                RC15  10 |       | 19  VSS
-   [Button]         CN1/RC13  11 |       | 18  PGC/SDA/RF2  [Used for Debugging]
+   [Button]    T2CK/CN1/RC13  11 |       | 18  PGC/SDA/RF2  [Used for Debugging]
    [SEL A]          CN0/RC14  12 |       | 17  PGD/SCL/RF3  [Used for Debugging]
                          VDD  13 |       | 16  RF6/INT0     [CS]
    [WR]             RD9/INT2  14 |       | 15  RD8/INT1     [RD]
@@ -73,8 +73,12 @@
 /******************************************************************************/
 
 // Permanent calibration maps located in FLASH
-__psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_lo[8][1024] = { 0x00 };
-__psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_hi[8][512] = { 0x00 }; 
+__psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_lo[8][1024];
+__psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_hi[8][512]; 
+
+// Calibration indicator flags
+__psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_saved[8] = 
+                    { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' };
 
 // Temporary calibration map located in RAM
 char temp_map_lo[1024] = { '\0' };
@@ -101,6 +105,21 @@ char g_CalFader = 0;
 // Are we ready to start? (CS and WR signals low)
 char g_bReadyToStart = 0;
 
+// Flag that the button was pressed for a long duration
+char g_bLongDuration = 0;
+
+// Flag to signal that we should enter calibration mode
+char g_bShouldEnterCal = 0;
+
+// Flag to signal that we should exit calibration mode
+char g_bShouldExitCal = 0;
+
+// Blink counter
+unsigned g_Blinks = 0;
+
+// Flag to keep track of the LED ON state
+char g_bLEDON = 0;
+
 /******************************************************************************/
 /* Main Program                                                               */
 /******************************************************************************/
@@ -112,8 +131,6 @@ int16_t main(void)
 
     /* Initialize IO ports and peripherals */
     InitApp();
-
-    /* TODO <INSERT USER APPLICATION CODE HERE> */
 
     // clear-up the temp map
     init_tempmap();
@@ -134,16 +151,28 @@ int16_t main(void)
             // Capture the current fader position (Analog input 0)
             uint16_t fpos = readADC(0);
             
-            // Locate where this value is on the map!
-            uint16_t corrected_value = map_approx_lookup(currFader, fpos);
-            
-            // Output that (queue) (behave like an ADC1001  !!!!!)
-            g_nextOutput = corrected_value;
-            g_bOutput2ndByte = 0;
-            
-            // Should we enter cal mode?
-            if (0 /* should we enter calibration mode? */)
+            // Do we have a calibration?
+            if (map_saved[currFader])
             {
+                // Locate where this value is on the map!
+                uint16_t corrected_value = map_approx_lookup(currFader, fpos);
+
+                // Output that (queue) (behave like an ADC1001  !!!!!)
+                g_nextOutput = corrected_value;
+            }
+            else
+                // No calibration done yet, just truncate the 2 LSBs
+                g_nextOutput = fpos >> 2;
+
+            // Make sure that we will output 2 bytes
+            g_bOutput2ndByte = 0;
+                           
+            // Should we enter cal mode?
+            if (g_bShouldEnterCal)
+            {
+                // Clear the flag
+                g_bShouldEnterCal = 0;
+                
                 // Clear up the temp map
                 init_tempmap();   
                 g_bCalMode = 1;
@@ -176,8 +205,11 @@ int16_t main(void)
             }
             
             // Should we exit cal mode?
-            if (0 /* should we exit? */)
+            if (g_bShouldExitCal)
             {
+                // Clear the flag
+                g_bShouldExitCal = 0;
+                
                 // if YES, then save the temp_map to flash
                 interpolate_tempmap();
                 SaveTempMapToFlash(currFader);
