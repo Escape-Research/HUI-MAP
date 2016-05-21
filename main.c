@@ -102,7 +102,7 @@ SELBITS g_SELbits; // = { 0, 0, 0 };
 char g_bCalMode = 0;
 
 // Fader to calibrate
-char g_CalFader = 0;
+char g_CalFader = 7;  // It will reset to 0 when enter CalMode
 
 // Are we ready to start? (CS and WR signals low)
 char g_bReadyToStart = 0;
