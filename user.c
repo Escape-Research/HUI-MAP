@@ -186,10 +186,6 @@ char getFaderNum()
 
 uint16_t readADC(int channel)
 {
-//    int r = rand();
-//    r = r & 0x3FF;
-//    return r;
-    
     unsigned int result, i;
     unsigned int ch, PinConfig, Scanselect;
     unsigned int Adcon3_reg, Adcon2_reg, Adcon1_reg;
@@ -242,6 +238,36 @@ uint16_t readADC(int channel)
 
 
 /* <Initialize variables in user.h and insert code for user algorithms.> */
+void DisableDataOutput()
+{
+    TRISBbits.TRISB2 = 1;  // Output D0
+    TRISBbits.TRISB3 = 1;  // Output D1
+    TRISBbits.TRISB4 = 1;  // Output D2
+    TRISBbits.TRISB5 = 1;  // Output D3
+    TRISBbits.TRISB6 = 1;  // Output D4
+    TRISBbits.TRISB7 = 1;  // Output D5
+    TRISBbits.TRISB8 = 1;  // Output D6
+    TRISBbits.TRISB9 = 1;  // Output D7
+}
+
+void EnableDataOutput()
+{
+    TRISBbits.TRISB2 = 0;  // Output D0
+    TRISBbits.TRISB3 = 0;  // Output D1
+    TRISBbits.TRISB4 = 0;  // Output D2
+    TRISBbits.TRISB5 = 0;  // Output D3
+    TRISBbits.TRISB6 = 0;  // Output D4
+    TRISBbits.TRISB7 = 0;  // Output D5
+    TRISBbits.TRISB8 = 0;  // Output D6
+    TRISBbits.TRISB9 = 0;  // Output D7
+}
+
+void OutputByte(char byteToSend)
+{
+    uint16_t shiftedValue = byteToSend;
+    shiftedValue <<= 2;
+    LATB = shiftedValue;
+}
 
 /* TODO Initialize User Ports/Peripherals/Project here */
 
@@ -252,14 +278,7 @@ void InitApp(void)
     TRISBbits.TRISB0 = 1;  // RB0 as input (we actually use it as AN0)
     TRISBbits.TRISB1 = 1;  // RB1 as input (we actually use it as AN1)
     
-    TRISBbits.TRISB2 = 0;  // Output D0
-    TRISBbits.TRISB3 = 0;  // Output D1
-    TRISBbits.TRISB4 = 0;  // Output D2
-    TRISBbits.TRISB5 = 0;  // Output D3
-    TRISBbits.TRISB6 = 0;  // Output D4
-    TRISBbits.TRISB7 = 0;  // Output D5
-    TRISBbits.TRISB8 = 0;  // Output D6
-    TRISBbits.TRISB9 = 0;  // Output D7
+    DisableDataOutput();
     
     TRISCbits.TRISC15 = 0; // Output LED
     TRISCbits.TRISC13 = 1; // Input (CN1) Push button
@@ -329,7 +348,5 @@ void InitApp(void)
     _INT0IE = 1;        // CS
     _INT1IE = 1;        // RD
     _INT2IE = 1;        // WR
-    
-    
 }
 

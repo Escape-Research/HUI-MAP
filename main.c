@@ -83,14 +83,23 @@ char temp_map_hi[512] = { '\0' };
 // Last known state of the push button
 unsigned g_bButtonState = 0;
 
+// The next 10bit value to output
+uint16_t g_nextOutput = 0;
+
+// Have we already send out the 1st byte?
+char g_bOutput2ndByte = 0;
+
 // Current Fader selected
 SELBITS g_SELbits; // = { 0, 0, 0 };
 
 // Are we in cal mode?
 char g_bCalMode = 0;
 
+// Fader to calibrate
+char g_CalFader = 0;
+
 // Are we ready to start? (CS and WR signals low)
-char g_breadyToStart = 0;
+char g_bReadyToStart = 0;
 
 /******************************************************************************/
 /* Main Program                                                               */
@@ -114,7 +123,7 @@ int16_t main(void)
         if (!g_bCalMode)
         {
             // Wait for request to start
-            while (!g_breadyToStart)
+            while (!g_bReadyToStart)
                 ;
             
             // Do translation
@@ -129,6 +138,8 @@ int16_t main(void)
             uint16_t corrected_value = map_approx_lookup(currFader, fpos);
             
             // Output that (queue) (behave like an ADC1001  !!!!!)
+            g_nextOutput = corrected_value;
+            g_bOutput2ndByte = 0;
             
             // Should we enter cal mode?
             if (0 /* should we enter calibration mode? */)
@@ -140,21 +151,29 @@ int16_t main(void)
         }
         else
         {
-            // Figure out which fader are we operating on!
+            // Wait for request to start
+            while (!g_bReadyToStart)
+                ;
+
+            // Figure out which fader we have been given..
             char currFader = getFaderNum();
             
-            // Capture the current reference position (Analog input 1)
-            uint16_t ref = readADC(1);
+            // Is this the one we are calibrating?
+            if (currFader == g_CalFader)
+            {
+                // Capture the current reference position (Analog input 1)
+                uint16_t ref = readADC(1);
 
-            // Capture the current fader position (Analog input 0)
-            uint16_t dut = readADC(0);
+                // Capture the current fader position (Analog input 0)
+                uint16_t dut = readADC(0);
 
-            // Scale the 12bit to a 10bit value
-            //double scaled_value_d = ref * 0.8333;
-            uint16_t scaled_value = ref >> 2;
+                // Scale the 12bit to a 10bit value
+                //double scaled_value_d = ref * 0.8333;
+                uint16_t scaled_value = ref >> 2;
 
-            // Update the temp_map      
-            settempMap(scaled_value, dut);
+                // Update the temp_map      
+                settempMap(scaled_value, dut);
+            }
             
             // Should we exit cal mode?
             if (0 /* should we exit? */)
@@ -165,18 +184,6 @@ int16_t main(void)
                 
                 g_bCalMode = 0;
             }
-            
-            uint16_t values[10];
-            values[0] = getMap(3, 0);
-            values[1] = getMap(3, 1);
-            values[2] = getMap(3, 2);
-            values[3] = getMap(3, 3);
-            values[4] = getMap(3, 4);
-            values[5] = getMap(3, 5);
-            values[6] = getMap(3, 6);
-            values[7] = getMap(3, 7);
-            values[8] = getMap(3, 8);
-            values[9] = getMap(3, 9);
         }
     }
 }

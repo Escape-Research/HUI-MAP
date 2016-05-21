@@ -115,7 +115,10 @@ void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
 
 void __attribute__((interrupt(auto_psv))) _INT0Interrupt(void)
 {
-    // Handle CS
+    // Handle CS (positive going edge)
+    
+    // Make sure that we out the port B output back to TRI-STATE
+    DisableDataOutput();
     
     // Clear the INT0 interrupt flag
     _INT0IF = 0;
@@ -123,7 +126,29 @@ void __attribute__((interrupt(auto_psv))) _INT0Interrupt(void)
 
 void __attribute__((interrupt(auto_psv))) _INT1Interrupt(void)
 {
-    // Handle RD
+    // Handle RD (negative going edge)
+    
+    // Check if CS (RF6) is LOW
+    if (PORTFbits.RF6 == 0)
+    {
+        // We need to output the next BYTE on port B2:9
+        
+        // Make sure that enable the Output
+        EnableDataOutput();
+        
+        // Is this the first or the second byte?
+        if (!g_bOutput2ndByte)
+        {
+            OutputByte((char)(g_nextOutput & 0xFF));
+            g_bOutput2ndByte = 1;
+        }
+        else
+        {
+            OutputByte((char)(g_nextOutput & 0x300));
+            g_bOutput2ndByte = 0;
+            g_nextOutput = 0;
+        }
+    }
     
     // Clear the INT1 interrupt flag
     _INT1IF = 0;
@@ -131,7 +156,14 @@ void __attribute__((interrupt(auto_psv))) _INT1Interrupt(void)
 
 void __attribute__((interrupt(auto_psv))) _INT2Interrupt(void)
 {
-    // Handle WR
+    // Handle WR (negative going edge)
+  
+    // Check if CS (RF6) is LOW
+    if (PORTFbits.RF6 == 0)
+    {
+        // We need to initiate a new AD conversion
+        g_bReadyToStart = 1;
+    }
     
     // Clear the INT2 interrupt flag
     _INT2IF = 0;
