@@ -28,8 +28,6 @@
 /* then paste into this project.                                              */
 /******************************************************************************/
 
-/* TODO Fill in your configuration bits from the config bits generator here.  */
-
 // DSPIC30F3013 Configuration Bit Settings
 
 // 'C' source line config statements
@@ -43,7 +41,7 @@
 // FWDT
 #pragma config FWPSB = WDTPSB_16        // WDT Prescaler B (1:16)
 #pragma config FWPSA = WDTPSA_512       // WDT Prescaler A (1:512)
-#pragma config WDT = WDT_OFF            // Watchdog Timer (Disabled)
+#pragma config WDT = WDT_ON             // Watchdog Timer (Enabled)
 
 // FBORPOR
 #pragma config FPWRT = PWRT_64          // POR Timer Value (64ms)
@@ -57,4 +55,5 @@
 
 // FICD
 #pragma config ICS = ICS_PGD            // Comm Channel Select (Use PGC/EMUC and PGD/EMUD)
+
 
