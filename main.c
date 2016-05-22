@@ -130,6 +130,8 @@ int16_t main(void)
 {    
     /* Configure the oscillator for the device */
     ConfigureOscillator();
+    
+    INTCON1bits.NSTDIS = 0;   // disable nested interrupts
 
     /* Initialize IO ports and peripherals */
     InitApp();
@@ -169,15 +171,15 @@ int16_t main(void)
                 uint16_t fpos = readADC(0);
 
                 // Do we have a calibration?
-                if (map_saved[currFader])
-                {
+                //if (map_saved[currFader])
+                //{
                     // Locate where this value is on the map!
-                    uint16_t corrected_value = map_approx_lookup(currFader, fpos);
+                //    uint16_t corrected_value = map_approx_lookup(currFader, fpos);
 
                     // Output that (queue) (behave like an ADC1001  !!!!!)
-                    g_nextOutput = corrected_value;
-                }
-                else
+                //    g_nextOutput = corrected_value;
+                //}
+                //else
                     // No calibration done yet, just truncate the 2 LSBs
                     g_nextOutput = fpos >> 2;
 
@@ -231,6 +233,10 @@ int16_t main(void)
                 // Clear the flag
                 g_bShouldExitCal = 0;
                 
+                // Disable interrupts
+                INTCON1bits.NSTDIS = 1;   // disable nested interrupts
+                _DISI = 1;
+                
                 // if YES, then save the temp_map to flash
                 interpolate_tempmap();
                 
@@ -240,8 +246,13 @@ int16_t main(void)
                 // Save to flash
                 SaveTempMapToFlash(g_CalFader);
 
-                // Blink once to let us know that flash is saved!
-                g_Blinks = 1;
+                // Re-enable interrupts
+                INTCON1bits.NSTDIS = 0;   // enable nested interrupts
+                _DISI = 0;
+                
+                // Blink (based on the current Fader number)
+                // to let us know that flash is saved!
+                g_Blinks = g_CalFader + 1;
                 TMR1 = 0;
                 T1CONbits.TON = 1;
                 

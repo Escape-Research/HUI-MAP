@@ -14,6 +14,8 @@
 #include <stdint.h>        /* Includes uint16_t definition                    */
 #include <stdbool.h>       /* Includes true/false definition                  */
 
+#include "system.h"
+
 #include <libpic30.h>
 
 #include "user.h"
@@ -143,23 +145,29 @@ void __attribute__((interrupt(auto_psv))) _INT1Interrupt(void)
     // Handle RD (negative going edge)
     
     // Check if CS (RF6) is LOW
-    if (PORTFbits.RF6 == 0)
+    if (LATFbits.LATF6 == 0)
     {
         // We need to output the next BYTE on port B2:9
                 
         // Is this the first or the second byte?
         if (!g_bOutput2ndByte)
         {
-            OutputByte((char)(g_nextOutput & 0xFF));
+            OutputByte(g_nextOutput & 0xFF);
             g_bOutput2ndByte = 1;
         }
         else
         {
-            OutputByte((char)(g_nextOutput & 0x300));
+            OutputByte(g_nextOutput & 0x300);
             g_bOutput2ndByte = 0;
-            g_nextOutput = 0;
+                        
+            // Keep outputing the same as long as we don't
+            // have a new AD conversion request
+            //g_nextOutput = 0;
         }
 
+        // Wait 
+        __delay_us(100);
+        
         // Make sure that enable the Output
         EnableDataOutput();
     }
@@ -173,10 +181,17 @@ void __attribute__((interrupt(auto_psv))) _INT2Interrupt(void)
     // Handle WR (negative going edge)
   
     // Check if CS (RF6) is LOW
-    if (PORTFbits.RF6 == 0)
+    if (LATFbits.LATF6 == 0)
     {
         // We need to initiate a new AD conversion
-        g_bReadyToStart = 1;
+        g_bReadyToStart = 1;                
+
+        // Blip the LED
+        int prevState = PORTCbits.RC15;        
+        LATCbits.LATC15 = 1;
+        __delay_us(1);
+        LATCbits.LATC15 = 0;        
+        LATCbits.LATC15 = prevState; 
     }
     
     // Clear the INT2 interrupt flag

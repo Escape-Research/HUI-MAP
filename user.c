@@ -296,11 +296,21 @@ void EnableDataOutput()
     TRISBbits.TRISB9 = 0;  // Output D7
 }
 
-void OutputByte(char byteToSend)
+void OutputByte(unsigned byteToSend)
 {
-    uint16_t shiftedValue = byteToSend;
-    shiftedValue <<= 2;
-    LATB = shiftedValue;
+    //uint16_t shiftedValue = byteToSend;
+    //shiftedValue <<= 2;
+    
+    LATBbits.LATB2 = byteToSend & 0x1;
+    LATBbits.LATB3 = byteToSend & 0x2;
+    LATBbits.LATB4 = byteToSend & 0x4;
+    LATBbits.LATB5 = byteToSend & 0x8;
+    LATBbits.LATB6 = byteToSend & 0x10;
+    LATBbits.LATB7 = byteToSend & 0x20;
+    LATBbits.LATB8 = byteToSend & 0x40;
+    LATBbits.LATB9 = byteToSend & 0x80;           
+    
+    //LATB = shiftedValue;
 }
 
 /* Initialize User Ports/Peripherals */

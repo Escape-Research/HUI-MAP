@@ -64,7 +64,7 @@ void SaveTempMapToFlash(char fader);
 
 void DisableDataOutput();
 void EnableDataOutput();
-void OutputByte(char byteToSend);
+void OutputByte(unsigned byteToSend);
 
 void HandleButton(char bLongDuration);
 
