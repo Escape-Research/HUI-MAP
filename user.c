@@ -378,7 +378,7 @@ void InitApp(void)
     TMR1 = 0;
     TMR2 = 0;
     // Load the period register
-    PR1 = 0xFFFF;
+    PR1 = 0x3FFF;
     PR2 = 0x3FFF;
     
     // Setup Timer1 and Timer2 interrupts    

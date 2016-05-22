@@ -82,9 +82,9 @@ __psv__ int __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_saved[32] 
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 // Temporary calibration map located in RAM
-char temp_map_lo[1024] = { '\0' };
-char temp_map_hi[512] = { '\0' };
-int map_saved_buffer[32] = { 0 };
+char temp_map_lo[1024];     // = { '\0' };
+char temp_map_hi[512];      // = { '\0' };
+int map_saved_buffer[32];   // = { 0 };
 
 // Last known state of the push button
 unsigned g_bButtonState = 0;
@@ -139,6 +139,14 @@ int16_t main(void)
     for (i = 0; i < 32; i++)
         map_saved_buffer[i] = map_saved[i];
     
+    // If we still haven't saved a calibration blink once!
+    if (map_saved_buffer[0] == 0)
+    {
+        g_Blinks = 1;
+        TMR1 = 0;
+        T1CONbits.TON = 1;
+    }
+    
     // clear-up the temp map
     init_tempmap();
 
@@ -147,32 +155,35 @@ int16_t main(void)
         if (!g_bCalMode)
         {
             // Wait for request to start
-            while (!g_bReadyToStart)
-                ;
-            
-            // Do translation
- 
-            // Cache the fader number
-            char currFader = getFaderNum();
-            
-            // Capture the current fader position (Analog input 0)
-            uint16_t fpos = readADC(0);
-            
-            // Do we have a calibration?
-            if (map_saved[currFader])
+            if (g_bReadyToStart)
             {
-                // Locate where this value is on the map!
-                uint16_t corrected_value = map_approx_lookup(currFader, fpos);
+                // Reset the flag
+                g_bReadyToStart = 0;
+                
+                // Do translation
 
-                // Output that (queue) (behave like an ADC1001  !!!!!)
-                g_nextOutput = corrected_value;
+                // Cache the fader number
+                char currFader = getFaderNum();
+
+                // Capture the current fader position (Analog input 0)
+                uint16_t fpos = readADC(0);
+
+                // Do we have a calibration?
+                if (map_saved[currFader])
+                {
+                    // Locate where this value is on the map!
+                    uint16_t corrected_value = map_approx_lookup(currFader, fpos);
+
+                    // Output that (queue) (behave like an ADC1001  !!!!!)
+                    g_nextOutput = corrected_value;
+                }
+                else
+                    // No calibration done yet, just truncate the 2 LSBs
+                    g_nextOutput = fpos >> 2;
+
+                // Make sure that we will output 2 bytes
+                g_bOutput2ndByte = 0;
             }
-            else
-                // No calibration done yet, just truncate the 2 LSBs
-                g_nextOutput = fpos >> 2;
-
-            // Make sure that we will output 2 bytes
-            g_bOutput2ndByte = 0;
                            
             // Should we enter cal mode?
             if (g_bShouldEnterCal)
@@ -188,27 +199,30 @@ int16_t main(void)
         else
         {
             // Wait for request to start
-            while (!g_bReadyToStart)
-                ;
-
-            // Figure out which fader we have been given..
-            char currFader = getFaderNum();
-            
-            // Is this the one we are calibrating?
-            if (currFader == g_CalFader)
+            if (g_bReadyToStart)
             {
-                // Capture the current reference position (Analog input 1)
-                uint16_t ref = readADC(1);
+                // Reset the flag
+                g_bReadyToStart = 0;
 
-                // Capture the current fader position (Analog input 0)
-                uint16_t dut = readADC(0);
+                // Figure out which fader we have been given..
+                char currFader = getFaderNum();
 
-                // Scale the 12bit to a 10bit value
-                //double scaled_value_d = ref * 0.8333;
-                uint16_t scaled_value = ref >> 2;
+                // Is this the one we are calibrating?
+                if (currFader == g_CalFader)
+                {
+                    // Capture the current reference position (Analog input 1)
+                    uint16_t ref = readADC(1);
 
-                // Update the temp_map      
-                settempMap(scaled_value, dut);
+                    // Capture the current fader position (Analog input 0)
+                    uint16_t dut = readADC(0);
+
+                    // Scale the 12bit to a 10bit value
+                    //double scaled_value_d = ref * 0.8333;
+                    uint16_t scaled_value = ref >> 2;
+
+                    // Update the temp_map      
+                    settempMap(scaled_value, dut);
+                }
             }
             
             // Should we exit cal mode?
@@ -221,10 +235,15 @@ int16_t main(void)
                 interpolate_tempmap();
                 
                 // mark the flag
-                map_saved_buffer[currFader] = 1;
+                map_saved_buffer[g_CalFader] = 1;
                 
                 // Save to flash
-                SaveTempMapToFlash(currFader);
+                SaveTempMapToFlash(g_CalFader);
+
+                // Blink once to let us know that flash is saved!
+                g_Blinks = 1;
+                TMR1 = 0;
+                T1CONbits.TON = 1;
                 
                 g_bCalMode = 0;
             }
