@@ -308,7 +308,7 @@ void OutputByte(unsigned byteToSend)
     LATBbits.LATB6 = byteToSend & 0x10;
     LATBbits.LATB7 = byteToSend & 0x20;
     LATBbits.LATB8 = byteToSend & 0x40;
-    LATBbits.LATB9 = byteToSend & 0x80;           
+    LATBbits.LATB9 = byteToSend & 0x80;
     
     //LATB = shiftedValue;
 }
@@ -406,18 +406,18 @@ void InitApp(void)
 
     // Clear the INT0 - INT2 interrupt flags
     _INT0IF = 0;
-    _INT1IF = 0;
-    _INT2IF = 0;
+    //_INT1IF = 0;
+    //_INT2IF = 0;
     
     // Set the INT edge polarity trigger 
-    _INT0EP = 0;   // CS - Interrupt on POSITIVE going edge
-    _INT1EP = 1;   // RD - Interrupt on NEGATIVE going edge
-    _INT2EP = 1;   // WR - Interrupt on NEGATIVE going edge
+    _INT0EP = 1;   // CS - Interrupt on NEGATIVE going edge
+    //_INT1EP = 1;   // RD - Interrupt on NEGATIVE going edge
+    //_INT2EP = 1;   // WR - Interrupt on NEGATIVE going edge
     
     // Enable INT0 - INT2 interrupts
     _INT0IE = 1;        // CS
-    _INT1IE = 1;        // RD
-    _INT2IE = 1;        // WR
+    //_INT1IE = 1;        // RD
+    //_INT2IE = 1;        // WR
     
     g_bButtonState = PORTCbits.RC13;
 }

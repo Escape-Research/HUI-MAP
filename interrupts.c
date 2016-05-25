@@ -131,16 +131,82 @@ void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
 
 void __attribute__((interrupt(auto_psv))) _INT0Interrupt(void)
 {
-    // Handle CS (positive going edge)
+    // Handle CS (negative going edge)
+    
+     INTCON1bits.NSTDIS = 1;   // disable nested interrupts 
+    
+    // Wait until RD or WR go low
+    //while (!PORTFbits.RF6)
+    //{
+        if (!PORTDbits.RD8)
+        {
+            // Handle a RD request
+            // We need to output the next BYTE on port B2:9
+
+            // Is this the first or the second byte?
+            if (!g_bOutput2ndByte)
+            {
+                OutputByte(/*g_nextOutput &*/ 0xFF);
+                g_bOutput2ndByte = 1;
+            }
+            else
+            {
+                OutputByte(g_nextOutput & 0x300);
+                g_bOutput2ndByte = 0;
+
+                // Keep outputing the same as long as we don't
+                // have a new AD conversion request
+                //g_nextOutput = 0;
+            }
+
+            // Wait 
+            //__delay_us(100);
+
+            // Make sure that enable the Output
+            EnableDataOutput();
+        }
+        if (!PORTDbits.RD9)
+        {
+            // Handle a WR request
+                        
+            // Cache the fader number
+            char currFader = getFaderNum();
+
+            // Capture the current fader position (Analog input 0)
+            uint16_t fpos = readADC(0);
+
+            // Do we have a calibration?
+            //if (map_saved[currFader])
+            //{
+                // Locate where this value is on the map!
+            //    uint16_t corrected_value = map_approx_lookup(currFader, fpos);
+
+                // Output that (queue) (behave like an ADC1001  !!!!!)
+            //    g_nextOutput = corrected_value;
+            //}
+            //else
+                // No calibration done yet, just truncate the 2 LSBs
+                g_nextOutput = fpos >> 2;
+
+            // Make sure that we will output 2 bytes
+            g_bOutput2ndByte = 0;
+
+        }
+    //}
+     
+    //while (!PORTFbits.RF6)
+     //  ;
     
     // Make sure that we out the port B output back to TRI-STATE
     DisableDataOutput();
+
+    INTCON1bits.NSTDIS = 0;   // re-enable nested interrupts 
     
     // Clear the INT0 interrupt flag
     _INT0IF = 0;
 }
 
-void __attribute__((interrupt(auto_psv))) _INT1Interrupt(void)
+/*void __attribute__((interrupt(auto_psv))) _INT1Interrupt(void)
 {
     // Handle RD (negative going edge)
     
@@ -165,7 +231,7 @@ void __attribute__((interrupt(auto_psv))) _INT1Interrupt(void)
             //g_nextOutput = 0;
         }
 
-        // Wait 
+  8      // Wait 
         __delay_us(100);
         
         // Make sure that enable the Output
@@ -196,7 +262,7 @@ void __attribute__((interrupt(auto_psv))) _INT2Interrupt(void)
     
     // Clear the INT2 interrupt flag
     _INT2IF = 0;
-}
+}*/
 
 void __attribute__((interrupt(auto_psv))) _T1Interrupt(void)
 {

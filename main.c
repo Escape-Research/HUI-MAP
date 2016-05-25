@@ -131,7 +131,7 @@ int16_t main(void)
     /* Configure the oscillator for the device */
     ConfigureOscillator();
     
-    INTCON1bits.NSTDIS = 0;   // disable nested interrupts
+    INTCON1bits.NSTDIS = 0;   // enable nested interrupts
 
     /* Initialize IO ports and peripherals */
     InitApp();
