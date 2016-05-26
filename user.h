@@ -73,3 +73,9 @@ char getFaderNum();
 uint16_t readADC(int channel);
 
 void InitApp(void); /* I/O and Peripheral Initialization */
+
+/******************************************************************************/
+/* User Assembly Function Prototypes                                                   */
+/******************************************************************************/
+
+extern void handleCS();

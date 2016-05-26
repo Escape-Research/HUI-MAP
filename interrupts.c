@@ -132,6 +132,8 @@ void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
 void __attribute__((interrupt(auto_psv))) _INT0Interrupt(void)
 {
     // Handle CS (negative going edge)
+
+    handleCS();
     
      INTCON1bits.NSTDIS = 1;   // disable nested interrupts 
     
