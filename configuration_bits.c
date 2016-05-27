@@ -28,7 +28,6 @@
 /* then paste into this project.                                              */
 /******************************************************************************/
 
-
 // DSPIC30F3013 Configuration Bit Settings
 
 // 'C' source line config statements
@@ -56,5 +55,3 @@
 
 // FICD
 #pragma config ICS = ICS_PGD            // Comm Channel Select (Use PGC/EMUC and PGD/EMUD)
-
-

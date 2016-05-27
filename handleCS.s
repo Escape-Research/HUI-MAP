@@ -7,9 +7,9 @@
 _handleCS:
     
     ; Make sure that we disable nested interruprs
-    
-    bset LATC, #15
-    bclr LATC, #15
+ 
+    bset LATB, #2
+    bclr LATB, #2
     
     bra _handleCS
     

@@ -46,11 +46,11 @@ void __attribute__((interrupt,no_auto_psv)) _DefaultInterrupt(void);
 /******************************************************************************/
 
 /* Primary (non-alternate) address error trap function declarations */
-//void __attribute__((interrupt,no_auto_psv)) _OscillatorFail(void)
-//{
-//        INTCON1bits.OSCFAIL = 0;        /* Clear the trap flag */
+void __attribute__((interrupt,no_auto_psv)) _OscillatorFail(void)
+{
+        INTCON1bits.OSCFAIL = 0;        /* Clear the trap flag */
 //        while(1);
-//}
+}
 
 void __attribute__((interrupt,no_auto_psv)) _AddressError(void)
 {

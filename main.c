@@ -44,6 +44,8 @@
    LOW.
  * When CS is high the output latches should be TRI-STATE
  * 
+ * 
+ * Timing - Tick = 36 ns
  */
 
 
@@ -129,13 +131,18 @@ char g_bLEDON = 0;
 int16_t main(void)
 {    
     /* Configure the oscillator for the device */
-    ConfigureOscillator();
+    //ConfigureOscillator();
     
-    INTCON1bits.NSTDIS = 0;   // enable nested interrupts
-
+    //INTCON1bits.NSTDIS = 0;   // enable nested interrupts
+    
     /* Initialize IO ports and peripherals */
     InitApp();
 
+    INTCON1bits.NSTDIS = 1;  
+    EnableDataOutput();
+    handleCS();
+    
+    
     // Load flags from flash
     int i = 0;
     for (i = 0; i < 32; i++)
