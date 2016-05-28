@@ -131,14 +131,13 @@ char g_bLEDON = 0;
 int16_t main(void)
 {    
     /* Configure the oscillator for the device */
-    //ConfigureOscillator();
+    ConfigureOscillator();
     
-    //INTCON1bits.NSTDIS = 0;   // enable nested interrupts
+    INTCON1bits.NSTDIS = 1;   // disable nested interrupts
     
     /* Initialize IO ports and peripherals */
     InitApp();
 
-    INTCON1bits.NSTDIS = 1;
     LATB = 0xF;
     //EnableDataOutput();
     //handleCS();

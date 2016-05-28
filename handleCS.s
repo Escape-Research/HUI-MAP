@@ -24,7 +24,7 @@ __INT0Interrupt:
     ;mov #0b1111111111, w0
     ;mov w0, TRISB
     
-    ; prepare the byte for output
+    ; prepare the next byte for output
     ; TODO
     
     bra exit_int0

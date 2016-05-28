@@ -51,6 +51,7 @@ void ConfigureOscillator(void)
         /* while(OSCCONbits.LOCK != 1); */
 #endif
 
-//        while(OSCCONbits.LOCK != 1);    
+        OSCTUN = 0x3;
+        while(OSCCONbits.LOCK != 1);    
 }
 
