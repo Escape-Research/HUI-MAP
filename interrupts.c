@@ -91,6 +91,12 @@ void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
     PORTCBITS portc = PORTCbits;
     PORTFBITS portf = PORTFbits;
     
+    // Do we have a new fader?
+    if ((g_SELbits.SELA != portc.RC14) ||
+        (g_SELbits.SELB != portf.RF4) ||
+        (g_SELbits.SELC != portf.RF5))
+        g_bReadyToStart = 1;
+    
     // SEL A - CN0 (PORTC:14)
     g_SELbits.SELA = portc.RC14;
  

@@ -235,7 +235,7 @@ uint16_t readADC(int channel)
     while(ADCON1bits.SAMP);
     ConvertADC12();
     while(ADCON1bits.SAMP);
-    while(!BusyADC12());
+//    while(!BusyADC12());
     while(BusyADC12());
     result = ReadADC12(0);
     

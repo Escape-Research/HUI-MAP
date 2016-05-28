@@ -21,17 +21,17 @@
 /* <Other function prototypes for debugging trap code may be inserted here> */
 
 /* Use if INTCON2 ALTIVT=1 */
-void __attribute__((interrupt,no_auto_psv)) _OscillatorFail(void);
+/*void __attribute__((interrupt,no_auto_psv)) _OscillatorFail(void);
 void __attribute__((interrupt,no_auto_psv)) _AddressError(void);
 void __attribute__((interrupt,no_auto_psv)) _StackError(void);
 void __attribute__((interrupt,no_auto_psv)) _MathError(void);
-
+*/
 /* Use if INTCON2 ALTIVT=0 */
-void __attribute__((interrupt,no_auto_psv)) _AltOscillatorFail(void);
+/*void __attribute__((interrupt,no_auto_psv)) _AltOscillatorFail(void);
 void __attribute__((interrupt,no_auto_psv)) _AltAddressError(void);
 void __attribute__((interrupt,no_auto_psv)) _AltStackError(void);
 void __attribute__((interrupt,no_auto_psv)) _AltMathError(void);
-
+*/
 /* Default interrupt handler */
 void __attribute__((interrupt,no_auto_psv)) _DefaultInterrupt(void);
 
@@ -55,7 +55,7 @@ void __attribute__((interrupt,no_auto_psv)) _OscillatorFail(void)
 void __attribute__((interrupt,no_auto_psv)) _AddressError(void)
 {
         INTCON1bits.ADDRERR = 0;        /* Clear the trap flag */
-        while (1);
+//        while (1);
 }
 void __attribute__((interrupt,no_auto_psv)) _StackError(void)
 {

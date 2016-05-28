@@ -124,6 +124,8 @@ unsigned g_Blinks = 0;
 // Flag to keep track of the LED ON state
 char g_bLEDON = 0;
 
+int trisb_out = 0x3;
+
 /******************************************************************************/
 /* Main Program                                                               */
 /******************************************************************************/
@@ -137,13 +139,6 @@ int16_t main(void)
     
     /* Initialize IO ports and peripherals */
     InitApp();
-
-    LATB = 0xFF << 2;
-    //EnableDataOutput();
-    //handleCS();
-    
-    while (1)
-        LATB = 0xFF << 2;
     
     // Load flags from flash
     int i = 0;
@@ -192,6 +187,7 @@ int16_t main(void)
                     // No calibration done yet, just truncate the 2 LSBs
                     g_nextOutput = fpos >> 2;
 
+                    LATB = (g_nextOutput & 0xFF) << 2;
                 // Make sure that we will output 2 bytes
                 g_bOutput2ndByte = 0;
             }
