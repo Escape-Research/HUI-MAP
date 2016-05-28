@@ -45,7 +45,7 @@
  * When CS is high the output latches should be TRI-STATE
  * 
  * 
- * Timing - Tick = 36 ns
+ * Timing - Tick = 36 ns (un-tuned)
  */
 
 
