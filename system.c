@@ -50,7 +50,10 @@ void ConfigureOscillator(void)
         /* Wait for PLL to lock, if PLL is used */
         /* while(OSCCONbits.LOCK != 1); */
 #endif
-
+        //OSCCONbits.COSC0 = 1;
+        //OSCCONbits.COSC1 = 1;
+        //OSCCONbits.COSC2 = 1;
+        
         OSCTUN = 0x3;
         while(OSCCONbits.LOCK != 1);    
 }

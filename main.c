@@ -138,7 +138,7 @@ int16_t main(void)
     /* Initialize IO ports and peripherals */
     InitApp();
 
-    LATB = 0xF;
+    LATB = 0xFF << 2;
     //EnableDataOutput();
     //handleCS();
     
