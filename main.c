@@ -142,6 +142,8 @@ int16_t main(void)
     //EnableDataOutput();
     //handleCS();
     
+    while (1)
+        LATB = 0xFF << 2;
     
     // Load flags from flash
     int i = 0;

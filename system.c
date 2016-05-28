@@ -54,7 +54,7 @@ void ConfigureOscillator(void)
         //OSCCONbits.COSC1 = 1;
         //OSCCONbits.COSC2 = 1;
         
-        OSCTUN = 0x3;
+        OSCTUN = 0x7;
         while(OSCCONbits.LOCK != 1);    
 }
 
