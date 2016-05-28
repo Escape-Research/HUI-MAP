@@ -187,7 +187,7 @@ int16_t main(void)
                     // No calibration done yet, just truncate the 2 LSBs
                     g_nextOutput = fpos >> 2;
 
-                    LATB = (g_nextOutput & 0xFF) << 2;
+                    LATB = g_nextOutput & 0x3FC;
                 // Make sure that we will output 2 bytes
                 g_bOutput2ndByte = 0;
             }

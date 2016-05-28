@@ -19,7 +19,7 @@ __INT0Interrupt:
     mov #0b0000000011, w13
     mov w13, TRISB
     nop
-    nop
+    ;nop
     
     ; disable the output
     setm TRISB
@@ -41,34 +41,48 @@ its_zero:
     
     ; we need to process the "high" byte
     
-    mov _g_nextOutput, w12
-    mov [w12], w13
+    mov _g_nextOutput, w13
+    ;rcall load_nextOutput_in_w13
+    ;mov [w13], w12
     
-    and #0b1100000000, w13
-    lsr w13, #6, w12
+    and #0b11, w13
+    rlnc w13, w12
+    rlnc w12, w13
+    rlnc w13, w12
+    rlnc w12, w13
+    rlnc w13, w12
+    rlnc w12, w13
+    ;lsr w13, #6, w12
     
-    mov w12, LATB
-    
-    mov _g_bOutput2ndByte, w13
+    mov w13, LATB
+
+    ;mov _g_bOutput2ndByte, w13
+    ;rcall load_bOutput2ndByte_in_w13
     mov #1, w12
-    mov w12, [w13]
+    mov w12, _g_bOutput2ndByte
+    
+    bra done_with_output
         
 its_not_zero:
     
     ; we need to process the "low" byte
     
-    mov _g_nextOutput, w12
-    mov [w12], w13
+    mov _g_nextOutput, w13
+    ;rcall load_nextOutput_in_w13
+    ;mov [w13], w12
     
-    and #0b0011111111, w13
-    rlnc w13, w12
-    rlnc w12, w13
+    and #0b1111111100, w13
+    ;rlnc w13, w12
+    ;rlnc w12, w13
     mov w13, LATB
     
-    mov _g_bOutput2ndByte, w13    
+    ;mov _g_bOutput2ndByte, w13
+    ;rcall load_bOutput2ndByte_in_w13
     mov #0, w12
-    mov w12, [w13]
+    mov w12, _g_bOutput2ndByte
 
+done_with_output:
+    
     pop.s
     
 exit_int0:
@@ -77,5 +91,26 @@ exit_int0:
     ;pop.s
     retfie		; and return from interrupt
 
+load_nextOutput_in_w13:
+    
+    mov _g_nextOutput, w13
+    ;mov #psvpage(_g_nextOutput), w13
+    ;mov w13, PSVPAG
+    ;bset.b CORCON, #PSV
+    ;mov #psvoffset(_g_nextOutput), w13
+    
+    return
+    
+load_bOutput2ndByte_in_w13:
+    
+    mov _g_bOutput2ndByte, w13
+    ;mov #psvpage(_g_bOutput2ndByte), w13
+    ;mov w13, PSVPAG
+    ;bset.b CORCON, #PSV
+    ;mov #psvoffset(_g_bOutput2ndByte), w13
+    
+    return
+    
+    
 .end
 

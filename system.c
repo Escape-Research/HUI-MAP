@@ -37,24 +37,25 @@ __builtin functions.  Refer to the XC16 C Compiler User's Guide appendix G
 /* TODO Add clock switching code if appropriate.  An example stub is below.   */
 void ConfigureOscillator(void)
 {
-#if 0
+#if 1
         /* Disable Watch Dog Timer */
         RCONbits.SWDTEN = 0;
-
+        OSCTUN = 0x7;
+        
         /* When clock switch occurs switch to Pri Osc controlled by FPR<4:0> */
-        __builtin_write_OSCCONH(0x03);  /* Set OSCCONH for clock switch */
+        __builtin_write_OSCCONH(0x07);  /* Set OSCCONH for clock switch */
         __builtin_write_OSCCONL(0x01);  /* Start clock switching */
-        while(OSCCONbits.COSC != 0b011);
+        while(OSCCONbits.COSC != 0b111);
 
         /* Wait for Clock switch to occur */
         /* Wait for PLL to lock, if PLL is used */
-        /* while(OSCCONbits.LOCK != 1); */
+        while(OSCCONbits.LOCK != 1); 
 #endif
         //OSCCONbits.COSC0 = 1;
         //OSCCONbits.COSC1 = 1;
         //OSCCONbits.COSC2 = 1;
         
-        OSCTUN = 0x7;
-        while(OSCCONbits.LOCK != 1);    
+        //OSCTUN = 0x7;
+        //while(OSCCONbits.LOCK != 1);    
 }
 

@@ -825,7 +825,7 @@
         </archiverTool>
         <loading>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
-          <parseOnProdLoad>false</parseOnProdLoad>
+          <parseOnProdLoad>true</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
         </loading>
       </compileType>
@@ -957,7 +957,7 @@
         <property key="save-temps" value="false"/>
       </C30Global>
       <PICkit2PlatformTool>
-        <property key="pk2settings.3state" value="false"/>
+        <property key="pk2settings.3state" value="true"/>
         <property key="pk2settings.preserveee" value="false"/>
         <property key="pk2settings.setvddvoltage" value="5.00"/>
         <property key="pk2settings.userpgmexec" value="true"/>
