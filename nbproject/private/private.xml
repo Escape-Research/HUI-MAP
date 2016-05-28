@@ -5,6 +5,7 @@
         <group>
             <file>file:/C:/dev/prj/hui/hui-map/user.c</file>
             <file>file:/C:/dev/prj/hui/hui-map/system.c</file>
+            <file>file:/C:/dev/prj/hui/hui-map/handleCS.s</file>
             <file>file:/C:/dev/prj/hui/hui-map/main.c</file>
             <file>file:/C:/dev/Microchip/xc16/v1.26/support/dsPIC30F/h/p30F3013.h</file>
             <file>file:/C:/dev/prj/hui/hui-map/traps.c</file>

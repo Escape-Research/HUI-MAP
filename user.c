@@ -414,6 +414,9 @@ void InitApp(void)
     //_INT1EP = 1;   // RD - Interrupt on NEGATIVE going edge
     //_INT2EP = 1;   // WR - Interrupt on NEGATIVE going edge
     
+    // Set the INT0 priority
+    _INT0IP = 7;
+    
     // Enable INT0 - INT2 interrupts
     _INT0IE = 1;        // CS
     //_INT1IE = 1;        // RD

@@ -129,6 +129,7 @@ void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
     }
 }
 
+/*
 void __attribute__((interrupt(auto_psv))) _INT0Interrupt(void)
 {
     // Handle CS (negative going edge)
@@ -148,7 +149,7 @@ void __attribute__((interrupt(auto_psv))) _INT0Interrupt(void)
             // Is this the first or the second byte?
             if (!g_bOutput2ndByte)
             {
-                OutputByte(/*g_nextOutput &*/ 0xFF);
+                OutputByte(g_nextOutput & 0xFF);
                 g_bOutput2ndByte = 1;
             }
             else
@@ -207,7 +208,7 @@ void __attribute__((interrupt(auto_psv))) _INT0Interrupt(void)
     // Clear the INT0 interrupt flag
     _INT0IF = 0;
 }
-
+*/
 /*void __attribute__((interrupt(auto_psv))) _INT1Interrupt(void)
 {
     // Handle RD (negative going edge)

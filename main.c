@@ -138,9 +138,10 @@ int16_t main(void)
     /* Initialize IO ports and peripherals */
     InitApp();
 
-    INTCON1bits.NSTDIS = 1;  
-    EnableDataOutput();
-    handleCS();
+    INTCON1bits.NSTDIS = 1;
+    LATB = 0xF;
+    //EnableDataOutput();
+    //handleCS();
     
     
     // Load flags from flash
