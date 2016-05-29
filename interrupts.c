@@ -317,6 +317,7 @@ void __attribute__((interrupt(auto_psv))) _T2Interrupt(void)
     // Stop Timer2
     T2CONbits.TON = 0;
     TMR2 = 0;
+    TMR3 = 0;
     
     // Note the fact that we have reached the "long" push duration
     g_bLongDuration = 1;

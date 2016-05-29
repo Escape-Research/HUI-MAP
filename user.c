@@ -240,7 +240,8 @@ uint16_t readADC(int channel)
     OpenADC12(Adcon1_reg, Adcon2_reg,
               Adcon3_reg, PinConfig, Scanselect);
 
-    //LATCbits.LATC15 = 1;
+    int curLED = PORTCbits.RC15;
+    LATCbits.LATC15 = (curLED == 1) ? 0 : 1;
     ADCON1bits.SAMP = 1;
     while(ADCON1bits.SAMP);
     ConvertADC12();
@@ -248,7 +249,7 @@ uint16_t readADC(int channel)
     //while(!BusyADC12());
     while(BusyADC12());
     result = ReadADC12(0);
-    //LATCbits.LATC15 = 0;
+    LATCbits.LATC15 = curLED;
     
     return result;
 }
@@ -387,10 +388,10 @@ void InitApp(void)
     T2CON = 0;
     T1CONbits.TGATE = 0;
     T1CONbits.TCS = 0;
-    T1CONbits.TCKPS = 2;  // 1:64 prescale
+    T1CONbits.TCKPS = 3;  // 1:256 prescale
     T1CONbits.TON = 0;
     T2CONbits.TGATE = 0;
-    T2CONbits.T32 = 0;
+    T2CONbits.T32 = 1;
     T2CONbits.TCKPS = 3;  // 1:256 prescale
     T2CONbits.TCS = 0;
     T2CONbits.TON = 0;
@@ -399,14 +400,17 @@ void InitApp(void)
     TMR1 = 0;
     TMR2 = 0;
     // Load the period register
-    PR1 = 0x3FFF;
-    PR2 = 0x3FFF;
+    PR1 = 0xFFFF;
+    PR2 = 0xFFFF;
+    PR3 = 0x0008;
     
     // Setup Timer1 and Timer2 interrupts    
     _T1IF = 0;
     _T1IE = 1;
     _T2IF = 0;
     _T2IE = 1;
+    _T3IF = 0;
+    _T3IE = 0;
     
     //Setup CN and INT0 - INT2 interrupts   
     
