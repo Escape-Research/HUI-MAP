@@ -156,8 +156,6 @@ int16_t main(void)
     /* Configure the oscillator for the device */
     ConfigureOscillator();
     
-    //__delay_ms(3000);
-    
     INTCON1bits.NSTDIS = 1;   // disable nested interrupts
     
     /* Initialize IO ports and peripherals */

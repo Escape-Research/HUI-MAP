@@ -51,6 +51,8 @@ void ConfigureOscillator(void)
         /* Wait for Clock switch to occur */
         /* Wait for PLL to lock, if PLL is used */
         while(OSCCONbits.LOCK != 1); 
-
+        
+        // Reset the watchdog!
+        ClrWdt();
 }
 
