@@ -219,7 +219,7 @@ uint16_t readADC(int channel)
     PinConfig  = ENABLE_AN0_ANA & ENABLE_AN1_ANA;
     Scanselect = SCAN_NONE;
  
-    Adcon3_reg = ADC_SAMPLE_TIME_1 &
+    Adcon3_reg = ADC_SAMPLE_TIME_30 &
                  ADC_CONV_CLK_SYSTEM &
                  ADC_CONV_CLK_20Tcy;
                  //ADC_CONV_CLK_13Tcy;
@@ -240,6 +240,7 @@ uint16_t readADC(int channel)
     OpenADC12(Adcon1_reg, Adcon2_reg,
               Adcon3_reg, PinConfig, Scanselect);
 
+    //LATCbits.LATC15 = 1;
     ADCON1bits.SAMP = 1;
     while(ADCON1bits.SAMP);
     ConvertADC12();
@@ -247,6 +248,7 @@ uint16_t readADC(int channel)
     //while(!BusyADC12());
     while(BusyADC12());
     result = ReadADC12(0);
+    //LATCbits.LATC15 = 0;
     
     return result;
 }

@@ -2,9 +2,9 @@
 /* User Level #define Macros                                                  */
 /******************************************************************************/
 
-extern __psv__ char __attribute__((space(psv))) map_lo[8][1024]; 
-extern __psv__ char __attribute__((space(psv))) map_hi[8][512]; 
-extern __psv__ int  __attribute__((space(psv))) map_saved[32];
+extern __prog__ char __attribute__((space(prog))) map_lo[8][1024]; 
+extern __prog__ char __attribute__((space(prog))) map_hi[8][512]; 
+extern __prog__ int  __attribute__((space(prog))) map_saved[32];
 
 extern char temp_map_lo[1024];
 extern char temp_map_hi[512];

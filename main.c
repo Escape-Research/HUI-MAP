@@ -76,11 +76,11 @@
 /******************************************************************************/
 
 // Permanent calibration maps located in FLASH
-__psv__ char __attribute__((space(auto_psv), aligned(_FLASH_PAGE * 2))) map_lo[8][1024];
-__psv__ char __attribute__((space(auto_psv), aligned(_FLASH_PAGE * 2))) map_hi[8][512]; 
+__prog__ char __attribute__((space(prog), aligned(_FLASH_PAGE * 2))) map_lo[8][1024];
+__prog__ char __attribute__((space(prog), aligned(_FLASH_PAGE * 2))) map_hi[8][512]; 
 
 // Calibration indicator flags
-__psv__ int __attribute__((space(auto_psv), aligned(_FLASH_PAGE * 2))) map_saved[32] = 
+__prog__ int __attribute__((space(prog), aligned(_FLASH_PAGE * 2))) map_saved[32] = 
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -177,20 +177,22 @@ int16_t main(void)
                 // Cache the fader number
                 currFader = getFaderNum2();
 
+                __delay_us(125);
+                
                 // Capture the current fader position (Analog input 0)
                 uint16_t fpos = readADC(0);
 
                 // Do we have a calibration?
-                //if (map_saved[(char)currFader])
-                //{
+                if (map_saved[currFader])
+                {
                     // Locate where this value is on the map!
-                //    uint16_t corrected_value = map_approx_lookup(currFader, fpos);
+                    uint16_t corrected_value = map_approx_lookup(currFader, fpos);
 
                     // Output that (queue) (behave like an ADC1001  !!!!!)
-                //    g_nextOutput = corrected_value;
-                    g_nextOutput = 0x3FF;
-                //}
-                //else
+                    g_nextOutput = corrected_value;
+                    //g_nextOutput = 0x3FF;
+                }
+                else
                     // No calibration done yet, just truncate the 2 LSBs
                     g_nextOutput = fpos >> 2;
                 //g_nextOutput = 0x3FF;
@@ -201,20 +203,7 @@ int16_t main(void)
                 
                 LATB = g_nextOutput & 0x3FC;
                 
-                // Make sure that we will output 2 bytes
-                //g_bOutput2ndByte = 0;
-
-                //__delay_us(7500);
-                // make sure that we are on the same fader!
-                //while (currFader == getFaderNum2())
-                //    ;
-                //while (currFader != getFaderNum2())
-                //    ;
-
                 s_INT0Interrupt();
-                
-                //while (PORTDbits.RD9)
-                //    ;
             }
                            
             // Should we enter cal mode?
