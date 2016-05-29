@@ -182,11 +182,19 @@ void SaveTempMapToFlash(char fader)
     
 }
 
-char getFaderNum()
+int getFaderNum()
 {
-    char fader = (g_SELbits.SELC << 2) +
+    int fader = (g_SELbits.SELC << 2) +
                  (g_SELbits.SELB << 1) +
                  (g_SELbits.SELA);
+    return fader;
+}
+
+int getFaderNum2()
+{
+    int fader = (PORTFbits.RF5 << 2) +
+                 (PORTFbits.RF4 << 1) +
+                 (PORTCbits.RC14);
     return fader;
 }
 
@@ -211,9 +219,9 @@ uint16_t readADC(int channel)
     PinConfig  = ENABLE_AN0_ANA & ENABLE_AN1_ANA;
     Scanselect = SCAN_NONE;
  
-    Adcon3_reg = ADC_SAMPLE_TIME_20 &
+    Adcon3_reg = ADC_SAMPLE_TIME_1 &
                  ADC_CONV_CLK_SYSTEM &
-                 ADC_CONV_CLK_32Tcy;
+                 ADC_CONV_CLK_20Tcy;
                  //ADC_CONV_CLK_13Tcy;
  
     Adcon2_reg = ADC_VREF_AVDD_AVSS &
@@ -226,7 +234,7 @@ uint16_t readADC(int channel)
                  ADC_IDLE_CONTINUE &
                  ADC_FORMAT_INTG &
                  ADC_CLK_AUTO &
-                 ADC_AUTO_SAMPLING_ON &
+                 ADC_AUTO_SAMPLING_OFF &
                  ADC_SAMP_OFF;
     
     OpenADC12(Adcon1_reg, Adcon2_reg,
@@ -402,6 +410,7 @@ void InitApp(void)
     
     // Clear the CN interrupt flag
     _CNIF = 0;      
+    _CNIP = 7;
     // Enable CN interrupts
     _CNIE = 1;      
 
@@ -416,10 +425,10 @@ void InitApp(void)
     //_INT2EP = 1;   // WR - Interrupt on NEGATIVE going edge
     
     // Set the INT0 priority
-    _INT0IP = 7;
+    //_INT0IP = 7;
     
     // Enable INT0 - INT2 interrupts
-    _INT0IE = 1;        // CS
+    //_INT0IE = 1;        // CS
     //_INT1IE = 1;        // RD
     //_INT2IE = 1;        // WR
     

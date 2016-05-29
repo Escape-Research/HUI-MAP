@@ -49,6 +49,8 @@ extern unsigned g_Blinks;
 // Flag to keep track of the LED ON state
 extern char g_bLEDON;
 
+void s_INT0Interrupt();
+
 /******************************************************************************/
 /* User Function Prototypes                                                   */
 /******************************************************************************/
@@ -68,7 +70,8 @@ void OutputByte(unsigned byteToSend);
 
 void HandleButton(char bLongDuration);
 
-char getFaderNum();
+int getFaderNum();
+int getFaderNum2();
 
 uint16_t readADC(int channel);
 

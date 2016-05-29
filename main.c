@@ -65,9 +65,10 @@
 #include <stdint.h>        /* Includes uint16_t definition                    */
 #include <stdbool.h>       /* Includes true/false definition                  */
 
+#include "system.h"        /* System funct/params, like osc/peripheral config */
+
 #include <libpic30.h>
 
-#include "system.h"        /* System funct/params, like osc/peripheral config */
 #include "user.h"          /* User funct/params, such as InitApp              */
 
 /******************************************************************************/
@@ -87,6 +88,8 @@ __psv__ int __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_saved[32] 
 char temp_map_lo[1024];     // = { '\0' };
 char temp_map_hi[512];      // = { '\0' };
 int map_saved_buffer[32];   // = { 0 };
+
+uint16_t out_buffer[8];
 
 // Last known state of the push button
 unsigned g_bButtonState = 0;
@@ -126,6 +129,8 @@ char g_bLEDON = 0;
 
 int trisb_out = 0x3;
 
+int currFader = 0;
+
 /******************************************************************************/
 /* Main Program                                                               */
 /******************************************************************************/
@@ -162,6 +167,7 @@ int16_t main(void)
         {
             // Wait for request to start
             if (g_bReadyToStart)
+            //while (!g_bCalMode)            
             {
                 // Reset the flag
                 g_bReadyToStart = 0;
@@ -169,7 +175,7 @@ int16_t main(void)
                 // Do translation
 
                 // Cache the fader number
-                char currFader = getFaderNum();
+                currFader = getFaderNum2();
 
                 // Capture the current fader position (Analog input 0)
                 uint16_t fpos = readADC(0);
@@ -186,10 +192,28 @@ int16_t main(void)
                 //else
                     // No calibration done yet, just truncate the 2 LSBs
                     g_nextOutput = fpos >> 2;
+                //g_nextOutput = 0x3FF;
 
-                    LATB = g_nextOutput & 0x3FC;
+                out_buffer[currFader] = g_nextOutput;
+                int nextIndex = (currFader + 9) % 8;
+                g_nextOutput = out_buffer[nextIndex];
+                
+                LATB = g_nextOutput & 0x3FC;
+                
                 // Make sure that we will output 2 bytes
-                g_bOutput2ndByte = 0;
+                //g_bOutput2ndByte = 0;
+
+                //__delay_us(7500);
+                // make sure that we are on the same fader!
+                //while (currFader == getFaderNum2())
+                //    ;
+                //while (currFader != getFaderNum2())
+                //    ;
+
+                s_INT0Interrupt();
+                
+                //while (PORTDbits.RD9)
+                //    ;
             }
                            
             // Should we enter cal mode?
