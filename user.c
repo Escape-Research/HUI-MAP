@@ -15,6 +15,8 @@
 #include <stdbool.h>         /* For true/false definition                     */
 #include <stdlib.h>
 
+#include "system.h"
+
 #include <libpic30.h>
 #include <adc12.h>
 
@@ -200,9 +202,7 @@ int getFaderNum2()
 
 uint16_t readADC(int channel)
 {
-    unsigned int result, i;
-    unsigned int ch, PinConfig, Scanselect;
-    unsigned int Adcon3_reg, Adcon2_reg, Adcon1_reg;
+    unsigned int ch, result, i;
     
     ADCON1bits.ADON = 0;         /* turn off ADC */
     if (channel == 0)
@@ -211,46 +211,44 @@ uint16_t readADC(int channel)
     else if (channel == 1)
         ch = ADC_CH0_POS_SAMPLEA_AN1; 
              //& ADC_CH0_NEG_SAMPLEA_NVREF;
-        
+      
+    // Select the input channel to convert
     SetChanADC12(ch);
     
-    ConfigIntADC12(ADC_INT_DISABLE);
-    
-    PinConfig  = ENABLE_AN0_ANA & ENABLE_AN1_ANA;
-    Scanselect = SCAN_NONE;
- 
-    Adcon3_reg = ADC_SAMPLE_TIME_30 &
-                 ADC_CONV_CLK_SYSTEM &
-                 ADC_CONV_CLK_20Tcy;
-                 //ADC_CONV_CLK_13Tcy;
- 
-    Adcon2_reg = ADC_VREF_AVDD_AVSS &
-                 ADC_SCAN_OFF &
-                 ADC_ALT_BUF_OFF &
-                 ADC_ALT_INPUT_OFF & 
-                 ADC_SAMPLES_PER_INT_1;
-    
-    Adcon1_reg = ADC_MODULE_ON &
-                 ADC_IDLE_CONTINUE &
-                 ADC_FORMAT_INTG &
-                 ADC_CLK_AUTO &
-                 ADC_AUTO_SAMPLING_OFF &
-                 ADC_SAMP_OFF;
-    
-    OpenADC12(Adcon1_reg, Adcon2_reg,
-              Adcon3_reg, PinConfig, Scanselect);
+    // Setup the ADC
+    OpenADC12(g_ADC_Adcon1_reg, 
+              g_ADC_Adcon2_reg,
+              g_ADC_Adcon3_reg, 
+              g_ADC_PinConfig, 
+              g_ADC_Scanselect);
 
-    int curLED = PORTCbits.RC15;
-    LATCbits.LATC15 = (curLED == 1) ? 0 : 1;
-    ADCON1bits.SAMP = 1;
-    while(ADCON1bits.SAMP);
-    ConvertADC12();
-    while(ADCON1bits.SAMP);
-    //while(!BusyADC12());
-    while(BusyADC12());
-    result = ReadADC12(0);
-    LATCbits.LATC15 = curLED;
+    __builtin_disable_interrupts();
     
+    LATCbits.LATC15 = !g_bLEDON;
+
+    // Init the S&H phase
+    ADCON1bits.SAMP = 1;
+    while(ADCON1bits.SAMP)
+        ;
+    
+    // Init the convesion
+    ConvertADC12();
+    
+    // Wait till processing is done
+    while(ADCON1bits.SAMP)
+        ;
+    __delay_us(10);
+    //while(!BusyADC12());
+    while(BusyADC12())
+        ;
+
+    // Get the result
+    result = ReadADC12(0);
+    
+    LATCbits.LATC15 = g_bLEDON;
+    
+    __builtin_enable_interrupts();
+        
     return result;
 }
 
@@ -284,47 +282,6 @@ void HandleButton(char bLongDuration)
     T1CONbits.TON = 1;
 }
 
-void DisableDataOutput()
-{
-    TRISBbits.TRISB2 = 1;  // Output D0
-    TRISBbits.TRISB3 = 1;  // Output D1
-    TRISBbits.TRISB4 = 1;  // Output D2
-    TRISBbits.TRISB5 = 1;  // Output D3
-    TRISBbits.TRISB6 = 1;  // Output D4
-    TRISBbits.TRISB7 = 1;  // Output D5
-    TRISBbits.TRISB8 = 1;  // Output D6
-    TRISBbits.TRISB9 = 1;  // Output D7
-}
-
-void EnableDataOutput()
-{
-    TRISBbits.TRISB2 = 0;  // Output D0
-    TRISBbits.TRISB3 = 0;  // Output D1
-    TRISBbits.TRISB4 = 0;  // Output D2
-    TRISBbits.TRISB5 = 0;  // Output D3
-    TRISBbits.TRISB6 = 0;  // Output D4
-    TRISBbits.TRISB7 = 0;  // Output D5
-    TRISBbits.TRISB8 = 0;  // Output D6
-    TRISBbits.TRISB9 = 0;  // Output D7
-}
-
-void OutputByte(unsigned byteToSend)
-{
-    //uint16_t shiftedValue = byteToSend;
-    //shiftedValue <<= 2;
-    
-    LATBbits.LATB2 = byteToSend & 0x1;
-    LATBbits.LATB3 = byteToSend & 0x2;
-    LATBbits.LATB4 = byteToSend & 0x4;
-    LATBbits.LATB5 = byteToSend & 0x8;
-    LATBbits.LATB6 = byteToSend & 0x10;
-    LATBbits.LATB7 = byteToSend & 0x20;
-    LATBbits.LATB8 = byteToSend & 0x40;
-    LATBbits.LATB9 = byteToSend & 0x80;
-    
-    //LATB = shiftedValue;
-}
-
 /* Initialize User Ports/Peripherals */
 void InitApp(void)
 {
@@ -333,7 +290,8 @@ void InitApp(void)
     TRISBbits.TRISB0 = 1;  // RB0 as input (we actually use it as AN0)
     TRISBbits.TRISB1 = 1;  // RB1 as input (we actually use it as AN1)
     
-    DisableDataOutput();
+    // Initialize port B as all inputs
+    TRISB = 0x3FF;
     
     TRISCbits.TRISC15 = 0; // Output LED
     TRISCbits.TRISC13 = 1; // Input (T2CK gate) Push button
@@ -408,36 +366,22 @@ void InitApp(void)
     _T1IF = 0;
     _T1IE = 1;
     _T2IF = 0;
-    _T2IE = 1;
+    _T2IE = 0;
     _T3IF = 0;
     _T3IE = 0;
     
     //Setup CN and INT0 - INT2 interrupts   
     
     // Clear the CN interrupt flag
-    _CNIF = 0;      
-    _CNIP = 7;
+    _CNIF = 0;
+    //_CNIP = 7;
     // Enable CN interrupts
     _CNIE = 1;      
 
-    // Clear the INT0 - INT2 interrupt flags
-    _INT0IF = 0;
-    //_INT1IF = 0;
-    //_INT2IF = 0;
+    // We are not using the ADC interrupts
+    ConfigIntADC12(ADC_INT_DISABLE);
     
-    // Set the INT edge polarity trigger 
-    _INT0EP = 1;   // CS - Interrupt on NEGATIVE going edge
-    //_INT1EP = 1;   // RD - Interrupt on NEGATIVE going edge
-    //_INT2EP = 1;   // WR - Interrupt on NEGATIVE going edge
-    
-    // Set the INT0 priority
-    //_INT0IP = 7;
-    
-    // Enable INT0 - INT2 interrupts
-    //_INT0IE = 1;        // CS
-    //_INT1IE = 1;        // RD
-    //_INT2IE = 1;        // WR
-    
+    // Initialize the last known button state
     g_bButtonState = PORTCbits.RC13;
 }
 

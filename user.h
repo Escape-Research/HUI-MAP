@@ -49,7 +49,12 @@ extern unsigned g_Blinks;
 // Flag to keep track of the LED ON state
 extern char g_bLEDON;
 
-void s_INT0Interrupt();
+// ADC configuration parameters
+extern unsigned int g_ADC_PinConfig;
+extern unsigned int g_ADC_Scanselect;
+extern unsigned int g_ADC_Adcon3_reg;
+extern unsigned int g_ADC_Adcon2_reg;
+extern unsigned int g_ADC_Adcon1_reg;
 
 /******************************************************************************/
 /* User Function Prototypes                                                   */
@@ -64,16 +69,14 @@ void init_tempmap();
 void interpolate_tempmap();
 void SaveTempMapToFlash(char fader);
 
-void DisableDataOutput();
-void EnableDataOutput();
-void OutputByte(unsigned byteToSend);
-
 void HandleButton(char bLongDuration);
 
 int getFaderNum();
 int getFaderNum2();
 
 uint16_t readADC(int channel);
+
+void asm_ProcessRDRequest();
 
 void InitApp(void); /* I/O and Peripheral Initialization */
 

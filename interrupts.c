@@ -113,25 +113,38 @@ void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
         {
             // The user just pressed the button
             
-            // Reset the "long" duration flag
-            g_bLongDuration = 0;
+            // Basic -debounce
+            __delay_us(50);
+            if (!PORTCbits.RC13)
+            {
+                // Reset the "long" duration flag
+                g_bLongDuration = 0;
 
-            // Reset and Start the Timer2
-            TMR2 = 0;
-            T2CONbits.TON = 1;            
+                // Reset and Start the Timer2
+                TMR2 = 0;
+                T2CONbits.TON = 1;            
+
+                g_bButtonState = portc.RC13;
+            }
         }
         else
         {
             // The user just released the button
             
-            // Stop and Reset Timer2
-            T2CONbits.TON = 0;
-            TMR2 = 0;
-            
-            // Was it a long duration?
-            HandleButton(g_bLongDuration);            
+            // Basic -debounce
+            __delay_us(50);
+            if (PORTCbits.RC13)
+            {
+                // Stop and Reset Timer2
+                T2CONbits.TON = 0;
+                TMR2 = 0;
+
+                // Was it a long duration?
+                HandleButton(g_bLongDuration);            
+                
+                g_bButtonState = portc.RC13;
+            }
         }
-        g_bButtonState = portc.RC13;
     }
 }
 

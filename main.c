@@ -68,6 +68,7 @@
 #include "system.h"        /* System funct/params, like osc/peripheral config */
 
 #include <libpic30.h>
+#include <adc12.h>
 
 #include "user.h"          /* User funct/params, such as InitApp              */
 
@@ -89,6 +90,7 @@ char temp_map_lo[1024];     // = { '\0' };
 char temp_map_hi[512];      // = { '\0' };
 int map_saved_buffer[32];   // = { 0 };
 
+// Buffer to hold the queued output values for each fader read inquiry
 uint16_t out_buffer[8];
 
 // Last known state of the push button
@@ -127,9 +129,23 @@ unsigned g_Blinks = 0;
 // Flag to keep track of the LED ON state
 char g_bLEDON = 0;
 
-int trisb_out = 0x3;
-
-int currFader = 0;
+// ADC initialization parameters
+unsigned int g_ADC_PinConfig  = ENABLE_AN0_ANA & ENABLE_AN1_ANA;
+unsigned int g_ADC_Scanselect = SCAN_NONE;
+unsigned int g_ADC_Adcon3_reg = ADC_SAMPLE_TIME_30 &
+                                ADC_CONV_CLK_SYSTEM &
+                                ADC_CONV_CLK_20Tcy;
+unsigned int g_ADC_Adcon2_reg = ADC_VREF_AVDD_AVSS &
+                                ADC_SCAN_OFF &
+                                ADC_ALT_BUF_OFF &
+                                ADC_ALT_INPUT_OFF & 
+                                ADC_SAMPLES_PER_INT_1;
+unsigned int g_ADC_Adcon1_reg = ADC_MODULE_ON &
+                                ADC_IDLE_CONTINUE &
+                                ADC_FORMAT_INTG &
+                                ADC_CLK_AUTO &
+                                ADC_AUTO_SAMPLING_OFF &
+                                ADC_SAMP_OFF;  
 
 /******************************************************************************/
 /* Main Program                                                               */
@@ -139,6 +155,8 @@ int16_t main(void)
 {    
     /* Configure the oscillator for the device */
     ConfigureOscillator();
+    
+    //__delay_ms(3000);
     
     INTCON1bits.NSTDIS = 1;   // disable nested interrupts
     
@@ -163,6 +181,9 @@ int16_t main(void)
 
     while(1)
     {
+        // Reset the watchdog!
+        ClrWdt();
+        
         if (!g_bCalMode)
         {
             // Wait for request to start
@@ -175,8 +196,9 @@ int16_t main(void)
                 // Do translation
 
                 // Cache the fader number
-                currFader = getFaderNum2();
+                int currFader = getFaderNum2();
 
+                // Wait until the voltage is stable before we begin the A2D
                 __delay_us(125);
                 
                 // Capture the current fader position (Analog input 0)
@@ -195,15 +217,19 @@ int16_t main(void)
                 else
                     // No calibration done yet, just truncate the 2 LSBs
                     g_nextOutput = fpos >> 2;
-                //g_nextOutput = 0x3FF;
 
+                // Store the result in the queue
                 out_buffer[currFader] = g_nextOutput;
+                
+                // Locate the appropriate queue index to push
                 int nextIndex = (currFader + 9) % 8;
                 g_nextOutput = out_buffer[nextIndex];
                 
+                // The first output doesn't have the last two LSBs
                 LATB = g_nextOutput & 0x3FC;
                 
-                s_INT0Interrupt();
+                // Process the following two RD requests (assembly)
+                asm_ProcessRDRequest();
             }
                            
             // Should we enter cal mode?
