@@ -76,11 +76,11 @@
 /******************************************************************************/
 
 // Permanent calibration maps located in FLASH
-__psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_lo[8][1024];
-__psv__ char __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_hi[8][512]; 
+__psv__ char __attribute__((space(auto_psv), aligned(_FLASH_PAGE * 2))) map_lo[8][1024];
+__psv__ char __attribute__((space(auto_psv), aligned(_FLASH_PAGE * 2))) map_hi[8][512]; 
 
 // Calibration indicator flags
-__psv__ int __attribute__((space(psv), aligned(_FLASH_PAGE * 2))) map_saved[32] = 
+__psv__ int __attribute__((space(auto_psv), aligned(_FLASH_PAGE * 2))) map_saved[32] = 
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -181,13 +181,14 @@ int16_t main(void)
                 uint16_t fpos = readADC(0);
 
                 // Do we have a calibration?
-                //if (map_saved[currFader])
+                //if (map_saved[(char)currFader])
                 //{
                     // Locate where this value is on the map!
                 //    uint16_t corrected_value = map_approx_lookup(currFader, fpos);
 
                     // Output that (queue) (behave like an ADC1001  !!!!!)
                 //    g_nextOutput = corrected_value;
+                    g_nextOutput = 0x3FF;
                 //}
                 //else
                     // No calibration done yet, just truncate the 2 LSBs
