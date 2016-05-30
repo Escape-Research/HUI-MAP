@@ -28,7 +28,6 @@
 /* then paste into this project.                                              */
 /******************************************************************************/
 
-
 // DSPIC30F3013 Configuration Bit Settings
 
 // 'C' source line config statements
@@ -40,7 +39,7 @@
 #pragma config FCKSMEN = CSW_ON_FSCM_OFF// Clock Switching and Monitor (Sw Enabled, Mon Disabled)
 
 // FWDT
-#pragma config FWPSB = WDTPSB_16        // WDT Prescaler B (1:16)
+#pragma config FWPSB = WDTPSB_5         // WDT Prescaler B (1:5)
 #pragma config FWPSA = WDTPSA_512       // WDT Prescaler A (1:512)
 #pragma config WDT = WDT_ON             // Watchdog Timer (Enabled)
 
