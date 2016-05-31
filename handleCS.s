@@ -10,6 +10,9 @@ _asm_ProcessRDRequest:
     ; *********************************
     ; * Begin timing Critical section *
     ; *********************************
+
+    ; store current state of registers
+    push.s
     
     ; Temporarily disable interrupts
     disi #100
@@ -39,8 +42,6 @@ s_proceed1:
     ; * End timing Critical section *
     ; ********************************
 
-    push.s
-    
     ; we need to process the "high" byte
     
     mov _g_nextOutput, w13
@@ -78,11 +79,14 @@ s_proceed2:
     ; disable the output
     setm TRISB    
     
+    ; restore the prior state of registers
     pop.s
     
 s_exit_int0:
     
-    ;bclr IFS0, #INT0IF	; clear the interrupt flag
+    ; re-enable interrupts
+    clr DISICNT
+    
     return		; and return from interrupt
         
     .end
