@@ -200,36 +200,70 @@ int getFaderNum2()
     return fader;
 }
 
-uint16_t readADC(int channel)
+void configADC()
 {
-    unsigned int ch, result, i;
+    // Make sure the ADC if off during initial configuration
+    ADCON1bits.ADON = 0;
+
+    // Enable AN0 and AN1 as analog inputs
+    ADPCFG = ENABLE_AN0_ANA & ENABLE_AN1_ANA;
+
+    ADCON1bits.ADSIDL = 0;   // Continue operation while in idle mode
+    ADCON1bits.FORM = 0x00;  // Output format is Integer
+    ADCON1bits.SSRC = 0b111; // Internal counter ends sampling and starts conversion
+    ADCON1bits.ASAM = 0;     // Initial the A/D sample enable is turned-off
+    ADCON1bits.SAMP = 0;     // A/D sample/hold amp is (should) not sampling
     
-    ADCON1bits.ADON = 0;         /* turn off ADC */
+    ADCHSbits.CH0SA = 0x00;  // Channel 0 for MUX A positive is AN0
+    ADCHSbits.CH0NA = 0;     // Channel 0 for MUX A negative is VREF- (AVss)
+    ADCHSbits.CH0SB = 0x01;  // Channel 0 for MUX B positive is AN1
+    ADCHSbits.CH0NB = 0;     // Channel 0 for MUX B negative is VREF- (AVss)
     
-    // NOTE: we need to wait 20 uS after turning on the ADC module
-    //in order to for the ADC to stabilize before we initiate sampling
+    ADCSSL = 0x0000;         // No scanning
+    
+    ADCON3bits.SAMC = 0x01;  // 1 TAD (auto sample time)
+    ADCON3bits.ADRC = 0;     // Clock derived from system clock
+    ADCON3bits.ADCS = 19;    // Configure for 333nS TAD time
+    
+    ADCON2bits.CSCNA = 0;    // Do not scan inputs
+    ADCON2bits.BUFM = 0;     // Buffer configured as one 16-word buffer ADCBUF(15..0)
+    ADCON2bits.SMPI = 8;     // Collect 8 or 16 samples at a time!
+    ADCON2bits.ALTS = 0;     // Don't alternate between MUX A and MUX B
+    
+    // Turn on the ADC
+    ADCON1bits.ADON = 1;
+    
+    // Make sure that we'll wait for at least 20uS for ADC to stabilize
+    __delay_us(20);
+}
+
+uint16_t readADC(int channel, int *pAltResult)
+{
+    unsigned result, i;
+
+    // We are collecting and averaging 8 samples
     
     if (channel == 0)
-        ch = ADC_CH0_POS_SAMPLEA_AN0  
-           & ADC_CH0_NEG_SAMPLEA_NVREF;
-    else if (channel == 1)
-        ch = ADC_CH0_POS_SAMPLEA_AN1 
-           & ADC_CH0_NEG_SAMPLEA_NVREF;
-      
-    // Select the input channel to convert
-    SetChanADC12(ch);
-    
-    // Setup the ADC
-    OpenADC12(g_ADC_Adcon1_reg, 
-              g_ADC_Adcon2_reg,
-              g_ADC_Adcon3_reg, 
-              g_ADC_PinConfig, 
-              g_ADC_Scanselect);
-
-    //__builtin_disable_interrupts();
-    
+    {
+        // We are only to sample AD0
+        ADCON2bits.ALTS = 0;
+        
+        // Collect 8 samples at a time!
+        ADCON2bits.SMPI = 8;
+    }
+    else
+    {
+        // We will sample AD0 and AD1 (alternate MUX)
+        ADCON2bits.ALTS = 1;
+        
+        // Collect 16 samples at a time!
+        ADCON2bits.SMPI = 16;
+    }
+        
     LATCbits.LATC15 = !g_bLEDON;
 
+    // TODO beyond this point!!!!
+    
     // Init the S&H phase
     ADCON1bits.SAMP = 1;
     while(ADCON1bits.SAMP)
@@ -389,8 +423,8 @@ void InitApp(void)
     // Enable CN interrupts
     _CNIE = 1;      
 
-    // We are using the ADC interrupts
-    ConfigIntADC12(ADC_INT_ENABLE);
+    // Configure the ADC
+    configADC();
     
     // Initialize the last known button state
     g_bButtonState = PORTCbits.RC13;
