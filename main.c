@@ -132,9 +132,9 @@ char g_bLEDON = 0;
 // ADC initialization parameters
 unsigned int g_ADC_PinConfig  = ENABLE_AN0_ANA & ENABLE_AN1_ANA;
 unsigned int g_ADC_Scanselect = SCAN_NONE;
-unsigned int g_ADC_Adcon3_reg = ADC_SAMPLE_TIME_30 &
+unsigned int g_ADC_Adcon3_reg = ADC_SAMPLE_TIME_1 &
                                 ADC_CONV_CLK_SYSTEM &
-                                ADC_CONV_CLK_20Tcy;
+                                ADC_CONV_CLK_29Tcy;
 unsigned int g_ADC_Adcon2_reg = ADC_VREF_AVDD_AVSS &
                                 ADC_SCAN_OFF &
                                 ADC_ALT_BUF_OFF &

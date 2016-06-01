@@ -148,143 +148,14 @@ void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
     }
 }
 
-/*
-void __attribute__((interrupt(auto_psv))) _INT0Interrupt(void)
+void __attribute__ ((interrupt(auto_psv))) _ADCInterrupt(void)
 {
-    // Handle CS (negative going edge)
-
-    handleCS();
+    // stop the auto-sampling
+    ADCON1bits.ASAM = 0;
     
-     INTCON1bits.NSTDIS = 1;   // disable nested interrupts 
-    
-    // Wait until RD or WR go low
-    //while (!PORTFbits.RF6)
-    //{
-        if (!PORTDbits.RD8)
-        {
-            // Handle a RD request
-            // We need to output the next BYTE on port B2:9
-
-            // Is this the first or the second byte?
-            if (!g_bOutput2ndByte)
-            {
-                OutputByte(g_nextOutput & 0xFF);
-                g_bOutput2ndByte = 1;
-            }
-            else
-            {
-                OutputByte(g_nextOutput & 0x300);
-                g_bOutput2ndByte = 0;
-
-                // Keep outputing the same as long as we don't
-                // have a new AD conversion request
-                //g_nextOutput = 0;
-            }
-
-            // Wait 
-            //__delay_us(100);
-
-            // Make sure that enable the Output
-            EnableDataOutput();
-        }
-        if (!PORTDbits.RD9)
-        {
-            // Handle a WR request
-                        
-            // Cache the fader number
-            char currFader = getFaderNum();
-
-            // Capture the current fader position (Analog input 0)
-            uint16_t fpos = readADC(0);
-
-            // Do we have a calibration?
-            //if (map_saved[currFader])
-            //{
-                // Locate where this value is on the map!
-            //    uint16_t corrected_value = map_approx_lookup(currFader, fpos);
-
-                // Output that (queue) (behave like an ADC1001  !!!!!)
-            //    g_nextOutput = corrected_value;
-            //}
-            //else
-                // No calibration done yet, just truncate the 2 LSBs
-                g_nextOutput = fpos >> 2;
-
-            // Make sure that we will output 2 bytes
-            g_bOutput2ndByte = 0;
-
-        }
-    //}
-     
-    //while (!PORTFbits.RF6)
-     //  ;
-    
-    // Make sure that we out the port B output back to TRI-STATE
-    DisableDataOutput();
-
-    INTCON1bits.NSTDIS = 0;   // re-enable nested interrupts 
-    
-    // Clear the INT0 interrupt flag
-    _INT0IF = 0;
+    // clear the interrupt flag
+    _ADIF = 0;    
 }
-*/
-/*void __attribute__((interrupt(auto_psv))) _INT1Interrupt(void)
-{
-    // Handle RD (negative going edge)
-    
-    // Check if CS (RF6) is LOW
-    if (LATFbits.LATF6 == 0)
-    {
-        // We need to output the next BYTE on port B2:9
-                
-        // Is this the first or the second byte?
-        if (!g_bOutput2ndByte)
-        {
-            OutputByte(g_nextOutput & 0xFF);
-            g_bOutput2ndByte = 1;
-        }
-        else
-        {
-            OutputByte(g_nextOutput & 0x300);
-            g_bOutput2ndByte = 0;
-                        
-            // Keep outputing the same as long as we don't
-            // have a new AD conversion request
-            //g_nextOutput = 0;
-        }
-
-  8      // Wait 
-        __delay_us(100);
-        
-        // Make sure that enable the Output
-        EnableDataOutput();
-    }
-    
-    // Clear the INT1 interrupt flag
-    _INT1IF = 0;
-}
-
-void __attribute__((interrupt(auto_psv))) _INT2Interrupt(void)
-{
-    // Handle WR (negative going edge)
-  
-    // Check if CS (RF6) is LOW
-    if (LATFbits.LATF6 == 0)
-    {
-        // We need to initiate a new AD conversion
-        g_bReadyToStart = 1;                
-
-        // Blip the LED
-        int prevState = PORTCbits.RC15;        
-        LATCbits.LATC15 = 1;
-        __delay_us(1);
-        LATCbits.LATC15 = 0;        
-        LATCbits.LATC15 = prevState; 
-    }
-    
-    // Clear the INT2 interrupt flag
-    _INT2IF = 0;
-}*/
 
 void __attribute__((interrupt(auto_psv))) _T1Interrupt(void)
 {
@@ -325,9 +196,9 @@ void __attribute__((interrupt(auto_psv))) _T1Interrupt(void)
     _T1IF = 0;   
 }
 
-void __attribute__((interrupt(auto_psv))) _T2Interrupt(void)
+void __attribute__((interrupt(auto_psv))) _T3Interrupt(void)
 {
-    // Stop Timer2
+    // Stop Timer2 / Timer3
     T2CONbits.TON = 0;
     TMR2 = 0;
     TMR3 = 0;
@@ -338,6 +209,6 @@ void __attribute__((interrupt(auto_psv))) _T2Interrupt(void)
     // Turn on the LED as an indication that we will enter Calibration mode
     LATCbits.LATC15 = 1;
     
-    // Clear the T2 interrupt flag
-    _T2IF = 0;   
+    // Clear the T3 interrupt flag
+    _T3IF = 0;   
 }

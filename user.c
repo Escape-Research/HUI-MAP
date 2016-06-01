@@ -205,12 +205,16 @@ uint16_t readADC(int channel)
     unsigned int ch, result, i;
     
     ADCON1bits.ADON = 0;         /* turn off ADC */
+    
+    // NOTE: we need to wait 20 uS after turning on the ADC module
+    //in order to for the ADC to stabilize before we initiate sampling
+    
     if (channel == 0)
-        ch = ADC_CH0_POS_SAMPLEA_AN0;  
-             //& ADC_CH0_NEG_SAMPLEA_NVREF;
+        ch = ADC_CH0_POS_SAMPLEA_AN0  
+           & ADC_CH0_NEG_SAMPLEA_NVREF;
     else if (channel == 1)
-        ch = ADC_CH0_POS_SAMPLEA_AN1; 
-             //& ADC_CH0_NEG_SAMPLEA_NVREF;
+        ch = ADC_CH0_POS_SAMPLEA_AN1 
+           & ADC_CH0_NEG_SAMPLEA_NVREF;
       
     // Select the input channel to convert
     SetChanADC12(ch);
@@ -222,7 +226,7 @@ uint16_t readADC(int channel)
               g_ADC_PinConfig, 
               g_ADC_Scanselect);
 
-    __builtin_disable_interrupts();
+    //__builtin_disable_interrupts();
     
     LATCbits.LATC15 = !g_bLEDON;
 
@@ -237,17 +241,20 @@ uint16_t readADC(int channel)
     // Wait till processing is done
     while(ADCON1bits.SAMP)
         ;
-    __delay_us(10);
+    //__delay_us(10);
     //while(!BusyADC12());
-    while(BusyADC12())
+    //while(BusyADC12()) ;
+    
+    // Wait until the AD interrupt is set
+    while (!IFS0bits.ADIF)
         ;
-
+        
     // Get the result
     result = ReadADC12(0);
     
     LATCbits.LATC15 = g_bLEDON;
     
-    __builtin_enable_interrupts();
+    //__builtin_enable_interrupts();
         
     return result;
 }
@@ -354,32 +361,36 @@ void InitApp(void)
     T2CONbits.TCS = 0;
     T2CONbits.TON = 0;
 
+    // NOTE: In 32bit configuration the Timer2 and Timer3 act as one.
+    // The T2CON is used for configuration and the T3 interrupt is acting
+    // as the combined 32bit timer2/3 interrupt.
+    
     // Clear the timers
     TMR1 = 0;
     TMR2 = 0;
+    TMR3 = 0;
     // Load the period register
     PR1 = 0xFFFF;
     PR2 = 0xFFFF;
     PR3 = 0x0008;
     
-    // Setup Timer1 and Timer2 interrupts    
+    // Setup Timer1 and Timer2/Timer3 interrupts    
     _T1IF = 0;
     _T1IE = 1;
     _T2IF = 0;
     _T2IE = 0;
     _T3IF = 0;
-    _T3IE = 0;
+    _T3IE = 1;
     
-    //Setup CN and INT0 - INT2 interrupts   
+    //Setup the CN interrupt   
     
     // Clear the CN interrupt flag
     _CNIF = 0;
-    //_CNIP = 7;
     // Enable CN interrupts
     _CNIE = 1;      
 
-    // We are not using the ADC interrupts
-    ConfigIntADC12(ADC_INT_DISABLE);
+    // We are using the ADC interrupts
+    ConfigIntADC12(ADC_INT_ENABLE);
     
     // Initialize the last known button state
     g_bButtonState = PORTCbits.RC13;
