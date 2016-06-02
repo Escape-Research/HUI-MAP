@@ -239,7 +239,9 @@ void configADC()
 
 uint16_t readADC(int channel, int *pAltResult)
 {
-    unsigned result, i;
+    uint16_t resultA, resultB;
+    int count;
+    uint16_t *ADC16Ptr;
 
     // We are collecting and averaging 8 samples
     
@@ -257,40 +259,62 @@ uint16_t readADC(int channel, int *pAltResult)
         ADCON2bits.ALTS = 1;
         
         // Collect 16 samples at a time!
-        ADCON2bits.SMPI = 16;
+        ADCON2bits.SMPI = 0xF;
     }
         
     LATCbits.LATC15 = !g_bLEDON;
 
-    // TODO beyond this point!!!!
+    // Initialize accumulation vars
+    resultA = 0;
+    resultB = 0;
     
-    // Init the S&H phase
-    ADCON1bits.SAMP = 1;
-    while(ADCON1bits.SAMP)
-        ;
+    // Initialize buffer pointer
+    ADC16Ptr = (uint16_t *)&ADCBUF0;
     
-    // Init the convesion
-    ConvertADC12();
+    // Reset the AD interrupt flag
+    IFS0bits.ADIF = 0;
     
-    // Wait till processing is done
-    while(ADCON1bits.SAMP)
-        ;
-    //__delay_us(10);
-    //while(!BusyADC12());
-    //while(BusyADC12()) ;
+    // Initiate auto-sampling
+    ADCON1bits.ASAM = 1;
     
-    // Wait until the AD interrupt is set
+    // Wait for the sampling to complete
     while (!IFS0bits.ADIF)
         ;
+    
+    // Make sure that we prevent further auto-sampling
+    ADCON1bits.ASAM = 0;
+    
+    // Process result buffer
+    if (channel == 0)
+    {
+        // We took 8 samples of AD0 (using MUX A)
+        for (count = 0; count < 8; count++)
+            resultA = resultA + *ADC16Ptr++;
         
-    // Get the result
-    result = ReadADC12(0);
+        // Divide by 8 to calculate the average value
+        resultA = resultA >> 3;
+    }
+    else
+    {
+        // We took 16 samples total alternating between MUX A and MUX B
+        // (MUX A - AD0 and MUX B - AD1)
+        for (count = 0; count < 16; count += 2)
+        {
+            resultA = resultA + *ADC16Ptr++;
+            resultB = resultB + *ADC16Ptr++;
+        }
+        
+        // Divide by 8 to calculate the averages
+        resultA = resultA >> 3;
+        resultB = resultB >> 3;
+        
+        if (pAltResult != NULL)
+            *pAltResult = resultB;
+    }
     
     LATCbits.LATC15 = g_bLEDON;
     
-    //__builtin_enable_interrupts();
-        
-    return result;
+    return resultA;
 }
 
 void HandleButton(char bLongDuration)

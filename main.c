@@ -64,6 +64,7 @@
 
 #include <stdint.h>        /* Includes uint16_t definition                    */
 #include <stdbool.h>       /* Includes true/false definition                  */
+#include <stddef.h>
 
 #include "system.h"        /* System funct/params, like osc/peripheral config */
 
@@ -129,24 +130,6 @@ unsigned g_Blinks = 0;
 // Flag to keep track of the LED ON state
 char g_bLEDON = 0;
 
-// ADC initialization parameters
-unsigned int g_ADC_PinConfig  = ENABLE_AN0_ANA & ENABLE_AN1_ANA;
-unsigned int g_ADC_Scanselect = SCAN_NONE;
-unsigned int g_ADC_Adcon3_reg = ADC_SAMPLE_TIME_1 &
-                                ADC_CONV_CLK_SYSTEM &
-                                ADC_CONV_CLK_29Tcy;
-unsigned int g_ADC_Adcon2_reg = ADC_VREF_AVDD_AVSS &
-                                ADC_SCAN_OFF &
-                                ADC_ALT_BUF_OFF &
-                                ADC_ALT_INPUT_OFF & 
-                                ADC_SAMPLES_PER_INT_1;
-unsigned int g_ADC_Adcon1_reg = ADC_MODULE_ON &
-                                ADC_IDLE_CONTINUE &
-                                ADC_FORMAT_INTG &
-                                ADC_CLK_AUTO &
-                                ADC_AUTO_SAMPLING_OFF &
-                                ADC_SAMP_OFF;  
-
 /******************************************************************************/
 /* Main Program                                                               */
 /******************************************************************************/
@@ -200,7 +183,7 @@ int16_t main(void)
                 __delay_us(125);
                 
                 // Capture the current fader position (Analog input 0)
-                uint16_t fpos = readADC(0);
+                uint16_t fpos = readADC(0, NULL);
 
                 // Do we have a calibration?
                 if (map_saved[currFader])
@@ -213,8 +196,16 @@ int16_t main(void)
                     //g_nextOutput = 0x3FF;
                 }
                 else
+                {
                     // No calibration done yet, just truncate the 2 LSBs
-                    g_nextOutput = fpos >> 2;
+                    // (but round out the value to the closest 10bit)
+                    int remainder = fpos & 0b11;
+                    if (remainder < 2)
+                        remainder = 0;
+                    else
+                        remainder = 4;
+                    g_nextOutput = (fpos + remainder) >> 2;
+                }
 
                 // Store the result in the queue
                 out_buffer[currFader] = g_nextOutput;
@@ -255,15 +246,18 @@ int16_t main(void)
                 // Is this the one we are calibrating?
                 if (currFader == g_CalFader)
                 {
-                    // Capture the current reference position (Analog input 1)
-                    uint16_t ref = readADC(1);
-
-                    // Capture the current fader position (Analog input 0)
-                    uint16_t dut = readADC(0);
-
-                    // Scale the 12bit to a 10bit value
-                    //double scaled_value_d = ref * 0.8333;
-                    uint16_t scaled_value = ref >> 2;
+                    // Capture the current fader and reference position
+                    uint16_t ref = 0;
+                    uint16_t dut = readADC(1, &ref);
+                    
+                    // Scale the 12bit ref to a 10bit value
+                    // (but round out the value to the closest 10bit)
+                    int remainder = ref & 0b11;
+                    if (remainder < 2)
+                        remainder = 0;
+                    else
+                        remainder = 4;
+                    uint16_t scaled_value = (ref + remainder) >> 2;
 
                     // Update the temp_map      
                     settempMap(scaled_value, dut);
