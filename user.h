@@ -74,6 +74,7 @@ void HandleButton(char bLongDuration);
 int getFaderNum();
 int getFaderNum2();
 
+void configADC();
 uint16_t readADC(int channel, int *pAltResult);
 
 void asm_ProcessRDRequest();

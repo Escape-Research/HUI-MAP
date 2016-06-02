@@ -54,6 +54,8 @@ uint16_t gettempMap(uint16_t position)
     return value;
 }
 
+// Update the RAM temporary holding map at the specified
+// position with the provided 12 bit value
 uint16_t settempMap(uint16_t position, uint16_t value)
 {
     char dut10bit_lo = value & 0xFF;
@@ -67,6 +69,9 @@ uint16_t settempMap(uint16_t position, uint16_t value)
                           : (existing_hi & 0xF0) + dut10bit_hi;
 }
 
+// This is the heart of the correction translation.
+// Perform a binary search on the FLASH resident stored map for the
+// specified fader at the provided low and high boundaries of the array
 uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, uint16_t value)
 {
     // Is there anything to?
@@ -85,12 +90,16 @@ uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, ui
         return test_pos;
 }
 
+// Locate the most appropriate translated map position that corresponds to the
+// closest calibrated stored value in the calibration map (FLASH) for the
+// specified fader calibration array
 uint16_t map_approx_lookup(char fader, uint16_t lkValue)
 {
     // We will do a binary tree search through the map arrays
     return map_binary_search(fader, 0, 1023, lkValue);    
 }
 
+// Initialize the temporary holding map (in RAM) with zeroes
 void init_tempmap()
 {
     int i = 0;
@@ -103,6 +112,9 @@ void init_tempmap()
     }
 }
 
+// Fill-in any gaps in the translation map before we store it for future
+// translation mapping. Use simple interpolation to calculate any projected 
+// missing values.
 void interpolate_tempmap()
 {
     int i = 0;
@@ -134,6 +146,8 @@ void interpolate_tempmap()
         settempMap(1023, 0xFFF);
 }
 
+// Main function that re-writes the current temporary holding map 
+// to the designated fader calibration array in the program FLASH memory.
 void SaveTempMapToFlash(char fader)
 {
     int i;
