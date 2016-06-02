@@ -280,7 +280,7 @@ uint16_t readADC(int channel, uint16_t *pAltResult)
         ADCON2bits.SMPI = 0xF;
     }
         
-    LATCbits.LATC15 = !g_bLEDON;
+    //LATCbits.LATC15 = !g_bLEDON;
 
     // Initialize accumulation vars
     resultA = 0;
@@ -330,7 +330,7 @@ uint16_t readADC(int channel, uint16_t *pAltResult)
             *pAltResult = resultB;
     }
     
-    LATCbits.LATC15 = g_bLEDON;
+    //LATCbits.LATC15 = g_bLEDON;
     
     return resultA;
 }

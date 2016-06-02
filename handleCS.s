@@ -23,7 +23,6 @@ s_wait_1:
     bra s_wait_1
 
     btsc PORTF, #6
-    ;bra s_proceed1
     bra s_wait_1
     
 s_proceed1:    
@@ -47,16 +46,23 @@ s_proceed1:
     mov _g_nextOutput, w13
     
     and #0b11, w13
-    rlnc w13, w12
-    rlnc w12, w13
-    rlnc w13, w12
-    rlnc w12, w13
-    rlnc w13, w12
-    rlnc w12, w13
-    rlnc w13, w12
-    rlnc w12, w13
+    btsc w13, #0
+    bset LATB, #0
+    bclr LATB, #0
+    btsc w13, #1
+    bset LATB, #1
+    bclr LATB, #1
     
-    mov w13, LATB
+    ;rlnc w13, w12
+    ;rlnc w12, w13
+    ;rlnc w13, w12
+    ;rlnc w12, w13
+    ;rlnc w13, w12
+    ;rlnc w12, w13
+    ;rlnc w13, w12
+    ;rlnc w12, w13
+    
+    ;mov w13, LATB
 
 s_wait_2:
     ; Is this a RD or a WR ?
@@ -64,7 +70,6 @@ s_wait_2:
     bra s_wait_2
 
     btsc PORTF, #6
-    ;bra s_proceed1
     bra s_wait_2
     
 s_proceed2:    

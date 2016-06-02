@@ -179,12 +179,12 @@ int16_t main(void)
                 
                 // Do translation
 
-                // Cache the fader number
-                int currFader = getFaderNum();
-
                 // Wait until the voltage is stable before we begin the A2D
                 __delay_us(125);
                 
+                // Cache the fader number
+                int currFader = getFaderNum();
+
                 // Capture the current fader position (Analog input 0)
                 uint16_t fpos = readADC(0, NULL);
 
@@ -208,20 +208,24 @@ int16_t main(void)
                     else
                         remainder = 4;
                     g_nextOutput = (fpos + remainder) >> 2;
+                    if (g_nextOutput > 0x3FF)
+                        g_nextOutput = 0x3FF;
                 }
 
                 // Store the result in the queue
-                out_buffer[currFader] = g_nextOutput;
+                //out_buffer[currFader] = g_nextOutput;
                 
                 // Locate the appropriate queue index to push
-                int nextIndex = (currFader + 9) % 8;
-                g_nextOutput = out_buffer[nextIndex];
+                //int nextIndex = currFader; //(currFader + 9) % 8;
+                //g_nextOutput = out_buffer[nextIndex];
                 
                 // The first output doesn't have the last two LSBs
                 LATB = g_nextOutput & 0x3FC;
                 
                 // Process the following two RD requests (assembly)
                 asm_ProcessRDRequest();
+                
+                LATB = 0;
             }
                            
             // Should we enter cal mode?
@@ -261,6 +265,8 @@ int16_t main(void)
                     else
                         remainder = 4;
                     uint16_t scaled_value = (ref + remainder) >> 2;
+                    if (scaled_value > 0x3FF)
+                        scaled_value = 0x3FF;
 
                     // Update the temp_map      
                     settempMap(scaled_value, dut);
