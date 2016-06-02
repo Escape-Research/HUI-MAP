@@ -355,6 +355,11 @@ uint16_t readADC(int channel, uint16_t *pAltResult)
 // Update state transition indicator flags based on push button triggers
 void HandleButton(char bLongDuration)
 {
+    // If we are currently in the middle of indicating the switching of the
+    // active fader, ignore the button push
+    if (g_Blinks)
+        return;
+
     if (bLongDuration)
         if (!g_bCalMode)
         {

@@ -172,7 +172,6 @@ int16_t main(void)
         {
             // Wait for request to start
             if (g_bReadyToStart)
-            //while (!g_bCalMode)            
             {
                 // Reset the flag
                 g_bReadyToStart = 0;
