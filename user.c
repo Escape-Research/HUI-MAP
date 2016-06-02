@@ -208,6 +208,23 @@ int getFaderNum()
     return fader;
 }
 
+uint16_t scale_from_12_to_10bits(uint16_t value)
+{
+    // Round out to the closest 10 bit value
+    uint16_t remainder = value & 0b11;
+    
+    if (remainder < 2)
+        remainder = 0;
+    else
+        remainder = 4;
+    
+    uint16_t result = (value + remainder) >> 2;
+    if (result > 0x3FF)
+        result = 0x3FF;
+    
+    return result;
+}
+
 // Initialize the ADC configuration and "turn on" the module
 // Make sure that the module is stable upon returning from this function.
 void configADC()

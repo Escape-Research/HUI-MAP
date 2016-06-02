@@ -202,14 +202,7 @@ int16_t main(void)
                 {
                     // No calibration done yet, just truncate the 2 LSBs
                     // (but round out the value to the closest 10bit)
-                    int remainder = fpos & 0b11;
-                    if (remainder < 2)
-                        remainder = 0;
-                    else
-                        remainder = 4;
-                    g_nextOutput = (fpos + remainder) >> 2;
-                    if (g_nextOutput > 0x3FF)
-                        g_nextOutput = 0x3FF;
+                    g_nextOutput = scale_from_12_to_10bits(fpos);
                 }
 
                 // Store the result in the queue
@@ -220,7 +213,7 @@ int16_t main(void)
                 //g_nextOutput = out_buffer[nextIndex];
                 
                 // The first output doesn't have the last two LSBs
-                LATB = g_nextOutput & 0x3FC;
+                //LATB = g_nextOutput & 0x3FC;
                 
                 // Temporarily disable interrupts
                 //__builtin_disable_interrupts();                
@@ -261,14 +254,7 @@ int16_t main(void)
                     
                     // Scale the 12bit ref to a 10bit value
                     // (but round out the value to the closest 10bit)
-                    int remainder = ref & 0b11;
-                    if (remainder < 2)
-                        remainder = 0;
-                    else
-                        remainder = 4;
-                    uint16_t scaled_value = (ref + remainder) >> 2;
-                    if (scaled_value > 0x3FF)
-                        scaled_value = 0x3FF;
+                    uint16_t scaled_value = scale_from_12_to_10bits(ref);
 
                     // Update the temp_map      
                     settempMap(scaled_value, dut);

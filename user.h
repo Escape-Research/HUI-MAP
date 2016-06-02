@@ -68,6 +68,7 @@ uint16_t map_approx_lookup(char fader, uint16_t lkValue);
 void init_tempmap();
 void interpolate_tempmap();
 void SaveTempMapToFlash(char fader);
+uint16_t scale_from_12_to_10bits(uint16_t value);
 
 void HandleButton(char bLongDuration);
 
