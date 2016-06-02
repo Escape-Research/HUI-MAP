@@ -51,6 +51,9 @@ wait_1:
     ; we need to process the "high" (although it's the LSB) byte
     mov _g_nextOutput, w0    
     and #0b11, w0
+    
+    ; we are shifting the two LSBits 8 places since we are using PORTB 2..9
+    ; as the D0..7 data bus integration.
     sl w0, #8, w0
    
     ; Load the output latch
