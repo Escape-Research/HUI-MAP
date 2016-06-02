@@ -50,11 +50,11 @@ extern unsigned g_Blinks;
 extern char g_bLEDON;
 
 // ADC configuration parameters
-extern unsigned int g_ADC_PinConfig;
-extern unsigned int g_ADC_Scanselect;
-extern unsigned int g_ADC_Adcon3_reg;
-extern unsigned int g_ADC_Adcon2_reg;
-extern unsigned int g_ADC_Adcon1_reg;
+//extern unsigned int g_ADC_PinConfig;
+//extern unsigned int g_ADC_Scanselect;
+//extern unsigned int g_ADC_Adcon3_reg;
+//extern unsigned int g_ADC_Adcon2_reg;
+//extern unsigned int g_ADC_Adcon1_reg;
 
 /******************************************************************************/
 /* User Function Prototypes                                                   */

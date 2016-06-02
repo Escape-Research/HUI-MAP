@@ -48,7 +48,7 @@ wait_1:
     ; * End timing Critical section *
     ; ********************************
 
-    ; we need to process the "high" byte
+    ; we need to process the "high" (although it's the LSB) byte
     mov _g_nextOutput, w0    
     and #0b11, w0
     sl w0, #8, w0

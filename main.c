@@ -92,7 +92,7 @@ char temp_map_hi[512];      // = { '\0' };
 int map_saved_buffer[32];   // = { 0 };
 
 // Buffer to hold the queued output values for each fader read inquiry
-uint16_t out_buffer[8];
+//uint16_t out_buffer[8];
 
 // Last known state of the push button
 unsigned g_bButtonState = 0;
@@ -139,11 +139,9 @@ int16_t main(void)
     /* Configure the oscillator for the device */
     ConfigureOscillator();
     
-    INTCON1bits.NSTDIS = 1;   // disable nested interrupts
-    
     /* Initialize IO ports, peripherals and interrupts */
     InitApp();
-    
+        
     // Load flags from flash
     int i = 0;
     for (i = 0; i < 32; i++)
@@ -160,6 +158,7 @@ int16_t main(void)
     // clear-up the temp map
     init_tempmap();
 
+    // The main (infinite) loop
     while(1)
     {
         // Reset the watchdog!

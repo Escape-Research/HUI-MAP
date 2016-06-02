@@ -494,5 +494,8 @@ void InitApp(void)
     
     // Initialize the last known button state
     g_bButtonState = PORTCbits.RC13;
+    
+    // enable nested interrupts
+    INTCON1bits.NSTDIS = 0;   
 }
 
