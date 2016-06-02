@@ -222,10 +222,17 @@ int16_t main(void)
                 // The first output doesn't have the last two LSBs
                 LATB = g_nextOutput & 0x3FC;
                 
+                /*LATBbits.LATB2 = g_nextOutput & 0b100;
+                LATBbits.LATB3 = g_nextOutput & 0b1000;
+                LATBbits.LATB4 = g_nextOutput & 0b10000;
+                LATBbits.LATB5 = g_nextOutput & 0b100000;
+                LATBbits.LATB6 = g_nextOutput & 0b1000000;
+                LATBbits.LATB7 = g_nextOutput & 0b10000000;
+                LATBbits.LATB8 = g_nextOutput & 0b100000000;
+                LATBbits.LATB9 = g_nextOutput & 0b1000000000;*/
+                
                 // Process the following two RD requests (assembly)
                 asm_ProcessRDRequest();
-                
-                LATB = 0;
             }
                            
             // Should we enter cal mode?
