@@ -141,7 +141,7 @@ int16_t main(void)
     
     INTCON1bits.NSTDIS = 1;   // disable nested interrupts
     
-    /* Initialize IO ports and peripherals */
+    /* Initialize IO ports, peripherals and interrupts */
     InitApp();
     
     // Load flags from flash
@@ -180,7 +180,7 @@ int16_t main(void)
                 // Do translation
 
                 // Cache the fader number
-                int currFader = getFaderNum2();
+                int currFader = getFaderNum();
 
                 // Wait until the voltage is stable before we begin the A2D
                 __delay_us(125);

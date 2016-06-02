@@ -72,10 +72,9 @@ void SaveTempMapToFlash(char fader);
 void HandleButton(char bLongDuration);
 
 int getFaderNum();
-int getFaderNum2();
 
 void configADC();
-uint16_t readADC(int channel, int *pAltResult);
+uint16_t readADC(int channel, uint16_t *pAltResult);
 
 void asm_ProcessRDRequest();
 

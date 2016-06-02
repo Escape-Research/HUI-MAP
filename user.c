@@ -195,25 +195,21 @@ void SaveTempMapToFlash(char fader)
     _init_prog_address(p_s_flag, map_saved);
     _erase_flash(p_s_flag);
     _write_flash16(p_s_flag, map_saved_buffer);
-    
 }
 
+// Quick helpder to return the current state of the SEL A, B and C lines
+// that indicate which multiplexed fader analog level is present in the 
+// AD0 channel.
 int getFaderNum()
 {
-    int fader = (g_SELbits.SELC << 2) +
-                 (g_SELbits.SELB << 1) +
-                 (g_SELbits.SELA);
-    return fader;
-}
-
-int getFaderNum2()
-{
     int fader = (PORTFbits.RF5 << 2) +
-                 (PORTFbits.RF4 << 1) +
-                 (PORTCbits.RC14);
+                (PORTFbits.RF4 << 1) +
+                (PORTCbits.RC14);
     return fader;
 }
 
+// Initialize the ADC configuration and "turn on" the module
+// Make sure that the module is stable upon returning from this function.
 void configADC()
 {
     // Make sure the ADC if off during initial configuration
@@ -251,7 +247,15 @@ void configADC()
     __delay_us(20);
 }
 
-uint16_t readADC(int channel, int *pAltResult)
+// This is the primary A/D conversion handling routine.
+// The are two modes supported single channel (only MUX A - AD0)
+// and alternate channels (MUX A / MUX B - AD0, AD1).
+// In both cases each channel will be sampled and converted 8 consecutive
+// times and the converted values will be averaged.
+// channel == 0 denotes single channel and channel == 1 denotes dual.
+// For dual channel, the parameter pAltResult is expected to be provided
+// as a pointer to store the averaged 2nd channel (AD1).
+uint16_t readADC(int channel, uint16_t *pAltResult)
 {
     uint16_t resultA, resultB;
     int count;
@@ -331,6 +335,7 @@ uint16_t readADC(int channel, int *pAltResult)
     return resultA;
 }
 
+// Update state transition indicator flags based on push button triggers
 void HandleButton(char bLongDuration)
 {
     if (bLongDuration)
