@@ -165,6 +165,9 @@ int16_t main(void)
         // Reset the watchdog!
         ClrWdt();
         
+        // Update the LED status
+        LATCbits.LATC15 = g_bLEDON;
+        
         if (!g_bCalMode)
         {
             // Wait for request to start
@@ -271,8 +274,10 @@ int16_t main(void)
                 g_bShouldExitCal = 0;
                 
                 // Disable interrupts
-                INTCON1bits.NSTDIS = 1;   // disable nested interrupts
-                _DISI = 1;
+                __builtin_disable_interrupts();
+                
+                //INTCON1bits.NSTDIS = 1;   // disable nested interrupts
+                //_DISI = 1;
                 
                 // if YES, then save the temp_map to flash
                 interpolate_tempmap();
@@ -284,8 +289,10 @@ int16_t main(void)
                 SaveTempMapToFlash(g_CalFader);
 
                 // Re-enable interrupts
-                INTCON1bits.NSTDIS = 0;   // enable nested interrupts
-                _DISI = 0;
+                __builtin_enable_interrupts();
+                
+                //INTCON1bits.NSTDIS = 0;   // enable nested interrupts
+                //_DISI = 0;
                 
                 // Blink (based on the current Fader number)
                 // to let us know that flash is saved!

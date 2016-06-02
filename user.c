@@ -329,7 +329,8 @@ void HandleButton(char bLongDuration)
     if (g_bCalMode)
     {
         // Turn off the LED
-        LATCbits.LATC15 = 0;
+        g_bLEDON = 0;
+        //LATCbits.LATC15 = 0;
                 
         g_bShouldExitCal = 1;
         return;

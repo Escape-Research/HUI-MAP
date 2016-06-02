@@ -167,7 +167,7 @@ void __attribute__((interrupt(auto_psv))) _T1Interrupt(void)
     if (!g_bLEDON)
     {
         // Turn on the LED
-        LATCbits.LATC15 = 1;
+        //LATCbits.LATC15 = 1;
         
         // Change the ON flag
         g_bLEDON = 1;
@@ -175,7 +175,7 @@ void __attribute__((interrupt(auto_psv))) _T1Interrupt(void)
     else
     {
         // Turn off the LED
-        LATCbits.LATC15 = 0;
+        //LATCbits.LATC15 = 0;
         
         // Update the ON flag
         g_bLEDON = 0;
@@ -207,7 +207,8 @@ void __attribute__((interrupt(auto_psv))) _T3Interrupt(void)
     g_bLongDuration = 1;
     
     // Turn on the LED as an indication that we will enter Calibration mode
-    LATCbits.LATC15 = 1;
+    g_bLEDON = 1;
+    //LATCbits.LATC15 = 1;
     
     // Clear the T3 interrupt flag
     _T3IF = 0;   
