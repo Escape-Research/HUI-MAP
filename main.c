@@ -35,7 +35,13 @@
  * Pin 4 goes to dsPIC pin 17 (PGD)
  * Pin 5 goes to dsPIC pin 18 (PGC)
  * Pin 6 remains unconnected
-
+ 
+ Design considerations:
+======================
+ * Use a combination of 1uF, 0.1uF and 0.01uF on Vdd and AVdd.
+ * Use a 0.01 or 0.1uF cap to ground on the analog inputs to help remove some of
+   the higher frequency noise.
+ 
  NOTES FOR ADC1001:
  =================
  * When BOTH CS (pin 1) and WR (pin 3) go LOW the device starts a new conversion
@@ -209,21 +215,9 @@ int16_t main(void)
                 // Locate the appropriate queue index to push
                 //int nextIndex = (currFader + 9) % 8;
                 //g_nextOutput = out_buffer[nextIndex];
-                
-                // The first output doesn't have the last two LSBs
-                //LATB = g_nextOutput & 0x3FC;
-                
-                // Temporarily disable interrupts
-                //__builtin_disable_interrupts();                
-                // Process the following two RD requests (assembly)
-                                                  
-                // make sure that we are still on the same fader!
-                //while (currFader != getFaderNum())
-                //    ;
-                
+
+                // Process the next two RD requests...
                 asm_ProcessRDRequest(g_nextOutput);
-                // Re-enable interrupts
-                //__builtin_enable_interrupts();
             }
                            
             // Should we enter cal mode?
@@ -273,9 +267,6 @@ int16_t main(void)
                 // Disable interrupts
                 __builtin_disable_interrupts();
                 
-                //INTCON1bits.NSTDIS = 1;   // disable nested interrupts
-                //_DISI = 1;
-                
                 // if YES, then save the temp_map to flash
                 interpolate_tempmap();
                 
@@ -287,9 +278,6 @@ int16_t main(void)
 
                 // Re-enable interrupts
                 __builtin_enable_interrupts();
-                
-                //INTCON1bits.NSTDIS = 0;   // enable nested interrupts
-                //_DISI = 0;
                 
                 // Blink (based on the current Fader number)
                 // to let us know that flash is saved!

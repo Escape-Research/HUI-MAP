@@ -49,6 +49,9 @@ void __attribute__((interrupt,no_auto_psv)) _DefaultInterrupt(void);
 void __attribute__((interrupt,no_auto_psv)) _OscillatorFail(void)
 {
         INTCON1bits.OSCFAIL = 0;        /* Clear the trap flag */
+        
+        // The Oscillator Fail interrupt can be triggered a couple of
+        // times during the initial startup
  //       while(1);
 }
 

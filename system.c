@@ -34,7 +34,6 @@ compiler installation directory /doc folder for documentation on the
 __builtin functions.  Refer to the XC16 C Compiler User's Guide appendix G
  for a list of the XC16 compiler __builtin functions */
 
-/* TODO Add clock switching code if appropriate.  An example stub is below.   */
 void ConfigureOscillator(void)
 {
         /* Enable Watch Dog Timer */
