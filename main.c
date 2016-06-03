@@ -216,6 +216,11 @@ int16_t main(void)
                 // Temporarily disable interrupts
                 //__builtin_disable_interrupts();                
                 // Process the following two RD requests (assembly)
+                
+                // make sure that we are still on the same fader!
+                while (currFader != getFaderNum())
+                    ;
+                
                 asm_ProcessRDRequest();
                 // Re-enable interrupts
                 //__builtin_enable_interrupts();
