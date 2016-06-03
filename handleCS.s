@@ -13,11 +13,25 @@ _asm_ProcessRDRequest:
     ; Store the current state of registers
     push.s
  
-    ; Prepare the first output byte
-    mov _g_nextOutput, w0    
+    ; load w3 with the enable mask for port B
+    mov #0b0000000011, w3
+    
+    ; Prepare the first and second output bytes
+    ; First byte
+    mov _g_nextOutput, w0
     and #0b1111111100, w0
     
-    ; Load the output latch
+    ; Second byte
+    mov _g_nextOutput, w1
+    and #0b11, w1    
+    ; we are shifting the two LSBits 8 places since we are using PORTB 2..9
+    ; as the D0..7 data bus integration.
+    sl w1, #8, w1
+    
+    ; FIRST BYTE
+    ; ----------
+    
+    ; Load the output latch for the first (MSB) byte
     mov w0, LATB
     
     ; *********************************
@@ -34,8 +48,9 @@ wait_1:
     
     ; Ok, we are in a RD
     ; enable the output
-    mov #0b0000000011, w0
-    mov w0, TRISB
+    mov w3, TRISB
+    
+    ;nop
     
     ; Through verification with the logic analyzer and while using
     ; the internal FRC x 16 PLL with OSCTUN = 7 we don't need any
@@ -44,20 +59,11 @@ wait_1:
     ; disable the output
     setm TRISB
 
-    ; ********************************
-    ; * End timing Critical section *
-    ; ********************************
-
-    ; we need to process the "high" (although it's the LSB) byte
-    mov _g_nextOutput, w0    
-    and #0b11, w0
+    ; SECOND BYTE
+    ; -----------
     
-    ; we are shifting the two LSBits 8 places since we are using PORTB 2..9
-    ; as the D0..7 data bus integration.
-    sl w0, #8, w0
-   
-    ; Load the output latch
-    mov w0, LATB
+    ; Load the output latch for the second (LSB) byte
+    mov w1, LATB
 
 wait_2:
     ; Is this a RD or a WR ?
@@ -69,14 +75,19 @@ wait_2:
     
     ; Ok, we are in the second RD (MSB)
     ; enable the output
-    mov #0b0000000011, w0
-    mov w0, TRISB
+    mov w3, TRISB
 
+    ;nop
+    
     ; See note above regarding the timing out the output
     
     ; disable the output
     setm TRISB    
        
+    ; ********************************
+    ; * End timing Critical section *
+    ; ********************************
+
     ; restore the prior state of registers
     pop.s
 

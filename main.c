@@ -218,8 +218,8 @@ int16_t main(void)
                 // Process the following two RD requests (assembly)
                 
                 // make sure that we are still on the same fader!
-                while (currFader != getFaderNum())
-                    ;
+                //while (currFader != getFaderNum())
+                //    ;
                 
                 asm_ProcessRDRequest();
                 // Re-enable interrupts
