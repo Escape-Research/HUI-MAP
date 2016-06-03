@@ -61,6 +61,7 @@ wait_1:
     ; disable the output
     setm TRISB
 
+    ; Wait for a short number of cycles...
     nop
     nop
     nop

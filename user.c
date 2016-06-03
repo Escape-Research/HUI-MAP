@@ -75,7 +75,7 @@ uint16_t settempMap(uint16_t position, uint16_t value)
 uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, uint16_t value)
 {
     // Is there anything to?
-    if (low_bound == hi_bound)
+    if (low_bound >= hi_bound)
         return low_bound;
     
     // Get the middle element 
@@ -208,6 +208,7 @@ int getFaderNum()
     return fader;
 }
 
+// Round up to the nearest 10bit value and truncate the last two LSBs
 uint16_t scale_from_12_to_10bits(uint16_t value)
 {
     // Round out to the closest 10 bit value
@@ -219,6 +220,8 @@ uint16_t scale_from_12_to_10bits(uint16_t value)
         remainder = 4;
     
     uint16_t result = (value + remainder) >> 2;
+    
+    // Make sure that we don't go over 10bits
     if (result > 0x3FF)
         result = 0x3FF;
     
@@ -248,7 +251,7 @@ void configADC()
     
     ADCSSL = 0x0000;         // No scanning
     
-    ADCON3bits.SAMC = 0x01;  // 1 TAD (auto sample time)
+    ADCON3bits.SAMC = 0x01;  // 1 TAD (auto sample time) - *** MAYBE WE NEED LONGER!!! ***
     ADCON3bits.ADRC = 0;     // Clock derived from system clock
     ADCON3bits.ADCS = 19;    // Configure for 333nS TAD time
     
@@ -256,7 +259,6 @@ void configADC()
     ADCON2bits.BUFM = 0;     // Buffer configured as one 16-word buffer ADCBUF(15..0)
     ADCON2bits.SMPI = 8;     // Collect 8 or 16 samples at a time!
     ADCON2bits.ALTS = 0;     // Don't alternate between MUX A and MUX B
-    
 }
 
 // This is the primary A/D conversion handling routine.

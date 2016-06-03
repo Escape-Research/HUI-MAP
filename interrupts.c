@@ -80,7 +80,8 @@
 /* Interrupt Routines                                                         */
 /******************************************************************************/
 
-/* TODO Add interrupt routine code here.                                      */
+// We are using the Change notification interrupt to capture state changes 
+// on the SEL A, B, C lines, as well as the control button!
 void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
 {
     // Clear the CN interrupt flag
@@ -95,6 +96,7 @@ void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
     if ((g_SELbits.SELA != portc.RC14) ||
         (g_SELbits.SELB != portf.RF4) ||
         (g_SELbits.SELC != portf.RF5))
+        // Flag the main loop that a new A/D can start..
         g_bReadyToStart = 1;
     
     // SEL A - CN0 (PORTC:14)
@@ -113,7 +115,7 @@ void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
         {
             // The user just pressed the button
             
-            // Basic -debounce
+            // Basic -de-bounce
             __delay_us(50);
             if (!PORTCbits.RC13)
             {
@@ -131,7 +133,7 @@ void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
         {
             // The user just released the button
             
-            // Basic -debounce
+            // Basic -de-bounce
             __delay_us(50);
             if (PORTCbits.RC13)
             {
@@ -148,6 +150,8 @@ void __attribute__((interrupt(auto_psv))) _CNInterrupt(void)
     }
 }
 
+// Basic ADC interrupt handler used to clear the interrupt flag
+// and stop the automatic sampling
 void __attribute__ ((interrupt(auto_psv))) _ADCInterrupt(void)
 {
     // stop the auto-sampling
@@ -157,6 +161,8 @@ void __attribute__ ((interrupt(auto_psv))) _ADCInterrupt(void)
     _ADIF = 0;    
 }
 
+// We are using timer 1 to blink the LED as an indication of the 
+// current active fader (to be used upon entering the calibration mode)
 void __attribute__((interrupt(auto_psv))) _T1Interrupt(void)
 {
     // Stop Timer1
@@ -166,17 +172,11 @@ void __attribute__((interrupt(auto_psv))) _T1Interrupt(void)
     // Are we to turn on or off?
     if (!g_bLEDON)
     {
-        // Turn on the LED
-        //LATCbits.LATC15 = 1;
-        
         // Change the ON flag
         g_bLEDON = 1;
     }
     else
     {
-        // Turn off the LED
-        //LATCbits.LATC15 = 0;
-        
         // Update the ON flag
         g_bLEDON = 0;
         
@@ -196,6 +196,8 @@ void __attribute__((interrupt(auto_psv))) _T1Interrupt(void)
     _T1IF = 0;   
 }
 
+// We are using the combined timer 2/3 in 32bit mode to record the
+// longer button presses used to enter the calibration mode
 void __attribute__((interrupt(auto_psv))) _T3Interrupt(void)
 {
     // Stop Timer2 / Timer3
@@ -208,7 +210,6 @@ void __attribute__((interrupt(auto_psv))) _T3Interrupt(void)
     
     // Turn on the LED as an indication that we will enter Calibration mode
     g_bLEDON = 1;
-    //LATCbits.LATC15 = 1;
     
     // Clear the T3 interrupt flag
     _T3IF = 0;   
