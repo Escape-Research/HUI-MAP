@@ -257,17 +257,12 @@ void configADC()
     ADCON2bits.SMPI = 8;     // Collect 8 or 16 samples at a time!
     ADCON2bits.ALTS = 0;     // Don't alternate between MUX A and MUX B
     
-    // Turn on the ADC
-    ADCON1bits.ADON = 1;
-    
-    // Make sure that we'll wait for at least 20uS for ADC to stabilize
-    __delay_us(20);
 }
 
 // This is the primary A/D conversion handling routine.
 // The are two modes supported single channel (only MUX A - AD0)
 // and alternate channels (MUX A / MUX B - AD0, AD1).
-// In both cases each channel will be sampled and converted 8 consecutive
+// In both cases each channel will be sampled and converted multiple consecutive
 // times and the converted values will be averaged.
 // channel == 0 denotes single channel and channel == 1 denotes dual.
 // For dual channel, the parameter pAltResult is expected to be provided
@@ -278,6 +273,14 @@ uint16_t readADC(int channel, uint16_t *pAltResult)
     int count;
     uint16_t *ADC16Ptr;
 
+    //LATCbits.LATC15 = !g_bLEDON;
+
+    // Turn on the ADC
+    ADCON1bits.ADON = 1;
+    
+    // Make sure that we'll wait for at least 20uS for ADC to stabilize
+    __delay_us(20);
+
     // We are collecting and averaging 8 samples
     
     if (channel == 0)
@@ -285,8 +288,8 @@ uint16_t readADC(int channel, uint16_t *pAltResult)
         // We are only to sample AD0
         ADCON2bits.ALTS = 0;
         
-        // Collect 8 samples at a time!
-        ADCON2bits.SMPI = 8;
+        // Collect 16 samples at a time!
+        ADCON2bits.SMPI = 0xF;
     }
     else
     {
@@ -297,8 +300,6 @@ uint16_t readADC(int channel, uint16_t *pAltResult)
         ADCON2bits.SMPI = 0xF;
     }
         
-    //LATCbits.LATC15 = !g_bLEDON;
-
     // Initialize accumulation vars
     resultA = 0;
     resultB = 0;
@@ -322,12 +323,12 @@ uint16_t readADC(int channel, uint16_t *pAltResult)
     // Process result buffer
     if (channel == 0)
     {
-        // We took 8 samples of AD0 (using MUX A)
-        for (count = 0; count < 8; count++)
+        // We took 16 samples of AD0 (using MUX A)
+        for (count = 0; count < 16; count++)
             resultA = resultA + *ADC16Ptr++;
         
-        // Divide by 8 to calculate the average value
-        resultA = resultA >> 3;
+        // Divide by 16 to calculate the average value
+        resultA = resultA >> 4;
     }
     else
     {
@@ -348,6 +349,9 @@ uint16_t readADC(int channel, uint16_t *pAltResult)
     }
     
     //LATCbits.LATC15 = g_bLEDON;
+
+    // Turn off the ADC
+    ADCON1bits.ADON = 0;    
     
     return resultA;
 }
@@ -495,7 +499,7 @@ void InitApp(void)
     // Initialize the last known button state
     g_bButtonState = PORTCbits.RC13;
     
-    // enable nested interrupts
-    INTCON1bits.NSTDIS = 0;   
+    // disable nested interrupts
+    INTCON1bits.NSTDIS = 1;   
 }
 

@@ -92,7 +92,7 @@ char temp_map_hi[512];      // = { '\0' };
 int map_saved_buffer[32];   // = { 0 };
 
 // Buffer to hold the queued output values for each fader read inquiry
-//uint16_t out_buffer[8];
+uint16_t out_buffer[8];
 
 // Last known state of the push button
 unsigned g_bButtonState = 0;
@@ -207,7 +207,7 @@ int16_t main(void)
                 //out_buffer[currFader] = g_nextOutput;
                 
                 // Locate the appropriate queue index to push
-                //int nextIndex = currFader; //(currFader + 9) % 8;
+                //int nextIndex = (currFader + 9) % 8;
                 //g_nextOutput = out_buffer[nextIndex];
                 
                 // The first output doesn't have the last two LSBs
@@ -216,12 +216,12 @@ int16_t main(void)
                 // Temporarily disable interrupts
                 //__builtin_disable_interrupts();                
                 // Process the following two RD requests (assembly)
-                
+                                                  
                 // make sure that we are still on the same fader!
                 //while (currFader != getFaderNum())
                 //    ;
                 
-                asm_ProcessRDRequest();
+                asm_ProcessRDRequest(g_nextOutput);
                 // Re-enable interrupts
                 //__builtin_enable_interrupts();
             }

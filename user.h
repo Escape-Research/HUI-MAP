@@ -77,7 +77,7 @@ int getFaderNum();
 void configADC();
 uint16_t readADC(int channel, uint16_t *pAltResult);
 
-void asm_ProcessRDRequest();
+void asm_ProcessRDRequest(int outputValue);
 
 void InitApp(void); /* I/O and Peripheral Initialization */
 

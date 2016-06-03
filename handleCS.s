@@ -12,22 +12,23 @@ _asm_ProcessRDRequest:
 
     ; Store the current state of registers
     push.s
- 
+    
+    ; copy w0 to w1
+    mov w0, w1
+    
     ; load w3 with the enable mask for port B
     mov #0b0000000011, w3
     
     ; Prepare the first and second output bytes
     ; First byte
-    mov _g_nextOutput, w0
     and #0b1111111100, w0
-    
-    ; Second byte
-    mov _g_nextOutput, w1
+
+    ; Prepare the second byte
     and #0b11, w1    
     ; we are shifting the two LSBits 8 places since we are using PORTB 2..9
     ; as the D0..7 data bus integration.
     sl w1, #8, w1
-    
+
     ; FIRST BYTE
     ; ----------
     
@@ -39,18 +40,19 @@ _asm_ProcessRDRequest:
     ; *********************************
        
 wait_1:
-    ; Is this a RD or a WR ?
+    ; Is this a RD or a WR ?    
     btsc PORTD, #8
     bra wait_1
-
+    
     btsc PORTF, #6
     bra wait_1
-    
+
     ; Ok, we are in a RD
     ; enable the output
     mov w3, TRISB
-    
-    ;nop
+
+    nop
+    nop
     
     ; Through verification with the logic analyzer and while using
     ; the internal FRC x 16 PLL with OSCTUN = 7 we don't need any
@@ -59,9 +61,19 @@ wait_1:
     ; disable the output
     setm TRISB
 
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    
     ; SECOND BYTE
     ; -----------
-    
+        
     ; Load the output latch for the second (LSB) byte
     mov w1, LATB
 
@@ -77,7 +89,8 @@ wait_2:
     ; enable the output
     mov w3, TRISB
 
-    ;nop
+    nop
+    nop
     
     ; See note above regarding the timing out the output
     
