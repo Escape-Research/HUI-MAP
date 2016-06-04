@@ -36,22 +36,28 @@ __builtin functions.  Refer to the XC16 C Compiler User's Guide appendix G
 
 void ConfigureOscillator(void)
 {
-        /* Enable Watch Dog Timer */
-        RCONbits.SWDTEN = 1;
+    // Make all ports inputs temporarily!
+    TRISB = 0x3FF;
+    TRISC = 0x3FF;
+    TRISD = 0x3FF;
+    TRISF = 0x3FF;
 
-        // As fast as she'll go (on internal clock)
-        OSCTUN = 0x7;
-        
-        /* When clock switch occurs switch to Pri Osc controlled by FPR<4:0> */
-        __builtin_write_OSCCONH(0x07);  /* Set OSCCONH for clock switch */
-        __builtin_write_OSCCONL(0x01);  /* Start clock switching */
-        while(OSCCONbits.COSC != 0b111);
+    /* Enable Watch Dog Timer */
+    RCONbits.SWDTEN = 1;
 
-        /* Wait for Clock switch to occur */
-        /* Wait for PLL to lock, if PLL is used */
-        while(OSCCONbits.LOCK != 1); 
-        
-        // Reset the watchdog!
-        ClrWdt();
+    // As fast as she'll go (on internal clock)
+    OSCTUN = 0x7;
+
+    /* When clock switch occurs switch to Pri Osc controlled by FPR<4:0> */
+    __builtin_write_OSCCONH(0x07);  /* Set OSCCONH for clock switch */
+    __builtin_write_OSCCONL(0x01);  /* Start clock switching */
+    while(OSCCONbits.COSC != 0b111);
+
+    /* Wait for Clock switch to occur */
+    /* Wait for PLL to lock, if PLL is used */
+    while(OSCCONbits.LOCK != 1); 
+
+    // Reset the watchdog!
+    ClrWdt();
 }
 
