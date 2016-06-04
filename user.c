@@ -251,9 +251,9 @@ void configADC()
     
     ADCSSL = 0x0000;         // No scanning
     
-    ADCON3bits.SAMC = 0x01;  // 1 TAD (auto sample time) - *** MAYBE WE NEED LONGER!!! ***
+    ADCON3bits.SAMC = 0x03;  // (0x01) 1 TAD (auto sample time) - *** MAYBE WE NEED LONGER!!! ***
     ADCON3bits.ADRC = 0;     // Clock derived from system clock
-    ADCON3bits.ADCS = 19;    // Configure for 333nS TAD time
+    ADCON3bits.ADCS = 20;    // (19) Configure for 333nS TAD time
     
     ADCON2bits.CSCNA = 0;    // Do not scan inputs
     ADCON2bits.BUFM = 0;     // Buffer configured as one 16-word buffer ADCBUF(15..0)
