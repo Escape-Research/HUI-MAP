@@ -127,7 +127,7 @@ void interpolate_tempmap(int low_bound, int hi_bound)
     {
         curr_value = gettempMap(i);
         
-        int next_val_pos = 1;
+        int next_val_pos = i;
         if (curr_value == 0)
         {
             int next_val_pos = i + 1;
@@ -135,7 +135,7 @@ void interpolate_tempmap(int low_bound, int hi_bound)
             while (next_value == 0)
             {
                 next_val_pos++;
-                if (next_val_pos < 1024)
+                if (next_val_pos <= hi_bound)
                     next_value = gettempMap(next_val_pos);
                 else
                     next_value = 0xFFF;
@@ -203,6 +203,10 @@ void SaveTempMapToFlash(char fader)
 void align_fadermaps(uint16_t low_bound, uint16_t hi_bound, uint16_t mid_point, uint16_t fader_pos[8], uint16_t average_pos)
 {
     int fader, i;
+
+    // Disable the Watch Dog Timer
+    RCONbits.SWDTEN = 0;
+
     for (fader = 0; fader < 7; fader++)
     {
         if (mid_point != 511)
@@ -242,8 +246,13 @@ void align_fadermaps(uint16_t low_bound, uint16_t hi_bound, uint16_t mid_point, 
         map_saved_buffer[fader] = 1;
 
         // Store results in flash
-        SaveTempMapToFlash(i);        
+        SaveTempMapToFlash(fader);        
     }
+
+    // Re-enable the Watch Dog Timer
+    RCONbits.SWDTEN = 1;
+    // Reset the watchdog!
+    ClrWdt();
 }
 
 

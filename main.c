@@ -281,6 +281,7 @@ int16_t main(void)
                     if (g_bShouldExitCal)
                     {
                         // Disable interrupts
+                        _CNIE = 0;      
                         __builtin_disable_interrupts();
 
                         // Clear the flag
@@ -311,10 +312,8 @@ int16_t main(void)
                             break;
                         }
                         
-                        // mark the flag
-                        map_saved_buffer[0] = 1;
-
                         // Re-enable interrupts
+                        _CNIE = 1;      
                         __builtin_enable_interrupts();
 
                         // Blink (based on the current Fader number)
