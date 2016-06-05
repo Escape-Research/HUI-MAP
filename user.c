@@ -226,7 +226,7 @@ void align_fadermaps(uint16_t low_bound, uint16_t hi_bound, uint16_t mid_point, 
             init_tempmap();
         
         // Correct the mid-point
-        settempMap(mid_point, fader_pos[i]);
+        settempMap(mid_point, fader_pos[fader]);
         
         // Clear-out the places than need to be recalculated
         for (i = low_bound + 1; i < mid_point; i++)
@@ -238,7 +238,11 @@ void align_fadermaps(uint16_t low_bound, uint16_t hi_bound, uint16_t mid_point, 
         interpolate_tempmap(low_bound, mid_point);
         interpolate_tempmap(mid_point, hi_bound);
         
-        SaveTempMapToFlash(i);
+        // mark the 'saved' flag
+        map_saved_buffer[fader] = 1;
+
+        // Store results in flash
+        SaveTempMapToFlash(i);        
     }
 }
 
@@ -429,7 +433,7 @@ void HandleButton(char bLongDuration)
     }
     
     // Select next mode
-    if (g_CalRegion < 4)
+    if (g_CalRegion < 2)
         g_CalRegion++;
     else
         g_CalRegion = 0;

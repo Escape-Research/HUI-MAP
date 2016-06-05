@@ -118,8 +118,8 @@ SELBITS g_SELbits; // = { 0, 0, 0 };
 // Are we in cal mode?
 char g_bCalMode = 0;
 
-// Fader to calibrate
-char g_CalRegion = 3;  // It will reset to 0 when enter CalMode
+// Region to calibrate
+char g_CalRegion = 0;  
 
 // Are we ready to start? (CS and WR signals low)
 char g_bReadyToStart = 0;
@@ -199,7 +199,7 @@ int16_t main(void)
                 g_nextOutput = scale_from_12_to_10bits(fpos);
                 
                 // Do we have a calibration?
-                if (map_saved[currFader])
+                if (map_saved_buffer[currFader])
                 {
                     // Locate where this value is on the map!
                     uint16_t corrected_value = map_approx_lookup(currFader, fpos);
@@ -263,6 +263,18 @@ int16_t main(void)
                 if (bReady)
                 {
                     LATCbits.LATC15 = !g_bLEDON;
+                    
+                    switch(g_CalRegion)
+                    {
+                        // Half-point
+                        case 0: g_nextOutput = 50; break;
+                        case 1: g_nextOutput = 25; break;
+                        case 2: g_nextOutput = 75; break;
+                    }
+                    
+                    // Process the next two RD requests...
+                    asm_ProcessRDRequest(g_nextOutput);
+
                     LATCbits.LATC15 = g_bLEDON;
 
                     // Should we exit cal mode and adjust the maps?
