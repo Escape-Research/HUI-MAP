@@ -74,6 +74,9 @@ uint16_t settempMap(uint16_t position, uint16_t value)
 // specified fader at the provided low and high boundaries of the array
 uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, uint16_t value)
 {
+    // TODO: this method creates a stack overflow.
+    // It gets stuck when low_bound is one smaller than the hi-bound
+
     // Is there anything to?
     if (low_bound >= hi_bound)
         return low_bound;
@@ -81,7 +84,7 @@ uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, ui
     // Get the middle element 
     uint16_t test_pos = low_bound + ((hi_bound - low_bound) / 2);
     uint16_t test_value = getMap(fader, test_pos);
-    
+
     if (test_value < value)
         return map_binary_search(fader, test_pos, hi_bound, value);
     else if (test_value > value)
@@ -204,9 +207,6 @@ void align_fadermaps(uint16_t low_bound, uint16_t hi_bound, uint16_t mid_point, 
 {
     int fader, i;
 
-    // Disable the Watch Dog Timer
-    RCONbits.SWDTEN = 0;
-
     for (fader = 0; fader < 7; fader++)
     {
         if (mid_point != 511)
@@ -248,11 +248,6 @@ void align_fadermaps(uint16_t low_bound, uint16_t hi_bound, uint16_t mid_point, 
         // Store results in flash
         SaveTempMapToFlash(fader);        
     }
-
-    // Re-enable the Watch Dog Timer
-    RCONbits.SWDTEN = 1;
-    // Reset the watchdog!
-    ClrWdt();
 }
 
 

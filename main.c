@@ -201,8 +201,12 @@ int16_t main(void)
                 // Do we have a calibration?
                 if (map_saved_buffer[currFader])
                 {
+                    // Disable CN interrupts (just for debugging convenience)
+                    _CNIE = 0;      
                     // Locate where this value is on the map!
                     uint16_t corrected_value = map_approx_lookup(currFader, fpos);
+                    // Re-enable CN interrupts (just for debugging convenience)
+                    _CNIE = 1;      
 
                     // Output that (queue) (behave like an ADC1001  !!!!!)
                     g_nextOutput = corrected_value;
@@ -280,7 +284,7 @@ int16_t main(void)
                     // Should we exit cal mode and adjust the maps?
                     if (g_bShouldExitCal)
                     {
-                        // Disable interrupts
+                        // Disable CN interrupts
                         _CNIE = 0;      
                         __builtin_disable_interrupts();
 
@@ -312,7 +316,7 @@ int16_t main(void)
                             break;
                         }
                         
-                        // Re-enable interrupts
+                        // Re-enable CN interrupts
                         _CNIE = 1;      
                         __builtin_enable_interrupts();
 
