@@ -202,7 +202,7 @@ int16_t main(void)
                 if (map_saved[currFader])
                 {
                     // Locate where this value is on the map!
-                    uint16_t corrected_value = getMap(currFader, g_nextOutput);//map_approx_lookup(currFader, fpos);
+                    uint16_t corrected_value = map_approx_lookup(currFader, fpos);
 
                     // Output that (queue) (behave like an ADC1001  !!!!!)
                     g_nextOutput = corrected_value;
@@ -307,7 +307,7 @@ int16_t main(void)
 
                         // Blink (based on the current Fader number)
                         // to let us know that flash is saved!
-                        g_Blinks = g_CalFader + 1;
+                        g_Blinks = g_CalRegion + 1;
                         TMR1 = 0;
                         T1CONbits.TON = 1;
 

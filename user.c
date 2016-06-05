@@ -110,17 +110,20 @@ void init_tempmap()
         
         temp_map_lo[i] = 0;
     }
+    
+    settempMap(0, 0);
+    settempMap(1023, 0xFFF);
 }
 
 // Fill-in any gaps in the translation map before we store it for future
 // translation mapping. Use simple interpolation to calculate any projected 
 // missing values.
-void interpolate_tempmap()
+void interpolate_tempmap(int low_bound, int hi_bound)
 {
     int i = 0;
-    int prev_value = gettempMap(0);
+    int prev_value = gettempMap(low_bound);
     int curr_value = prev_value;
-    for (i = 1; i < 1023; i++)
+    for (i = low_bound + 1; i < hi_bound; i++)
     {
         curr_value = gettempMap(i);
         
@@ -141,9 +144,9 @@ void interpolate_tempmap()
             settempMap(i, curr_value);
         }
     }
-    curr_value = gettempMap(1023);
+    curr_value = gettempMap(hi_bound);
     if (curr_value == 0)
-        settempMap(1023, 0xFFF);
+        settempMap(hi_bound, 0xFFF);
 }
 
 // Main function that re-writes the current temporary holding map 
@@ -202,17 +205,40 @@ void align_fadermaps(uint16_t low_bound, uint16_t hi_bound, uint16_t mid_point, 
     int fader, i;
     for (fader = 0; fader < 7; fader++)
     {
-        // load the current map into the temp
-        for (i = 0; i < 1024; i++)
+        if (mid_point != 511)
         {
-            temp_map_lo[i] = map_lo[fader][i];
-            if (i < 512)
-                temp_map_hi[i] = map_hi[fader][i];
+            // load the current map into the temp
+            for (i = 0; i < 1024; i++)
+            {
+                temp_map_lo[i] = map_lo[fader][i];
+                if (i < 512)
+                    temp_map_hi[i] = map_hi[fader][i];
+            }
+
+            // for half-point calibration, we will assume the low and hi bounds to
+            // be at 0 and 1023 respectively
+            if (low_bound == 0)
+                settempMap(0, 0);        
+            if (hi_bound == 1023)
+                settempMap(1023, 0xFFF);
         }
+        else
+            init_tempmap();
         
-        // for half-point calibration, we will assume the low and hi bounds to
-        // be at 0 and 1023 respectively
+        // Correct the mid-point
+        settempMap(mid_point, fader_pos[i]);
         
+        // Clear-out the places than need to be recalculated
+        for (i = low_bound + 1; i < mid_point; i++)
+            settempMap(i, 0);
+        for (i = mid_point + 1; i < hi_bound; i++)
+            settempMap(i, 0);
+        
+        // Interpolate the values
+        interpolate_tempmap(low_bound, mid_point);
+        interpolate_tempmap(mid_point, hi_bound);
+        
+        SaveTempMapToFlash(i);
     }
 }
 
@@ -277,7 +303,7 @@ void configADC()
     
     ADCON2bits.CSCNA = 0;    // Do not scan inputs
     ADCON2bits.BUFM = 0;     // Buffer configured as one 16-word buffer ADCBUF(15..0)
-    ADCON2bits.SMPI = 16;    // Collect 16 samples at a time!
+    ADCON2bits.SMPI = 0xF;    // Collect 16 samples at a time!
     ADCON2bits.ALTS = 0;     // Don't alternate between MUX A and MUX B
 }
 

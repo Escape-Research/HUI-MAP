@@ -66,7 +66,7 @@ uint16_t settempMap(uint16_t position, uint16_t value);
 uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, uint16_t value);
 uint16_t map_approx_lookup(char fader, uint16_t lkValue);
 void init_tempmap();
-void interpolate_tempmap();
+void interpolate_tempmap(int low_bound, int hi_bound);
 void SaveTempMapToFlash(char fader);
 
 void align_fadermaps(uint16_t low_bound, uint16_t hi_bound, uint16_t mid_point, uint16_t fader_pos[8], uint16_t average_pos);
