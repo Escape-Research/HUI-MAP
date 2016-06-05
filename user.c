@@ -197,6 +197,26 @@ void SaveTempMapToFlash(char fader)
     _write_flash16(p_s_flag, map_saved_buffer);
 }
 
+void align_fadermaps(uint16_t low_bound, uint16_t hi_bound, uint16_t mid_point, uint16_t fader_pos[8], uint16_t average_pos)
+{
+    int fader, i;
+    for (fader = 0; fader < 7; fader++)
+    {
+        // load the current map into the temp
+        for (i = 0; i < 1024; i++)
+        {
+            temp_map_lo[i] = map_lo[fader][i];
+            if (i < 512)
+                temp_map_hi[i] = map_hi[fader][i];
+        }
+        
+        // for half-point calibration, we will assume the low and hi bounds to
+        // be at 0 and 1023 respectively
+        
+    }
+}
+
+
 // Quick helpder to return the current state of the SEL A, B and C lines
 // that indicate which multiplexed fader analog level is present in the 
 // AD0 channel.
@@ -253,11 +273,11 @@ void configADC()
     
     ADCON3bits.SAMC = 0x04;  // (0x01) 1 TAD (auto sample time) - *** MAYBE WE NEED LONGER!!! ***
     ADCON3bits.ADRC = 0;     // Clock derived from system clock
-    ADCON3bits.ADCS = 21;    // (19) Configure for 333nS TAD time
+    ADCON3bits.ADCS = 22;    // (19) Configure for 333nS TAD time
     
     ADCON2bits.CSCNA = 0;    // Do not scan inputs
     ADCON2bits.BUFM = 0;     // Buffer configured as one 16-word buffer ADCBUF(15..0)
-    ADCON2bits.SMPI = 8;     // Collect 8 or 16 samples at a time!
+    ADCON2bits.SMPI = 16;    // Collect 16 samples at a time!
     ADCON2bits.ALTS = 0;     // Don't alternate between MUX A and MUX B
 }
 
@@ -362,7 +382,7 @@ uint16_t readADC(int channel, uint16_t *pAltResult)
 void HandleButton(char bLongDuration)
 {
     // If we are currently in the middle of indicating the switching of the
-    // active fader, ignore the button push
+    // active calibration mode, ignore the button push
     if (g_Blinks)
         return;
 
@@ -377,20 +397,19 @@ void HandleButton(char bLongDuration)
     {
         // Turn off the LED
         g_bLEDON = 0;
-        //LATCbits.LATC15 = 0;
                 
         g_bShouldExitCal = 1;
         return;
     }
     
-    // Select next fader
-    if (g_CalFader < 7)
-        g_CalFader++;
+    // Select next mode
+    if (g_CalRegion < 4)
+        g_CalRegion++;
     else
-        g_CalFader = 0;
+        g_CalRegion = 0;
     
     // Blink the LED
-    g_Blinks = g_CalFader + 1;
+    g_Blinks = g_CalRegion + 1;
     TMR1 = 0;
     T1CONbits.TON = 1;
 }

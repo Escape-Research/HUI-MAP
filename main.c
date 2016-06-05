@@ -100,6 +100,9 @@ int map_saved_buffer[32];   // = { 0 };
 // Buffer to hold the queued output values for each fader read inquiry
 uint16_t out_buffer[8];
 
+// Buffer to hold the current value for each one of the 8 faders
+uint16_t fader_pos[8];
+
 // Last known state of the push button
 unsigned g_bButtonState = 0;
 
@@ -116,7 +119,7 @@ SELBITS g_SELbits; // = { 0, 0, 0 };
 char g_bCalMode = 0;
 
 // Fader to calibrate
-char g_CalFader = 7;  // It will reset to 0 when enter CalMode
+char g_CalRegion = 3;  // It will reset to 0 when enter CalMode
 
 // Are we ready to start? (CS and WR signals low)
 char g_bReadyToStart = 0;
@@ -192,21 +195,18 @@ int16_t main(void)
                 // Capture the current fader position (Analog input 0)
                 uint16_t fpos = readADC(0, NULL);
 
+                // Down-convert from 12 to 10 bits (with rounding)
+                g_nextOutput = scale_from_12_to_10bits(fpos);
+                
                 // Do we have a calibration?
                 if (map_saved[currFader])
                 {
                     // Locate where this value is on the map!
-                    uint16_t corrected_value = map_approx_lookup(currFader, fpos);
+                    uint16_t corrected_value = getMap(currFader, g_nextOutput);//map_approx_lookup(currFader, fpos);
 
                     // Output that (queue) (behave like an ADC1001  !!!!!)
                     g_nextOutput = corrected_value;
                     //g_nextOutput = 0x3FF;
-                }
-                else
-                {
-                    // No calibration done yet, just truncate the 2 LSBs
-                    // (but round out the value to the closest 10bit)
-                    g_nextOutput = scale_from_12_to_10bits(fpos);
                 }
 
                 // Store the result in the queue
@@ -226,8 +226,10 @@ int16_t main(void)
                 // Clear the flag
                 g_bShouldEnterCal = 0;
                 
-                // Clear up the temp map
-                init_tempmap();   
+                // Clear up the fader_pos array
+                for (i = 0; i < 8; i++)
+                    fader_pos[i] = 1024;    // 1024 is unsaved
+                
                 g_bCalMode = 1;
             }
         }
@@ -242,51 +244,77 @@ int16_t main(void)
                 // Figure out which fader we have been given..
                 char currFader = getFaderNum();
 
-                // Is this the one we are calibrating?
-                if (currFader == g_CalFader)
+                // Read the location of this fader
+                uint16_t dut = readADC(0, NULL);
+
+                // Scale the 12bit ref to a 10bit value
+                // (but round out the value to the closest 10bit)
+                uint16_t scaled_value = scale_from_12_to_10bits(dut);
+                
+                // record the location of this fader
+                fader_pos[currFader] = scaled_value;
+                
+                // Have we recorded all 8 fader locations yet?
+                bool bReady = true;
+                for (i = 0; i < 8; i++)
+                    if (fader_pos[i] == 1024)
+                        bReady = false;
+                
+                if (bReady)
                 {
-                    // Capture the current fader and reference position
-                    uint16_t ref = 0;
-                    uint16_t dut = readADC(1, &ref);
-                    
-                    // Scale the 12bit ref to a 10bit value
-                    // (but round out the value to the closest 10bit)
-                    uint16_t scaled_value = scale_from_12_to_10bits(ref);
+                    LATCbits.LATC15 = !g_bLEDON;
+                    LATCbits.LATC15 = g_bLEDON;
 
-                    // Update the temp_map      
-                    settempMap(scaled_value, dut);
-                }
-            }
-            
-            // Should we exit cal mode?
-            if (g_bShouldExitCal)
-            {
-                // Clear the flag
-                g_bShouldExitCal = 0;
-                
-                // Disable interrupts
-                __builtin_disable_interrupts();
-                
-                // if YES, then save the temp_map to flash
-                interpolate_tempmap();
-                
-                // mark the flag
-                map_saved_buffer[g_CalFader] = 1;
-                
-                // Save to flash
-                SaveTempMapToFlash(g_CalFader);
+                    // Should we exit cal mode and adjust the maps?
+                    if (g_bShouldExitCal)
+                    {
+                        // Disable interrupts
+                        __builtin_disable_interrupts();
 
-                // Re-enable interrupts
-                __builtin_enable_interrupts();
-                
-                // Blink (based on the current Fader number)
-                // to let us know that flash is saved!
-                g_Blinks = g_CalFader + 1;
-                TMR1 = 0;
-                T1CONbits.TON = 1;
-                
-                g_bCalMode = 0;
-            }
+                        // Clear the flag
+                        g_bShouldExitCal = 0;
+                                                
+                        // Calculate average value across all faders
+                        uint16_t average_pos = 0;
+                        for (i = 0; i < 8; i++)
+                            average_pos += fader_pos[i];
+                        average_pos >> 3;
+                        
+                        // Handle which region we are aligning
+                        switch(g_CalRegion)
+                        {
+                            // Half-point
+                            case 0:
+                                align_fadermaps(0, 1023, 511, fader_pos, average_pos);
+                            break;
+                            
+                            // 25%
+                            case 1:
+                                align_fadermaps(0, 511, 255, fader_pos, average_pos);
+                            break;
+                            
+                            // 75%
+                            case 2:
+                                align_fadermaps(511, 1023, 767, fader_pos, average_pos);
+                            break;
+                        }
+                        
+                        // mark the flag
+                        map_saved_buffer[0] = 1;
+
+                        // Re-enable interrupts
+                        __builtin_enable_interrupts();
+
+                        // Blink (based on the current Fader number)
+                        // to let us know that flash is saved!
+                        g_Blinks = g_CalFader + 1;
+                        TMR1 = 0;
+                        T1CONbits.TON = 1;
+
+                        g_bCalMode = 0;                        
+                    }
+                }                
+            }            
         }
     }
 }

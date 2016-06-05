@@ -28,8 +28,8 @@ extern SELBITS g_SELbits;
 // Are we in cal mode?
 extern char g_bCalMode;
 
-// Fader to calibrate
-extern char g_CalFader;
+// Region to calibrate
+extern char g_CalRegion;
 
 // Are we ready to start? (CS and WR signals low)
 extern char g_bReadyToStart;
@@ -68,6 +68,9 @@ uint16_t map_approx_lookup(char fader, uint16_t lkValue);
 void init_tempmap();
 void interpolate_tempmap();
 void SaveTempMapToFlash(char fader);
+
+void align_fadermaps(uint16_t low_bound, uint16_t hi_bound, uint16_t mid_point, uint16_t fader_pos[8], uint16_t average_pos);
+
 uint16_t scale_from_12_to_10bits(uint16_t value);
 
 void HandleButton(char bLongDuration);
