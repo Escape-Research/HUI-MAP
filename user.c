@@ -74,15 +74,12 @@ uint16_t settempMap(uint16_t position, uint16_t value)
 // specified fader at the provided low and high boundaries of the array
 uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, uint16_t value)
 {
-    // TODO: this method creates a stack overflow.
-    // It gets stuck when low_bound is one smaller than the hi-bound
-
     // Is there anything to?
     if (low_bound >= hi_bound)
         return low_bound;
     
     // Get the middle element 
-    uint16_t test_pos = low_bound + ((hi_bound - low_bound) / 2);
+    uint16_t test_pos = low_bound + ((hi_bound - low_bound + 1) / 2);
     uint16_t test_value = getMap(fader, test_pos);
 
     if (test_value < value)
@@ -119,37 +116,22 @@ void init_tempmap()
 }
 
 // Fill-in any gaps in the translation map before we store it for future
-// translation mapping. Use simple interpolation to calculate any projected 
-// missing values.
+// translation mapping. Use simple interpolation to calculate the projected 
+// missing values between the low and high boundaries.
 void interpolate_tempmap(int low_bound, int hi_bound)
 {
     int i = 0;
-    int prev_value = gettempMap(low_bound);
-    int curr_value = prev_value;
+    int low_value = gettempMap(low_bound);
+    int hi_value = gettempMap(hi_bound);
+    
+    int step = (hi_value - low_value + 1) / (hi_bound - low_bound);
+    
+    int curr_value = low_value;
     for (i = low_bound + 1; i < hi_bound; i++)
     {
-        curr_value = gettempMap(i);
-        
-        int next_val_pos = i;
-        if (curr_value == 0)
-        {
-            int next_val_pos = i + 1;
-            int next_value = gettempMap(next_val_pos);
-            while (next_value == 0)
-            {
-                next_val_pos++;
-                if (next_val_pos <= hi_bound)
-                    next_value = gettempMap(next_val_pos);
-                else
-                    next_value = 0xFFF;
-            }
-            curr_value = (next_value - prev_value) / (next_val_pos - i);
-            settempMap(i, curr_value);
-        }
-    }
-    curr_value = gettempMap(hi_bound);
-    if (curr_value == 0)
-        settempMap(hi_bound, 0xFFF);
+        curr_value += step;
+        settempMap(i, curr_value);
+    }            
 }
 
 // Main function that re-writes the current temporary holding map 
@@ -337,7 +319,7 @@ uint16_t readADC(int channel, uint16_t *pAltResult)
     // Make sure that we'll wait for at least 20uS for ADC to stabilize
     __delay_us(20);
 
-    // We are collecting and averaging 8 samples
+    // We are collecting and averaging 16 samples
     
     if (channel == 0)
     {
