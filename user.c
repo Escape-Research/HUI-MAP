@@ -124,12 +124,12 @@ void interpolate_tempmap(int low_bound, int hi_bound)
     int low_value = gettempMap(low_bound);
     int hi_value = gettempMap(hi_bound);
     
-    int step = (hi_value - low_value + 1) / (hi_bound - low_bound);
+    float step = (hi_value - low_value + 1) / (hi_bound - low_bound);
     
     int curr_value = low_value;
     for (i = low_bound + 1; i < hi_bound; i++)
     {
-        curr_value += step;
+        curr_value = (int)(curr_value + step + 0.5);
         settempMap(i, curr_value);
     }            
 }
