@@ -232,7 +232,7 @@ int16_t main(void)
                 
                 // Clear up the fader_pos array
                 for (i = 0; i < 8; i++)
-                    fader_pos[i] = 1024;    // 1024 is unsaved
+                    fader_pos[i] = 4096;    // 4096 is unsaved
                 
                 g_bCalMode = 1;
             }
@@ -253,15 +253,15 @@ int16_t main(void)
 
                 // Scale the 12bit ref to a 10bit value
                 // (but round out the value to the closest 10bit)
-                uint16_t scaled_value = scale_from_12_to_10bits(dut);
+                //uint16_t scaled_value = scale_from_12_to_10bits(dut);
                 
                 // record the location of this fader
-                fader_pos[currFader] = scaled_value;
+                fader_pos[currFader] = dut; //scaled_value;
                 
                 // Have we recorded all 8 fader locations yet?
                 bool bReady = true;
                 for (i = 0; i < 8; i++)
-                    if (fader_pos[i] == 1024)
+                    if (fader_pos[i] == 4096)
                         bReady = false;
                 
                 if (bReady)
