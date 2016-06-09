@@ -79,7 +79,7 @@ uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, ui
         return low_bound;
     
     // Get the middle element 
-    uint16_t test_pos = low_bound + ((hi_bound - low_bound + 1) / 2);
+    uint16_t test_pos = low_bound + ((hi_bound - low_bound + 1) >> 1);
     uint16_t test_value = getMap(fader, test_pos);
 
     if (test_value < value)
@@ -102,6 +102,7 @@ uint16_t map_approx_lookup(char fader, uint16_t lkValue)
 // Initialize the temporary holding map (in RAM) with zeroes
 void init_tempmap()
 {
+    // Zero out all elements
     int i = 0;
     for (i = 0; i < 1024; i++)
     {
@@ -111,6 +112,7 @@ void init_tempmap()
         temp_map_lo[i] = 0;
     }
     
+    // Initialize the min. and max. values
     settempMap(0, 0);
     settempMap(1023, 0xFFF);
 }
@@ -124,12 +126,15 @@ void interpolate_tempmap(int low_bound, int hi_bound)
     int low_value = gettempMap(low_bound);
     int hi_value = gettempMap(hi_bound);
     
+    // Calculate the (decimal) step value
     float step = (hi_value - low_value + 1.0) / (hi_bound - low_bound);
     
     int curr_value = low_value;
     for (i = low_bound + 1; i < hi_bound; i++)
     {
+        // Add step and round to the nearest integet
         curr_value = (int)(curr_value + step + 0.5);
+        // Update the temp map
         settempMap(i, curr_value);
     }            
 }
