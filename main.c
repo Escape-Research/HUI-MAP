@@ -88,14 +88,14 @@ __prog__ char __attribute__((space(prog), aligned(_FLASH_PAGE * 2))) map_lo[8][1
 __prog__ char __attribute__((space(prog), aligned(_FLASH_PAGE * 2))) map_hi[8][512]; 
 
 // Calibration indicator flags
-__prog__ int __attribute__((space(prog), aligned(_FLASH_PAGE * 2))) map_saved[32] = 
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+//__prog__ int __attribute__((space(prog), aligned(_FLASH_PAGE * 2))) map_saved[32] = 
+//    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 // Temporary calibration map located in RAM
 char temp_map_lo[1024];     // = { '\0' };
 char temp_map_hi[512];      // = { '\0' };
-int map_saved_buffer[32];   // = { 0 };
+int map_saved_buffer[8];   // = { 0 };
 
 // Buffer to hold the queued output values for each fader read inquiry
 uint16_t out_buffer[8];
@@ -153,8 +153,8 @@ int16_t main(void)
         
     // Load flags from flash
     int i = 0;
-    for (i = 0; i < 32; i++)
-        map_saved_buffer[i] = map_saved[i];
+    for (i = 0; i < 7; i++)
+        map_saved_buffer[i] = map_lo[i][1023];
     
     // If we still haven't saved a calibration blink once!
     if (map_saved_buffer[0] == 0)

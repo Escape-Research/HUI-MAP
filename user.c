@@ -30,10 +30,10 @@
 // with the specific fader (0..7) for the specific 10 bit location (0..1023)
 uint16_t getMap(char fader, uint16_t position)
 {
-    char lo_value = map_lo[fader][position];
+    int lo_value = map_lo[fader][position];
     uint16_t hi_pos = position >> 1;
-    char hi_complex = map_hi[fader][hi_pos];
-    char hi_value = (position & 0x01) ? 0xF0 & hi_complex
+    int hi_complex = map_hi[fader][hi_pos];
+    int hi_value = (position & 0x01) ? 0xF0 & hi_complex >> 4
                                       : 0x0F & hi_complex;
     
     uint16_t value = (hi_value << 8) + lo_value;
@@ -44,10 +44,10 @@ uint16_t getMap(char fader, uint16_t position)
 // in RAM associated with the specific 10 bit location (0..1023)
 uint16_t gettempMap(uint16_t position)
 {
-    char lo_value = temp_map_lo[position];
+    int lo_value = temp_map_lo[position];
     uint16_t hi_pos = position >> 1;
-    char hi_complex = temp_map_hi[hi_pos];
-    char hi_value = (position & 0x01) ? 0xF0 & hi_complex
+    int hi_complex = temp_map_hi[hi_pos];
+    int hi_value = (position & 0x01) ? (0xF0 & hi_complex) >> 4
                                       : 0x0F & hi_complex;
     
     uint16_t value = (hi_value << 8) + lo_value;
@@ -58,12 +58,12 @@ uint16_t gettempMap(uint16_t position)
 // position with the provided 12 bit value
 uint16_t settempMap(uint16_t position, uint16_t value)
 {
-    char dut10bit_lo = value & 0xFF;
-    char dut10bit_hi = value >> 8;
+    int dut10bit_lo = value & 0xFF;
+    int dut10bit_hi = value >> 8;
     temp_map_lo[position] = dut10bit_lo;
 
     uint16_t hi_pos = position >> 1;
-    char existing_hi = temp_map_hi[hi_pos];
+    int existing_hi = temp_map_hi[hi_pos];
     temp_map_hi[hi_pos] = (position & 0x01) 
                           ? (dut10bit_hi << 4) + (existing_hi & 0xF)
                           : (existing_hi & 0xF0) + dut10bit_hi;
@@ -77,6 +77,17 @@ uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, ui
     // Is there anything to?
     if (low_bound >= hi_bound)
         return low_bound;
+    
+    if (hi_bound == (low_bound + 1))
+    {
+        uint16_t low_val = getMap(fader, low_bound);
+        uint16_t hi_val = getMap(fader, hi_bound);
+                
+        if ((hi_val - value) < (value - low_val))
+            return hi_bound;
+        
+        return low_bound;
+    }
     
     // Get the middle element 
     uint16_t test_pos = low_bound + ((hi_bound - low_bound + 1) >> 1);
@@ -120,20 +131,24 @@ void init_tempmap()
 // Fill-in any gaps in the translation map before we store it for future
 // translation mapping. Use simple interpolation to calculate the projected 
 // missing values between the low and high boundaries.
-void interpolate_tempmap(int low_bound, int hi_bound)
+void interpolate_tempmap(int low_bound, int hi_bound, int divisor)
 {
     int i = 0;
     int low_value = gettempMap(low_bound);
     int hi_value = gettempMap(hi_bound);
     
+    int value_delta = hi_value - low_value;
+    //int pos_delta = hi_bound - low_bound;
+    
     // Calculate the (decimal) step value
-    float step = (hi_value - low_value + 1.0) / (hi_bound - low_bound);
+    unsigned step = (value_delta + 1) >> divisor;
+    //float step = (hi_value - low_value + 1.0) / (hi_bound - low_bound);
     
     int curr_value = low_value;
     for (i = low_bound + 1; i < hi_bound; i++)
     {
         // Add step and round to the nearest integet
-        curr_value = (int)(curr_value + step + 0.5);
+        curr_value = (int)(curr_value + step); // + 0.5);
         // Update the temp map
         settempMap(i, curr_value);
     }            
@@ -184,17 +199,17 @@ void SaveTempMapToFlash(char fader)
         _write_flash16(p_hi, buffer);
     }
     
-    _prog_addressT p_s_flag;
-    _init_prog_address(p_s_flag, map_saved);
-    _erase_flash(p_s_flag);
-    _write_flash16(p_s_flag, map_saved_buffer);
+    //_prog_addressT p_s_flag;
+    //_init_prog_address(p_s_flag, map_saved);
+    //_erase_flash(p_s_flag);
+    //_write_flash16(p_s_flag, map_saved_buffer);
 }
 
 void align_fadermaps(uint16_t low_bound, uint16_t hi_bound, uint16_t mid_point, uint16_t fader_pos[8], uint16_t average_pos)
 {
     int fader, i;
 
-    for (fader = 0; fader < 7; fader++)
+    for (fader = 0; fader < 8; fader++)
     {
         if (mid_point != 511)
         {
@@ -224,10 +239,14 @@ void align_fadermaps(uint16_t low_bound, uint16_t hi_bound, uint16_t mid_point, 
             settempMap(i, 0);
         for (i = mid_point + 1; i < hi_bound; i++)
             settempMap(i, 0);
+
+        int divisor = 9;
+        if (mid_point == 511)
+            divisor = 10;
         
         // Interpolate the values
-        interpolate_tempmap(low_bound, mid_point);
-        interpolate_tempmap(mid_point, hi_bound);
+        interpolate_tempmap(low_bound, mid_point, divisor);
+        interpolate_tempmap(mid_point, hi_bound, divisor);
         
         // mark the 'saved' flag
         map_saved_buffer[fader] = 1;

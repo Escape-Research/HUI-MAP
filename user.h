@@ -4,11 +4,11 @@
 
 extern __prog__ char __attribute__((space(prog))) map_lo[8][1024]; 
 extern __prog__ char __attribute__((space(prog))) map_hi[8][512]; 
-extern __prog__ int  __attribute__((space(prog))) map_saved[32];
+//extern __prog__ int  __attribute__((space(prog))) map_saved[32];
 
 extern char temp_map_lo[1024];
 extern char temp_map_hi[512];
-extern int map_saved_buffer[32];
+extern int map_saved_buffer[8];
 
 extern uint16_t g_nextOutput; // The next 10bit value to output
 extern char g_bOutput2ndByte; // Have we already send out the 1st byte?
@@ -66,7 +66,7 @@ uint16_t settempMap(uint16_t position, uint16_t value);
 uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, uint16_t value);
 uint16_t map_approx_lookup(char fader, uint16_t lkValue);
 void init_tempmap();
-void interpolate_tempmap(int low_bound, int hi_bound);
+void interpolate_tempmap(int low_bound, int hi_bound, int divisor);
 void SaveTempMapToFlash(char fader);
 
 void align_fadermaps(uint16_t low_bound, uint16_t hi_bound, uint16_t mid_point, uint16_t fader_pos[8], uint16_t average_pos);
