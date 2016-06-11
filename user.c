@@ -30,11 +30,11 @@
 // with the specific fader (0..7) for the specific 10 bit location (0..1023)
 uint16_t getMap(char fader, uint16_t position)
 {
-    int lo_value = map_lo[fader][position];
+    unsigned lo_value = map_lo[fader][position];
     uint16_t hi_pos = position >> 1;
-    int hi_complex = map_hi[fader][hi_pos];
-    int hi_value = (position & 0x01) ? 0xF0 & hi_complex >> 4
-                                      : 0x0F & hi_complex;
+    unsigned hi_complex = map_hi[fader][hi_pos];
+    unsigned hi_value = (position & 0x01) ? (0xF0 & hi_complex) >> 4
+                                     : 0x0F & hi_complex;
     
     uint16_t value = (hi_value << 8) + lo_value;
     return value;
@@ -44,11 +44,11 @@ uint16_t getMap(char fader, uint16_t position)
 // in RAM associated with the specific 10 bit location (0..1023)
 uint16_t gettempMap(uint16_t position)
 {
-    int lo_value = temp_map_lo[position];
+    unsigned lo_value = temp_map_lo[position];
     uint16_t hi_pos = position >> 1;
-    int hi_complex = temp_map_hi[hi_pos];
-    int hi_value = (position & 0x01) ? (0xF0 & hi_complex) >> 4
-                                      : 0x0F & hi_complex;
+    unsigned hi_complex = temp_map_hi[hi_pos];
+    unsigned hi_value = (position & 0x01) ? (0xF0 & hi_complex) >> 4
+                                     : 0x0F & hi_complex;
     
     uint16_t value = (hi_value << 8) + lo_value;
     return value;
@@ -58,14 +58,14 @@ uint16_t gettempMap(uint16_t position)
 // position with the provided 12 bit value
 uint16_t settempMap(uint16_t position, uint16_t value)
 {
-    int dut10bit_lo = value & 0xFF;
-    int dut10bit_hi = value >> 8;
+    unsigned dut10bit_lo = value & 0xFF;
+    unsigned dut10bit_hi = value >> 8;
     temp_map_lo[position] = dut10bit_lo;
 
     uint16_t hi_pos = position >> 1;
-    int existing_hi = temp_map_hi[hi_pos];
+    unsigned existing_hi = temp_map_hi[hi_pos];
     temp_map_hi[hi_pos] = (position & 0x01) 
-                          ? (dut10bit_hi << 4) + (existing_hi & 0xF)
+                          ? (dut10bit_hi << 4) + (existing_hi & 0x0F)
                           : (existing_hi & 0xF0) + dut10bit_hi;
 }
 
@@ -90,7 +90,7 @@ uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, ui
     }
     
     // Get the middle element 
-    uint16_t test_pos = low_bound + ((hi_bound - low_bound + 1) >> 1);
+    uint16_t test_pos = low_bound + ((hi_bound - low_bound) >> 1);
     uint16_t test_value = getMap(fader, test_pos);
 
     if (test_value < value)
