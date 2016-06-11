@@ -170,9 +170,9 @@ void SaveTempMapToFlash(char fader)
         
         int buffer[32];
         int j = 0;
-        for (j = 0; j < 32; j++)
+        for (j = 0; j < 32; j = j + 2)
         {
-            int value_pos = i + (j << 1);
+            int value_pos = i + j;
             buffer[j] = temp_map_lo[value_pos] + (temp_map_lo[value_pos + 1] << 8);
         }
         
@@ -190,9 +190,9 @@ void SaveTempMapToFlash(char fader)
 
         int buffer[32];
         int j = 0;
-        for (j = 0; j < 32; j++)
+        for (j = 0; j < 32; j = j + 2)
         {
-            int value_pos = i + (j << 1);
+            int value_pos = i + j;
             buffer[j] = temp_map_hi[value_pos] + (temp_map_hi[value_pos + 1] << 8);
         }
 
