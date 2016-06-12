@@ -20,7 +20,6 @@ extern unsigned int _EEDATA(32) map_cal_eeprom2[16];
 extern unsigned int map_cal[8][4];
 
 extern uint16_t g_nextOutput; // The next 10bit value to output
-extern char g_bOutput2ndByte; // Have we already send out the 1st byte?
 
 // Last known state of the push button
 extern unsigned g_bButtonState;

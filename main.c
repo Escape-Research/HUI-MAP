@@ -102,9 +102,6 @@ unsigned g_bButtonState = 0;
 // The next 10bit value to output
 uint16_t g_nextOutput = 0;
 
-// Have we already send out the 1st byte?
-char g_bOutput2ndByte = 0;
-
 // Current Fader selected
 SELBITS g_SELbits; // = { 0, 0, 0 };
 
