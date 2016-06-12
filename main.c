@@ -83,21 +83,9 @@
 /* Global Variable Declaration                                                */
 /******************************************************************************/
 
-// The map calibration values (stored in the flash memory)
-__prog__ int __attribute__((space(prog),aligned(_FLASH_PAGE * 2)))  map_cal_flash[32];
-
-//char __attribute__((space(eedata), aligned(_EE_ROW)))  map_cal_flash_lo[32];
-//char __attribute__((space(eedata), aligned(_EE_ROW)))  map_cal_flash_hi[32];
-//__eds__ int _EEDATA(2) map_cal_flash[32];
-//int __attribute__((space(eedata), address(0x7FFC00), aligned(_EE_ROW))) 
-//               map_cal_flash[] = {  _12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS,
-//                                    _12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS,
-//                                    _12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS,
-//                                    _12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS};
-                                    //_12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS,
-                                    //_12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS,
-                                    //_12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS,
-                                    //_12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS };
+// The map calibration values (stored in the eeprom memory)
+int _EEDATA(32) map_cal_eeprom1[16];
+int _EEDATA(32) map_cal_eeprom2[16];
 
 // Buffer in data memory used during runtime
 int map_cal[8][4];
@@ -156,14 +144,12 @@ int16_t main(void)
     /* Configure the oscillator for the device */
     ConfigureOscillator();
     
+    // Copy the calibration values from flash to the data memory
+    LoadCalFromEE();
+    
     /* Initialize IO ports, peripherals and interrupts */
     InitApp();
 
-    // Copy the calibration values from flash to the data memory
-    //for (i = 0; i < 8; i++)
-    //    for (j = 0; j < 4; j++)
-    //        map_cal[i][j] = map_cal_flash[(i * 4) + j];
-    
     // If we still haven't saved a calibration blink once!
     if (map_cal[0][1] == 0)
     {
@@ -175,9 +161,6 @@ int16_t main(void)
         T1CONbits.TON = 1;
     }
     
-    // clear-up the temp map
-    //init_tempmap();
-
     // The main (infinite) loop
     while(1)
     {
@@ -206,12 +189,8 @@ int16_t main(void)
                 // Capture the current fader position (Analog input 0)
                 uint16_t fpos = readADC();
 
-                // Disable CN interrupts (just for debugging convenience)
-                //_CNIE = 0;      
                 // Locate where this value is on the map!
                 g_nextOutput = map_location(currFader, fpos);
-                // Re-enable CN interrupts (just for debugging convenience)
-                //_CNIE = 1;      
 
                 // Process the next two RD requests...
                 asm_ProcessRDRequest(g_nextOutput);
@@ -290,10 +269,11 @@ int16_t main(void)
                         
                         // Store the calibrated positions
                         for (i = 0; i < 8; i++)
+                            // Update the calibration factor
                             map_cal[i][g_CalRegion] = fader_pos[i];
 
-                        // Save calibration to flash
-                        //SaveTempMapToFlash();
+                        // Update EEPROM with the new calibration values
+                        SaveCalToEE();
                         
                         // Re-enable CN interrupts
                         _CNIE = 1;      

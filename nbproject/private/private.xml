@@ -3,12 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/P:/i/Microchip/xc16/v1.26/support/dsPIC30F/h/p30F3013.h</file>
-            <file>file:/P:/i/prj/hui/hui-map.X/configuration_bits.c</file>
             <file>file:/P:/i/prj/hui/hui-map.X/user.c</file>
             <file>file:/P:/i/prj/hui/hui-map.X/handleCS.s</file>
+            <file>file:/P:/i/prj/hui/hui-map.X/nbproject/Makefile-XC16_dsPIC30F3013.mk</file>
+            <file>file:/P:/i/Microchip/xc16/v1.26/support/dsPIC30F/h/p30F3013.h</file>
+            <file>file:/P:/i/prj/hui/hui-map.X/configuration_bits.c</file>
             <file>file:/P:/i/prj/hui/hui-map.X/interrupts.c</file>
             <file>file:/P:/i/prj/hui/hui-map.X/main.c</file>
+            <file>file:/P:/i/Microchip/xc16/v1.26/support/generic/h/libpic30.h</file>
             <file>file:/P:/i/prj/hui/hui-map.X/system.h</file>
             <file>file:/P:/i/prj/hui/hui-map.X/traps.c</file>
             <file>file:/P:/i/prj/hui/hui-map.X/nbproject/Makefile-impl.mk</file>

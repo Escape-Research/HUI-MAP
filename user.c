@@ -90,24 +90,50 @@ uint16_t map_location(int fader, uint16_t fpos)
     return result;
 }
 
-
-// Main function that re-writes the current temporary holding map 
-// to the designated fader calibration array in the program FLASH memory.
-void SaveTempMapToFlash()
+// Load calibration values from EEPROM
+void LoadCalFromEE()
 {
-/*    int buffer[32];
+    _prog_addressT EE_addr1, EE_addr2;
 
-    int i, j;
-    for (i = 0; i < 8; i++)
-        for (j = 0; j < 4; j++)
-            buffer[(i * 4) + j] = map_cal[i][j];
+    /* initialize a variable to represent the Data EEPROM address */
+    _init_prog_address(EE_addr1, map_cal_eeprom1);
     
-    _prog_addressT p_s_map;
+    /*Copy array "map_cal_eeprom" from DataEEPROM to "map_cal" in RAM*/
+    _memcpy_p2d16((int *)map_cal, EE_addr1, _EE_ROW);
+
+    /* initialize a variable to represent the Data EEPROM address */
+    _init_prog_address(EE_addr2, map_cal_eeprom2);
     
-    _init_prog_address(p_s_map, map_cal_flash);
-    _erase_eedata(p_s_map, 32);
+    /*Copy array "map_cal_eeprom" from DataEEPROM to "map_cal" in RAM*/
+    _memcpy_p2d16((int *)&map_cal[4], EE_addr2, _EE_ROW);
+}
+
+// Save calibration values to EEPROM
+void SaveCalToEE()
+{
+    _prog_addressT EE_addr1, EE_addr2;
+
+    /* initialize a variable to represent the Data EEPROM address */
+    _init_prog_address(EE_addr1, map_cal_eeprom1);
+
+    /*Erase a row in Data EEPROM at array "map_cal_eeprom1" */
+    _erase_eedata(EE_addr1, _EE_ROW);
+    _wait_eedata();
+
+    /*Write a row to Data EEPROM from array "map_cal" */
+    _write_eedata_row(EE_addr1, (int *)map_cal);
     _wait_eedata();    
-    _write_eedata_row(p_s_map, buffer);*/
+
+    /* initialize a variable to represent the Data EEPROM address */
+    _init_prog_address(EE_addr2, map_cal_eeprom2);
+
+    /*Erase a row in Data EEPROM at array "map_cal_eeprom2" */
+    _erase_eedata(EE_addr2, _EE_ROW);
+    _wait_eedata();
+
+    /*Write a row to Data EEPROM from array "map_cal" */
+    _write_eedata_row(EE_addr2, (int *)&map_cal[4]);
+    _wait_eedata();    
 }
 
 // Quick helpder to return the current state of the SEL A, B and C lines
@@ -189,8 +215,6 @@ uint16_t readADC()
     uint16_t res1;
     uint16_t *ADC16Ptr;
 
-    //LATCbits.LATC15 = !g_bLEDON;
-
     // Turn on the ADC
     ADCON1bits.ADON = 1;
     
@@ -236,8 +260,6 @@ uint16_t readADC()
     }
     
     res1 = res1 >> 1;
-    
-    //LATCbits.LATC15 = g_bLEDON;
 
     // Turn off the ADC
     ADCON1bits.ADON = 0;    

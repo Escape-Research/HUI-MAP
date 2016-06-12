@@ -13,9 +13,8 @@
 #define _10BIT_FS   0x3FF
 
 // The map calibration values (stored in the flash memory)
-//extern __prog__ int __attribute__((space(eedata), aligned(_EE_ROW)))  map_cal_flash[2];
-//extern char __attribute__((space(eedata), aligned(_EE_ROW)))  map_cal_flash_hi[32];
-//extern int _EEDATA(2) map_cal_flash[];
+extern int _EEDATA(32) map_cal_eeprom1[16];
+extern int _EEDATA(32) map_cal_eeprom2[16];
 
 // Buffer in data memory used during runtime
 extern int map_cal[8][4];
@@ -63,7 +62,10 @@ extern char g_bLEDON;
 /******************************************************************************/
 
 void init_tempmap();
-void SaveTempMapToFlash();
+//void SaveTempMapToFlash();
+
+void LoadCalFromEE();
+void SaveCalToEE();
 
 uint16_t map_location(int currFader, uint16_t fpos);
 
@@ -85,3 +87,4 @@ void InitApp(void); /* I/O and Peripheral Initialization */
 /******************************************************************************/
 
 extern void handleCS();
+
