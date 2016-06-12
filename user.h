@@ -13,7 +13,9 @@
 #define _10BIT_FS   0x3FF
 
 // The map calibration values (stored in the flash memory)
-extern __prog__ int __attribute__((space(prog))) map_cal_flash[32];
+//extern __prog__ int __attribute__((space(eedata), aligned(_EE_ROW)))  map_cal_flash[2];
+//extern char __attribute__((space(eedata), aligned(_EE_ROW)))  map_cal_flash_hi[32];
+//extern int _EEDATA(2) map_cal_flash[];
 
 // Buffer in data memory used during runtime
 extern int map_cal[8][4];
@@ -72,7 +74,7 @@ void HandleButton(char bLongDuration);
 int getFaderNum();
 
 void configADC();
-uint16_t readADC(int channel, uint16_t *pAltResult);
+uint16_t readADC();
 
 void asm_ProcessRDRequest(int outputValue);
 

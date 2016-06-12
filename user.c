@@ -95,7 +95,7 @@ uint16_t map_location(int fader, uint16_t fpos)
 // to the designated fader calibration array in the program FLASH memory.
 void SaveTempMapToFlash()
 {
-    int buffer[32];
+/*    int buffer[32];
 
     int i, j;
     for (i = 0; i < 8; i++)
@@ -105,8 +105,9 @@ void SaveTempMapToFlash()
     _prog_addressT p_s_map;
     
     _init_prog_address(p_s_map, map_cal_flash);
-    _erase_flash(p_s_map);
-    _write_flash16(p_s_map, buffer);
+    _erase_eedata(p_s_map, 32);
+    _wait_eedata();    
+    _write_eedata_row(p_s_map, buffer);*/
 }
 
 // Quick helpder to return the current state of the SEL A, B and C lines
@@ -181,10 +182,11 @@ void configADC()
 // channel == 0 denotes single channel and channel == 1 denotes dual.
 // For dual channel, the parameter pAltResult is expected to be provided
 // as a pointer to store the averaged 2nd channel (AD1).
-uint16_t readADC(int channel, uint16_t *pAltResult)
+uint16_t readADC()
 {
-    uint16_t resultA, resultB;
-    int count;
+    uint16_t resultA;
+    int batch, count;
+    uint16_t res1;
     uint16_t *ADC16Ptr;
 
     //LATCbits.LATC15 = !g_bLEDON;
@@ -195,79 +197,52 @@ uint16_t readADC(int channel, uint16_t *pAltResult)
     // Make sure that we'll wait for at least 20uS for ADC to stabilize
     __delay_us(20);
 
-    // We are collecting and averaging 16 samples
-    
-    if (channel == 0)
+    // we will do 2 batches of 16 samples
+    for (batch = 0; batch < 2; batch++)
     {
         // We are only to sample AD0
         ADCON2bits.ALTS = 0;
-        
+
         // Collect 16 samples at a time!
         ADCON2bits.SMPI = 0xF;
-    }
-    else
-    {
-        // We will sample AD0 and AD1 (alternate MUX)
-        ADCON2bits.ALTS = 1;
-        
-        // Collect 16 samples at a time!
-        ADCON2bits.SMPI = 0xF;
-    }
-        
-    // Initialize accumulation vars
-    resultA = 0;
-    resultB = 0;
-    
-    // Initialize buffer pointer
-    ADC16Ptr = (uint16_t *)&ADCBUF0;
-    
-    // Reset the AD interrupt flag
-    IFS0bits.ADIF = 0;
-    
-    // Initiate auto-sampling
-    ADCON1bits.ASAM = 1;
-    
-    // Wait for the sampling to complete
-    while (!IFS0bits.ADIF)
-        ;
-    
-    // Make sure that we prevent further auto-sampling
-    ADCON1bits.ASAM = 0;
-    
-    // Process result buffer
-    if (channel == 0)
-    {
+
+        // Initialize accumulation vars
+        resultA = 0;
+
+        // Initialize buffer pointer
+        ADC16Ptr = (uint16_t *)&ADCBUF0;
+
+        // Reset the AD interrupt flag
+        IFS0bits.ADIF = 0;
+
+        // Initiate auto-sampling
+        ADCON1bits.ASAM = 1;
+
+        // Wait for the sampling to complete
+        while (!IFS0bits.ADIF)
+            ;
+
+        // Make sure that we prevent further auto-sampling
+        ADCON1bits.ASAM = 0;
+
         // We took 16 samples of AD0 (using MUX A)
         for (count = 0; count < 16; count++)
             resultA = resultA + *ADC16Ptr++;
-        
+
         // Divide by 16 to calculate the average value
         resultA = resultA >> 4;
+
+        res1 += resultA;
     }
-    else
-    {
-        // We took 16 samples total alternating between MUX A and MUX B
-        // (MUX A - AD0 and MUX B - AD1)
-        for (count = 0; count < 16; count += 2)
-        {
-            resultA = resultA + *ADC16Ptr++;
-            resultB = resultB + *ADC16Ptr++;
-        }
-        
-        // Divide by 8 to calculate the averages
-        resultA = resultA >> 3;
-        resultB = resultB >> 3;
-        
-        if (pAltResult != NULL)
-            *pAltResult = resultB;
-    }
+    
+    res1 = res1 >> 1;
     
     //LATCbits.LATC15 = g_bLEDON;
 
     // Turn off the ADC
     ADCON1bits.ADON = 0;    
     
-    return resultA;
+    return res1;
 }
 
 // Update state transition indicator flags based on push button triggers

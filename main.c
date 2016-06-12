@@ -84,7 +84,20 @@
 /******************************************************************************/
 
 // The map calibration values (stored in the flash memory)
-__prog__ int __attribute__((space(prog))) map_cal_flash[32];
+__prog__ int __attribute__((space(prog),aligned(_FLASH_PAGE * 2)))  map_cal_flash[32];
+
+//char __attribute__((space(eedata), aligned(_EE_ROW)))  map_cal_flash_lo[32];
+//char __attribute__((space(eedata), aligned(_EE_ROW)))  map_cal_flash_hi[32];
+//__eds__ int _EEDATA(2) map_cal_flash[32];
+//int __attribute__((space(eedata), address(0x7FFC00), aligned(_EE_ROW))) 
+//               map_cal_flash[] = {  _12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS,
+//                                    _12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS,
+//                                    _12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS,
+//                                    _12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS};
+                                    //_12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS,
+                                    //_12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS,
+                                    //_12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS,
+                                    //_12BIT_HALF, _12BIT_1Q, _12BIT_3Q, _12BIT_FS };
 
 // Buffer in data memory used during runtime
 int map_cal[8][4];
@@ -147,9 +160,9 @@ int16_t main(void)
     InitApp();
 
     // Copy the calibration values from flash to the data memory
-    for (i = 0; i < 8; i++)
-        for (j = 0; j < 4; j++)
-            map_cal[i][j] = map_cal_flash[(i * 4) + j];
+    //for (i = 0; i < 8; i++)
+    //    for (j = 0; j < 4; j++)
+    //        map_cal[i][j] = map_cal_flash[(i * 4) + j];
     
     // If we still haven't saved a calibration blink once!
     if (map_cal[0][1] == 0)
@@ -185,13 +198,13 @@ int16_t main(void)
                 // Do translation
 
                 // Wait until the voltage is stable before we begin the A2D
-                __delay_us(125);
+                __delay_us(150);
                 
                 // Cache the fader number
                 int currFader = getFaderNum();
 
                 // Capture the current fader position (Analog input 0)
-                uint16_t fpos = readADC(0, NULL);
+                uint16_t fpos = readADC();
 
                 // Disable CN interrupts (just for debugging convenience)
                 //_CNIE = 0;      
@@ -226,13 +239,13 @@ int16_t main(void)
                 g_bReadyToStart = 0;
 
                 // Wait until the voltage is stable before we begin the A2D
-                __delay_us(125);
+                __delay_us(150);
 
                 // Figure out which fader we have been given..
                 char currFader = getFaderNum();
 
                 // Read the location of this fader
-                uint16_t dut = readADC(0, NULL);
+                uint16_t dut = readADC();
 
                 // record the location of this fader
                 fader_pos[currFader] = dut; //scaled_value;
@@ -280,7 +293,7 @@ int16_t main(void)
                             map_cal[i][g_CalRegion] = fader_pos[i];
 
                         // Save calibration to flash
-                        SaveTempMapToFlash();
+                        //SaveTempMapToFlash();
                         
                         // Re-enable CN interrupts
                         _CNIE = 1;      
