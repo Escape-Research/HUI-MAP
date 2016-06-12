@@ -2,13 +2,21 @@
 /* User Level #define Macros                                                  */
 /******************************************************************************/
 
-extern __prog__ char __attribute__((space(prog))) map_lo[8][1024]; 
-extern __prog__ char __attribute__((space(prog))) map_hi[8][512]; 
-//extern __prog__ int  __attribute__((space(prog))) map_saved[32];
+#define _12BIT_1Q   0x3FF
+#define _12BIT_HALF 0x7FF
+#define _12BIT_3Q   0xBFF
+#define _12BIT_FS   0xFFF
 
-extern char temp_map_lo[1024];
-extern char temp_map_hi[512];
-extern int map_saved_buffer[8];
+#define _10BIT_1Q   0x0FF
+#define _10BIT_HALF 0x1FF
+#define _10BIT_3Q   0x2FF
+#define _10BIT_FS   0x3FF
+
+// The map calibration values (stored in the flash memory)
+extern __prog__ int __attribute__((space(prog))) map_cal_flash[32];
+
+// Buffer in data memory used during runtime
+extern int map_cal[8][4];
 
 extern uint16_t g_nextOutput; // The next 10bit value to output
 extern char g_bOutput2ndByte; // Have we already send out the 1st byte?
@@ -22,7 +30,6 @@ typedef struct tagSELBITS {
     unsigned SELB:1;
     unsigned SELC:1;
 } SELBITS;
-
 extern SELBITS g_SELbits;
 
 // Are we in cal mode?
@@ -49,27 +56,14 @@ extern unsigned g_Blinks;
 // Flag to keep track of the LED ON state
 extern char g_bLEDON;
 
-// ADC configuration parameters
-//extern unsigned int g_ADC_PinConfig;
-//extern unsigned int g_ADC_Scanselect;
-//extern unsigned int g_ADC_Adcon3_reg;
-//extern unsigned int g_ADC_Adcon2_reg;
-//extern unsigned int g_ADC_Adcon1_reg;
-
 /******************************************************************************/
 /* User Function Prototypes                                                   */
 /******************************************************************************/
 
-uint16_t getMap(char fader, uint16_t position);
-uint16_t gettempMap(uint16_t position);
-uint16_t settempMap(uint16_t position, uint16_t value);
-uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, uint16_t value);
-uint16_t map_approx_lookup(char fader, uint16_t lkValue);
 void init_tempmap();
-void interpolate_tempmap(int low_bound, int hi_bound, int divisor);
-void SaveTempMapToFlash(char fader);
+void SaveTempMapToFlash();
 
-void align_fadermaps(uint16_t low_bound, uint16_t hi_bound, uint16_t mid_point, uint16_t fader_pos[8], uint16_t average_pos);
+uint16_t map_location(int currFader, uint16_t fpos);
 
 uint16_t scale_from_12_to_10bits(uint16_t value);
 

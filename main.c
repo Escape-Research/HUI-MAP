@@ -83,19 +83,11 @@
 /* Global Variable Declaration                                                */
 /******************************************************************************/
 
-// Permanent calibration maps located in FLASH
-__prog__ char __attribute__((space(prog), aligned(_FLASH_PAGE * 2))) map_lo[8][1024];
-__prog__ char __attribute__((space(prog), aligned(_FLASH_PAGE * 2))) map_hi[8][512]; 
+// The map calibration values (stored in the flash memory)
+__prog__ int __attribute__((space(prog))) map_cal_flash[32];
 
-// Calibration indicator flags
-//__prog__ int __attribute__((space(prog), aligned(_FLASH_PAGE * 2))) map_saved[32] = 
-//    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-// Temporary calibration map located in RAM
-char temp_map_lo[1024];     // = { '\0' };
-char temp_map_hi[512];      // = { '\0' };
-int map_saved_buffer[8];   // = { 0 };
+// Buffer in data memory used during runtime
+int map_cal[8][4];
 
 // Buffer to hold the queued output values for each fader read inquiry
 uint16_t out_buffer[8];
@@ -144,28 +136,34 @@ char g_bLEDON = 0;
 /******************************************************************************/
 
 int16_t main(void)
-{    
+{   
+    // utility counters
+    int i, j;
+    
     /* Configure the oscillator for the device */
     ConfigureOscillator();
     
     /* Initialize IO ports, peripherals and interrupts */
     InitApp();
-        
-    // Load flags from flash
-    int i = 0;
-    for (i = 0; i < 7; i++)
-        map_saved_buffer[i] = map_lo[i][1023];
+
+    // Copy the calibration values from flash to the data memory
+    for (i = 0; i < 8; i++)
+        for (j = 0; j < 4; j++)
+            map_cal[i][j] = map_cal_flash[(i * 4) + j];
     
     // If we still haven't saved a calibration blink once!
-    if (map_saved_buffer[0] == 0)
+    if (map_cal[0][1] == 0)
     {
+        // Initialize the map
+        init_tempmap();
+        
         g_Blinks = 1;
         TMR1 = 0;
         T1CONbits.TON = 1;
     }
     
     // clear-up the temp map
-    init_tempmap();
+    //init_tempmap();
 
     // The main (infinite) loop
     while(1)
@@ -195,30 +193,12 @@ int16_t main(void)
                 // Capture the current fader position (Analog input 0)
                 uint16_t fpos = readADC(0, NULL);
 
-                // Down-convert from 12 to 10 bits (with rounding)
-                g_nextOutput = scale_from_12_to_10bits(fpos);
-                
-                // Do we have a calibration?
-                if (map_saved_buffer[currFader])
-                {
-                    // Disable CN interrupts (just for debugging convenience)
-                    _CNIE = 0;      
-                    // Locate where this value is on the map!
-                    uint16_t corrected_value = map_approx_lookup(currFader, fpos);
-                    // Re-enable CN interrupts (just for debugging convenience)
-                    _CNIE = 1;      
-
-                    // Output that (queue) (behave like an ADC1001  !!!!!)
-                    g_nextOutput = corrected_value;
-                    //g_nextOutput = 0x3FF;
-                }
-
-                // Store the result in the queue
-                //out_buffer[currFader] = g_nextOutput;
-                
-                // Locate the appropriate queue index to push
-                //int nextIndex = (currFader + 9) % 8;
-                //g_nextOutput = out_buffer[nextIndex];
+                // Disable CN interrupts (just for debugging convenience)
+                //_CNIE = 0;      
+                // Locate where this value is on the map!
+                g_nextOutput = map_location(currFader, fpos);
+                // Re-enable CN interrupts (just for debugging convenience)
+                //_CNIE = 1;      
 
                 // Process the next two RD requests...
                 asm_ProcessRDRequest(g_nextOutput);
@@ -245,16 +225,15 @@ int16_t main(void)
                 // Reset the flag
                 g_bReadyToStart = 0;
 
+                // Wait until the voltage is stable before we begin the A2D
+                __delay_us(125);
+
                 // Figure out which fader we have been given..
                 char currFader = getFaderNum();
 
                 // Read the location of this fader
                 uint16_t dut = readADC(0, NULL);
 
-                // Scale the 12bit ref to a 10bit value
-                // (but round out the value to the closest 10bit)
-                //uint16_t scaled_value = scale_from_12_to_10bits(dut);
-                
                 // record the location of this fader
                 fader_pos[currFader] = dut; //scaled_value;
                 
@@ -274,6 +253,7 @@ int16_t main(void)
                         case 0: g_nextOutput = 50; break;
                         case 1: g_nextOutput = 25; break;
                         case 2: g_nextOutput = 75; break;
+                        case 3: g_nextOutput = 100; break;
                     }
                     
                     // Process the next two RD requests...
@@ -284,37 +264,23 @@ int16_t main(void)
                     // Should we exit cal mode and adjust the maps?
                     if (g_bShouldExitCal)
                     {
-                        // Disable CN interrupts
+                        // Disable CN interrupts and Watchdog
                         _CNIE = 0;      
                         __builtin_disable_interrupts();
 
                         // Clear the flag
                         g_bShouldExitCal = 0;
-                                                
-                        // Calculate average value across all faders
-                        uint16_t average_pos = 0;
-                        for (i = 0; i < 8; i++)
-                            average_pos += fader_pos[i];
-                        average_pos >> 3;
+
+                        // Initialize the map_cal (if needed)
+                        if (g_CalRegion == 0)
+                            init_tempmap();
                         
-                        // Handle which region we are aligning
-                        switch(g_CalRegion)
-                        {
-                            // Half-point
-                            case 0:
-                                align_fadermaps(0, 1023, 511, fader_pos, average_pos);
-                            break;
-                            
-                            // 25%
-                            case 1:
-                                align_fadermaps(0, 511, 255, fader_pos, average_pos);
-                            break;
-                            
-                            // 75%
-                            case 2:
-                                align_fadermaps(511, 1023, 767, fader_pos, average_pos);
-                            break;
-                        }
+                        // Store the calibrated positions
+                        for (i = 0; i < 8; i++)
+                            map_cal[i][g_CalRegion] = fader_pos[i];
+
+                        // Save calibration to flash
+                        SaveTempMapToFlash();
                         
                         // Re-enable CN interrupts
                         _CNIE = 1;      

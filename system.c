@@ -43,7 +43,7 @@ void ConfigureOscillator(void)
     TRISF = 0x3FF;
 
     /* Enable Watch Dog Timer */
-    RCONbits.SWDTEN = 1;
+    RCONbits.SWDTEN = 0;
 
     // As fast as she'll go (on internal clock)
     OSCTUN = 0x7;

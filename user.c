@@ -26,236 +26,88 @@
 /* User Functions                                                             */
 /******************************************************************************/
 
-// Retrieve the 12 bit calibration value from the map in flash associated 
-// with the specific fader (0..7) for the specific 10 bit location (0..1023)
-uint16_t getMap(char fader, uint16_t position)
-{
-    unsigned lo_value = map_lo[fader][position];
-    uint16_t hi_pos = position >> 1;
-    unsigned hi_complex = map_hi[fader][hi_pos];
-    unsigned hi_value = (position & 0x01) ? (0xF0 & hi_complex) >> 4
-                                     : 0x0F & hi_complex;
-    
-    uint16_t value = (hi_value << 8) + lo_value;
-    return value;
-}
-
-// Retrieve the 12 bit calibration value from the current temporary map 
-// in RAM associated with the specific 10 bit location (0..1023)
-uint16_t gettempMap(uint16_t position)
-{
-    unsigned lo_value = temp_map_lo[position];
-    uint16_t hi_pos = position >> 1;
-    unsigned hi_complex = temp_map_hi[hi_pos];
-    unsigned hi_value = (position & 0x01) ? (0xF0 & hi_complex) >> 4
-                                     : 0x0F & hi_complex;
-    
-    uint16_t value = (hi_value << 8) + lo_value;
-    return value;
-}
-
-// Update the RAM temporary holding map at the specified
-// position with the provided 12 bit value
-uint16_t settempMap(uint16_t position, uint16_t value)
-{
-    unsigned dut10bit_lo = value & 0xFF;
-    unsigned dut10bit_hi = value >> 8;
-    temp_map_lo[position] = dut10bit_lo;
-
-    uint16_t hi_pos = position >> 1;
-    unsigned existing_hi = temp_map_hi[hi_pos];
-    temp_map_hi[hi_pos] = (position & 0x01) 
-                          ? (dut10bit_hi << 4) + (existing_hi & 0x0F)
-                          : (existing_hi & 0xF0) + dut10bit_hi;
-}
-
-// This is the heart of the correction translation.
-// Perform a binary search on the FLASH resident stored map for the
-// specified fader at the provided low and high boundaries of the array
-uint16_t map_binary_search(char fader, uint16_t low_bound, uint16_t hi_bound, uint16_t value)
-{
-    // Is there anything to?
-    if (low_bound >= hi_bound)
-        return low_bound;
-    
-    if (hi_bound == (low_bound + 1))
-    {
-        uint16_t low_val = getMap(fader, low_bound);
-        uint16_t hi_val = getMap(fader, hi_bound);
-                
-        if ((hi_val - value) < (value - low_val))
-            return hi_bound;
-        
-        return low_bound;
-    }
-    
-    // Get the middle element 
-    uint16_t test_pos = low_bound + ((hi_bound - low_bound) >> 1);
-    uint16_t test_value = getMap(fader, test_pos);
-
-    if (test_value < value)
-        return map_binary_search(fader, test_pos, hi_bound, value);
-    else if (test_value > value)
-        return map_binary_search(fader, low_bound, test_pos, value);
-    else
-        return test_pos;
-}
-
-// Locate the most appropriate translated map position that corresponds to the
-// closest calibrated stored value in the calibration map (FLASH) for the
-// specified fader calibration array
-uint16_t map_approx_lookup(char fader, uint16_t lkValue)
-{
-    // We will do a binary tree search through the map arrays
-    return map_binary_search(fader, 0, 1023, lkValue);    
-}
-
-// Initialize the temporary holding map (in RAM) with zeroes
+// Initialize the temporary holding map (in data memory) with the defaults
 void init_tempmap()
 {
-    // Zero out all elements
+    // Initialize calibration points to default
     int i = 0;
-    for (i = 0; i < 1024; i++)
+    for (i = 0; i < 8; i++)
     {
-        if (i < 512)
-            temp_map_hi[i] = 0;
-        
-        temp_map_lo[i] = 0;
+        map_cal[i][0] = _12BIT_HALF;
+        map_cal[i][1] = _12BIT_1Q; 
+        map_cal[i][2] = _12BIT_3Q;
+        map_cal[i][3] = _12BIT_FS;                
     }
-    
-    // Initialize the min. and max. values
-    settempMap(0, 0);
-    settempMap(1023, 0xFFF);
 }
 
-// Fill-in any gaps in the translation map before we store it for future
-// translation mapping. Use simple interpolation to calculate the projected 
-// missing values between the low and high boundaries.
-void interpolate_tempmap(int low_bound, int hi_bound, int divisor)
+// Return the "calibrated" 10bit value for a fader
+uint16_t map_location(int fader, uint16_t fpos)
 {
-    int i = 0;
-    int low_value = gettempMap(low_bound);
-    int hi_value = gettempMap(hi_bound);
+    double factor;
+    uint16_t result = 0;
     
-    int value_delta = hi_value - low_value;
-    //int pos_delta = hi_bound - low_bound;
-    
-    // Calculate the (decimal) step value
-    unsigned step = (value_delta + 1) >> divisor;
-    //float step = (hi_value - low_value + 1.0) / (hi_bound - low_bound);
-    
-    int curr_value = low_value;
-    for (i = low_bound + 1; i < hi_bound; i++)
+    // Figure out which region we're in
+    if (fpos < map_cal[fader][1])
     {
-        // Add step and round to the nearest integet
-        curr_value = (int)(curr_value + step); // + 0.5);
-        // Update the temp map
-        settempMap(i, curr_value);
-    }            
+        factor = (double)(_12BIT_1Q) / map_cal[fader][1];
+        factor *= fpos;
+        result = factor;
+    }
+    else if (fpos == map_cal[fader][1])
+    {
+        return _10BIT_1Q;
+    }
+    else if (fpos < map_cal[fader][0])
+    {
+        factor = ( fpos - map_cal[fader][1] ) * (double)(_12BIT_1Q);
+        factor /= (double)(map_cal[fader][0] - map_cal[fader][1]);
+        result = factor + _12BIT_1Q;
+    }
+    else if (fpos == map_cal[fader][0])
+    {
+        return _10BIT_HALF;
+    }
+    else if (fpos < map_cal[fader][2])
+    {
+        factor = ( fpos - map_cal[fader][0] ) * (double)(_12BIT_1Q);
+        factor /= (double)(map_cal[fader][2] - map_cal[fader][0]);        
+        result = factor + _12BIT_HALF;
+    }
+    else if (fpos == map_cal[fader][2])
+    {
+        return _10BIT_3Q;
+    }
+    else if (fpos < map_cal[fader][3])
+    {
+        factor = ( fpos - map_cal[fader][2] ) * (double)(_12BIT_1Q);
+        factor /= (double)(map_cal[fader][3] - map_cal[fader][2]);        
+        result = factor + _12BIT_3Q;
+    }
+    else
+        return _10BIT_FS;
+    
+    result = scale_from_12_to_10bits(result);
+    return result;
 }
+
 
 // Main function that re-writes the current temporary holding map 
 // to the designated fader calibration array in the program FLASH memory.
-void SaveTempMapToFlash(char fader)
+void SaveTempMapToFlash()
 {
-    int i;
-    int offset_lo = fader << 10;
-    _prog_addressT p_s_lo, p_lo;
-    _init_prog_address(p_s_lo, map_lo);
-    p_s_lo += offset_lo;
-    for (i = 0; i < 1024; i += 64)
-    {     
-        p_lo = p_s_lo + i;
-        _erase_flash(p_lo);
-        
-        int buffer[32];
-        int j = 0;
-        for (j = 0; j < 32; j = j + 2)
-        {
-            int value_pos = i + j;
-            buffer[j] = temp_map_lo[value_pos] + (temp_map_lo[value_pos + 1] << 8);
-        }
-        
-        _write_flash16(p_lo, buffer);
-    }
+    int buffer[32];
 
-    int offset_hi = fader << 9;
-    _prog_addressT p_s_hi, p_hi;
-    _init_prog_address(p_s_hi, map_hi);    
-    p_s_hi += offset_hi;
-    for (i = 0; i < 512; i += 64)
-    {
-        p_hi = p_s_hi + i;
-        _erase_flash(p_hi);
-
-        int buffer[32];
-        int j = 0;
-        for (j = 0; j < 32; j = j + 2)
-        {
-            int value_pos = i + j;
-            buffer[j] = temp_map_hi[value_pos] + (temp_map_hi[value_pos + 1] << 8);
-        }
-
-        _write_flash16(p_hi, buffer);
-    }
+    int i, j;
+    for (i = 0; i < 8; i++)
+        for (j = 0; j < 4; j++)
+            buffer[(i * 4) + j] = map_cal[i][j];
     
-    //_prog_addressT p_s_flag;
-    //_init_prog_address(p_s_flag, map_saved);
-    //_erase_flash(p_s_flag);
-    //_write_flash16(p_s_flag, map_saved_buffer);
+    _prog_addressT p_s_map;
+    
+    _init_prog_address(p_s_map, map_cal_flash);
+    _erase_flash(p_s_map);
+    _write_flash16(p_s_map, buffer);
 }
-
-void align_fadermaps(uint16_t low_bound, uint16_t hi_bound, uint16_t mid_point, uint16_t fader_pos[8], uint16_t average_pos)
-{
-    int fader, i;
-
-    for (fader = 0; fader < 8; fader++)
-    {
-        if (mid_point != 511)
-        {
-            // load the current map into the temp
-            for (i = 0; i < 1024; i++)
-            {
-                temp_map_lo[i] = map_lo[fader][i];
-                if (i < 512)
-                    temp_map_hi[i] = map_hi[fader][i];
-            }
-
-            // for half-point calibration, we will assume the low and hi bounds to
-            // be at 0 and 1023 respectively
-            if (low_bound == 0)
-                settempMap(0, 0);        
-            if (hi_bound == 1023)
-                settempMap(1023, 0xFFF);
-        }
-        else
-            init_tempmap();
-        
-        // Correct the mid-point
-        settempMap(mid_point, fader_pos[fader]);
-        
-        // Clear-out the places than need to be recalculated
-        for (i = low_bound + 1; i < mid_point; i++)
-            settempMap(i, 0);
-        for (i = mid_point + 1; i < hi_bound; i++)
-            settempMap(i, 0);
-
-        int divisor = 9;
-        if (mid_point == 511)
-            divisor = 10;
-        
-        // Interpolate the values
-        interpolate_tempmap(low_bound, mid_point, divisor);
-        interpolate_tempmap(mid_point, hi_bound, divisor);
-        
-        // mark the 'saved' flag
-        map_saved_buffer[fader] = 1;
-
-        // Store results in flash
-        SaveTempMapToFlash(fader);        
-    }
-}
-
 
 // Quick helpder to return the current state of the SEL A, B and C lines
 // that indicate which multiplexed fader analog level is present in the 
@@ -311,7 +163,7 @@ void configADC()
     
     ADCSSL = 0x0000;         // No scanning
     
-    ADCON3bits.SAMC = 0x04;  // (0x01) 1 TAD (auto sample time) - *** MAYBE WE NEED LONGER!!! ***
+    ADCON3bits.SAMC = 0x04;  // (0x01) 1 TAD (auto sample time)
     ADCON3bits.ADRC = 0;     // Clock derived from system clock
     ADCON3bits.ADCS = 22;    // (19) Configure for 333nS TAD time
     
@@ -443,7 +295,7 @@ void HandleButton(char bLongDuration)
     }
     
     // Select next mode
-    if (g_CalRegion < 2)
+    if (g_CalRegion < 3)
         g_CalRegion++;
     else
         g_CalRegion = 0;
