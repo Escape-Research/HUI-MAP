@@ -49,8 +49,8 @@ uint16_t map_location(int fader, uint16_t fpos)
     // Figure out which region we're in
     if (fpos < map_cal[fader][1])
     {
-        factor = (double)(_12BIT_1Q) / map_cal[fader][1];
-        factor *= fpos;
+        factor = fpos * (double)(_12BIT_1Q);
+        factor /= (double)(map_cal[fader][1]);
         result = factor;
     }
     else if (fpos == map_cal[fader][1])
@@ -263,7 +263,7 @@ uint16_t readADC()
 
     // Turn off the ADC
     ADCON1bits.ADON = 0;    
-    
+
     return res1;
 }
 

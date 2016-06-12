@@ -13,11 +13,11 @@
 #define _10BIT_FS   0x3FF
 
 // The map calibration values (stored in the flash memory)
-extern int _EEDATA(32) map_cal_eeprom1[16];
-extern int _EEDATA(32) map_cal_eeprom2[16];
+extern unsigned int _EEDATA(32) map_cal_eeprom1[16];
+extern unsigned int _EEDATA(32) map_cal_eeprom2[16];
 
 // Buffer in data memory used during runtime
-extern int map_cal[8][4];
+extern unsigned int map_cal[8][4];
 
 extern uint16_t g_nextOutput; // The next 10bit value to output
 extern char g_bOutput2ndByte; // Have we already send out the 1st byte?
@@ -88,3 +88,4 @@ void InitApp(void); /* I/O and Peripheral Initialization */
 
 extern void handleCS();
 
+/******************************************************************************/

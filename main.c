@@ -84,11 +84,11 @@
 /******************************************************************************/
 
 // The map calibration values (stored in the eeprom memory)
-int _EEDATA(32) map_cal_eeprom1[16];
-int _EEDATA(32) map_cal_eeprom2[16];
+unsigned int _EEDATA(32) map_cal_eeprom1[16];
+unsigned int _EEDATA(32) map_cal_eeprom2[16];
 
 // Buffer in data memory used during runtime
-int map_cal[8][4];
+unsigned int map_cal[8][4];
 
 // Buffer to hold the queued output values for each fader read inquiry
 uint16_t out_buffer[8];
@@ -178,8 +178,6 @@ int16_t main(void)
                 // Reset the flag
                 g_bReadyToStart = 0;
                 
-                // Do translation
-
                 // Wait until the voltage is stable before we begin the A2D
                 __delay_us(150);
                 

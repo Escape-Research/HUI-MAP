@@ -28,7 +28,6 @@
 /* then paste into this project.                                              */
 /******************************************************************************/
 
-
 // DSPIC30F3013 Configuration Bit Settings
 
 // 'C' source line config statements
@@ -45,7 +44,7 @@
 #pragma config WDT = WDT_ON             // Watchdog Timer (Enabled)
 
 // FBORPOR
-#pragma config FPWRT = PWRT_64          // POR Timer Value (64ms)
+#pragma config FPWRT = PWRT_4           // POR Timer Value (4ms)
 #pragma config BODENV = BORV42          // Brown Out Voltage (4.2V)
 #pragma config BOREN = PBOR_ON          // PBOR Enable (Enabled)
 #pragma config MCLRE = MCLR_EN          // Master Clear Enable (Enabled)
