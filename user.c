@@ -216,9 +216,12 @@ uint16_t readADC()
 {
     uint16_t resultA;
     int batch, count;
-    uint16_t res1 = 0;
+    uint16_t res1;
     uint16_t *ADC16Ptr;
 
+    // Initialize return variable
+    res1 = 0;
+        
     // Turn on the ADC
     ADCON1bits.ADON = 1;
     
