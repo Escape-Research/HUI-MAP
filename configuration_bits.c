@@ -44,9 +44,9 @@
 #pragma config WDT = WDT_ON             // Watchdog Timer (Enabled)
 
 // FBORPOR
-#pragma config FPWRT = PWRT_4           // POR Timer Value (4ms)
-#pragma config BODENV = BORV42          // Brown Out Voltage (4.2V)
-#pragma config BOREN = PBOR_ON          // PBOR Enable (Enabled)
+#pragma config FPWRT = PWRT_16          // POR Timer Value (16ms)
+#pragma config BODENV = BORV27          // Brown Out Voltage (2.7V)
+#pragma config BOREN = PBOR_OFF         // PBOR Enable (Disabled)
 #pragma config MCLRE = MCLR_EN          // Master Clear Enable (Enabled)
 
 // FGS
@@ -55,4 +55,3 @@
 
 // FICD
 #pragma config ICS = ICS_PGD            // Comm Channel Select (Use PGC/EMUC and PGD/EMUD)
-

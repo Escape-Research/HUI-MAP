@@ -215,12 +215,13 @@ void configADC()
 uint16_t readADC()
 {
     uint16_t resultA;
-    int batch, count;
-    uint16_t res1;
+    //int batch;
+    int count;
+    //uint16_t res1;
     uint16_t *ADC16Ptr;
 
     // Initialize return variable
-    res1 = 0;
+    //res1 = 0;
         
     // Turn on the ADC
     ADCON1bits.ADON = 1;
@@ -229,8 +230,8 @@ uint16_t readADC()
     __delay_us(20);
 
     // we will do 2 batches of 16 samples
-    for (batch = 0; batch < 2; batch++)
-    {
+    //for (batch = 0; batch < 2; batch++)
+    //{
         // We are only to sample AD0
         ADCON2bits.ALTS = 0;
 
@@ -263,15 +264,16 @@ uint16_t readADC()
         // Divide by 16 to calculate the average value
         resultA = resultA >> 4;
 
-        res1 += resultA;
-    }
+        //res1 += resultA;
+    //}
     
-    res1 = res1 >> 1;
+    //res1 = res1 >> 1;
 
     // Turn off the ADC
     ADCON1bits.ADON = 0;    
 
-    return res1;
+    //return res1;
+    return resultA;
 }
 
 // Update state transition indicator flags based on push button triggers

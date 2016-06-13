@@ -53,7 +53,7 @@
         </archiverTool>
         <loading>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
-          <parseOnProdLoad>true</parseOnProdLoad>
+          <parseOnProdLoad>false</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
         </loading>
       </compileType>
@@ -79,7 +79,7 @@
         <property key="enable-omit-frame-pointer" value="false"/>
         <property key="enable-procedural-abstraction" value="false"/>
         <property key="enable-short-double" value="false"/>
-        <property key="enable-symbols" value="true"/>
+        <property key="enable-symbols" value="false"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="extra-include-directories" value=""/>
         <property key="isolate-each-function" value="false"/>
@@ -103,7 +103,7 @@
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros" value=""/>
         <property key="scalar-model" value="default"/>
-        <property key="use-cci" value="true"/>
+        <property key="use-cci" value="false"/>
         <property key="use-iar" value="false"/>
       </C30>
       <C30-AR>
@@ -163,7 +163,7 @@
         <property key="oXC16ld-stackguard" value="16"/>
         <property key="preprocessor-macros" value=""/>
         <property key="remove-unused-sections" value="false"/>
-        <property key="report-memory-usage" value="true"/>
+        <property key="report-memory-usage" value="false"/>
         <property key="secure-eeprom" value="no_eeprom"/>
         <property key="secure-flash" value="no_flash"/>
         <property key="secure-ram" value="no_ram"/>
@@ -185,10 +185,10 @@
         <property key="save-temps" value="false"/>
       </C30Global>
       <PICkit2PlatformTool>
-        <property key="pk2settings.3state" value="false"/>
+        <property key="pk2settings.3state" value="true"/>
         <property key="pk2settings.preserveee" value="true"/>
         <property key="pk2settings.setvddvoltage" value="5.00"/>
-        <property key="pk2settings.userpgmexec" value="false"/>
+        <property key="pk2settings.userpgmexec" value="true"/>
         <property key="pk2settings.usetargetpower" value="false"/>
       </PICkit2PlatformTool>
       <Simulator>

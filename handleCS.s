@@ -52,7 +52,7 @@ wait_1:
     mov w3, TRISB
 
     nop
-    nop
+    ;nop
     
     ; Through verification with the logic analyzer and while using
     ; the internal FRC x 16 PLL with OSCTUN = 7 we don't need any
@@ -91,7 +91,7 @@ wait_2:
     mov w3, TRISB
 
     nop
-    nop
+    ;nop
     
     ; See note above regarding the timing out the output
     

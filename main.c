@@ -176,7 +176,7 @@ int16_t main(void)
                 g_bReadyToStart = 0;
                 
                 // Wait until the voltage is stable before we begin the A2D
-                __delay_us(140);
+                __delay_us(135);
                 
                 // Cache the fader number
                 int currFader = getFaderNum();
@@ -213,7 +213,7 @@ int16_t main(void)
                 g_bReadyToStart = 0;
 
                 // Wait until the voltage is stable before we begin the A2D
-                __delay_us(135);
+                __delay_us(130);
 
                 // Figure out which fader we have been given..
                 char currFader = getFaderNum();
